@@ -64,4 +64,10 @@ const reader = {
   }
 };
 
-export { auth, creator, reader };
+const updater = {
+  updateEventData: async (eventDataId, data) => {
+    return await eventDataCollection.doc(eventDataId).update(data);
+  }
+};
+
+export { auth, creator, reader, updater };

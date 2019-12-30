@@ -27457,6 +27457,8 @@ var app = (function () {
     const participantsCollection = db$1.collection('participants');
     const scoresCollection = db$1.collection('scores');
 
+    const Timestamp = index_cjs$3.firestore.Timestamp;
+
     const convertDocument = docs => {
       return docs.map(item => {
         let doc = item.data();
@@ -27467,6 +27469,24 @@ var app = (function () {
 
     const convertToDate = firestoreTimestamp => {
       return new Date(firestoreTimestamp.seconds * 1000).toDateString();
+    };
+
+    const toTimestamp = strDate => {
+      const date = Date.parse(strDate);
+      // return { seconds: date / 1000, nanoseconds: 0 };
+      // return date / 1000;
+      return new Timestamp(date / 1000, 0);
+    };
+
+    const transform = data => {
+      return {
+        rowHeaders: [...Object.values(data.days).map(value => convertToDate(value))],
+        rowData: Object.entries(data.scores).map(([key, value]) => {
+          const participant = key;
+          const scores = Object.values(value).map(score => (score === -9999 ? '#' : score));
+          return [participant, ...scores];
+        })
+      };
     };
 
     const auth$1 = {
@@ -27523,6 +27543,12 @@ var app = (function () {
           .get();
 
         return convertDocument(result.docs);
+      }
+    };
+
+    const updater = {
+      updateEventData: async (eventDataId, data) => {
+        return await eventDataCollection.doc(eventDataId).update(data);
       }
     };
 
@@ -27742,29 +27768,29 @@ var app = (function () {
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[6] = list[i];
+    	child_ctx[13] = list[i];
     	return child_ctx;
     }
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[3] = list[i];
+    	child_ctx[10] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[9] = list[i];
+    	child_ctx[16] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_3(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[9] = list[i];
+    	child_ctx[16] = list[i];
     	return child_ctx;
     }
 
-    // (74:0) {:else}
+    // (126:2) {:else}
     function create_else_block_1(ctx) {
     	let span;
 
@@ -27772,7 +27798,7 @@ var app = (function () {
     		c: function create() {
     			span = element("span");
     			span.textContent = "No event selected.";
-    			add_location(span, file$1, 74, 2, 1603);
+    			add_location(span, file$1, 126, 4, 2798);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -27787,14 +27813,14 @@ var app = (function () {
     		block,
     		id: create_else_block_1.name,
     		type: "else",
-    		source: "(74:0) {:else}",
+    		source: "(126:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (40:0) {#if eventId}
+    // (79:2) {#if eventId}
     function create_if_block(ctx) {
     	let if_block_anchor;
 
@@ -27838,14 +27864,14 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(40:0) {#if eventId}",
+    		source: "(79:2) {#if eventId}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (71:2) {:else}
+    // (123:4) {:else}
     function create_else_block(ctx) {
     	let span;
 
@@ -27853,7 +27879,7 @@ var app = (function () {
     		c: function create() {
     			span = element("span");
     			span.textContent = "Todo: Show Empty Table";
-    			add_location(span, file$1, 71, 4, 1549);
+    			add_location(span, file$1, 123, 6, 2738);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -27868,25 +27894,36 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(71:2) {:else}",
+    		source: "(123:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (41:2) {#if tableData}
+    // (80:4) {#if tableData}
     function create_if_block_1(ctx) {
     	let t0;
+    	let div0;
+    	let input0;
+    	let t1;
+    	let button0;
+    	let t3;
+    	let div1;
+    	let input1;
+    	let t4;
+    	let button1;
+    	let t6;
     	let table;
     	let thead;
     	let tr0;
     	let th;
-    	let t2;
-    	let t3;
+    	let t8;
+    	let t9;
     	let tr1;
-    	let t4;
+    	let t10;
     	let tbody;
+    	let dispose;
     	let each_value_3 = /*tableData*/ ctx[1].rowHeaders;
     	let each_blocks_2 = [];
 
@@ -27917,64 +27954,104 @@ var app = (function () {
     			}
 
     			t0 = space();
+    			div0 = element("div");
+    			input0 = element("input");
+    			t1 = space();
+    			button0 = element("button");
+    			button0.textContent = "Add new Participant";
+    			t3 = space();
+    			div1 = element("div");
+    			input1 = element("input");
+    			t4 = space();
+    			button1 = element("button");
+    			button1.textContent = "Add new Date";
+    			t6 = space();
     			table = element("table");
     			thead = element("thead");
     			tr0 = element("tr");
     			th = element("th");
     			th.textContent = "Teilnehmer";
-    			t2 = space();
+    			t8 = space();
 
     			for (let i = 0; i < each_blocks_2.length; i += 1) {
     				each_blocks_2[i].c();
     			}
 
-    			t3 = space();
+    			t9 = space();
     			tr1 = element("tr");
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].c();
     			}
 
-    			t4 = space();
+    			t10 = space();
     			tbody = element("tbody");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
+    			attr_dev(input0, "type", "text");
+    			attr_dev(input0, "placeholder", "enter new participant");
+    			add_location(input0, file$1, 83, 8, 1630);
+    			add_location(button0, file$1, 87, 8, 1754);
+    			add_location(div0, file$1, 82, 6, 1616);
+    			attr_dev(input1, "type", "date");
+    			add_location(input1, file$1, 91, 8, 1854);
+    			add_location(button1, file$1, 92, 8, 1913);
+    			add_location(div1, file$1, 90, 6, 1840);
     			attr_dev(th, "align", "left");
     			attr_dev(th, "rowspan", "2");
-    			add_location(th, file$1, 49, 10, 1015);
+    			add_location(th, file$1, 101, 12, 2160);
     			attr_dev(tr0, "id", "tableRowHeaderText");
-    			add_location(tr0, file$1, 48, 8, 976);
-    			add_location(tr1, file$1, 54, 8, 1188);
-    			add_location(thead, file$1, 47, 6, 960);
-    			add_location(tbody, file$1, 60, 6, 1325);
+    			add_location(tr0, file$1, 100, 10, 2119);
+    			add_location(tr1, file$1, 106, 10, 2343);
+    			add_location(thead, file$1, 99, 8, 2101);
+    			add_location(tbody, file$1, 112, 8, 2492);
     			attr_dev(table, "border", "solid 1px black");
     			attr_dev(table, "cellpadding", "4");
     			set_style(table, "border-collapse", "collapse");
-    			add_location(table, file$1, 43, 4, 852);
+    			add_location(table, file$1, 95, 6, 1985);
+
+    			dispose = [
+    				listen_dev(input0, "input", /*input0_input_handler*/ ctx[8]),
+    				listen_dev(button0, "click", /*addNewParticipant*/ ctx[5], false, false, false),
+    				listen_dev(input1, "input", /*input1_input_handler*/ ctx[9]),
+    				listen_dev(button1, "click", /*addNewDate*/ ctx[4], false, false, false)
+    			];
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, t0, anchor);
+    			insert_dev(target, div0, anchor);
+    			append_dev(div0, input0);
+    			set_input_value(input0, /*newParticipant*/ ctx[2]);
+    			append_dev(div0, t1);
+    			append_dev(div0, button0);
+    			insert_dev(target, t3, anchor);
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, input1);
+    			set_input_value(input1, /*selectedNewDate*/ ctx[3]);
+    			append_dev(div1, t4);
+    			append_dev(div1, button1);
+    			insert_dev(target, t6, anchor);
     			insert_dev(target, table, anchor);
     			append_dev(table, thead);
     			append_dev(thead, tr0);
     			append_dev(tr0, th);
-    			append_dev(tr0, t2);
+    			append_dev(tr0, t8);
 
     			for (let i = 0; i < each_blocks_2.length; i += 1) {
     				each_blocks_2[i].m(tr0, null);
     			}
 
-    			append_dev(thead, t3);
+    			append_dev(thead, t9);
     			append_dev(thead, tr1);
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].m(tr1, null);
     			}
 
-    			append_dev(table, t4);
+    			append_dev(table, t10);
     			append_dev(table, tbody);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
@@ -27986,6 +28063,14 @@ var app = (function () {
     				const tableData = /*tableData*/ ctx[1];
     				console.log({ tableData });
     				debugger;
+    			}
+
+    			if (dirty & /*newParticipant*/ 4 && input0.value !== /*newParticipant*/ ctx[2]) {
+    				set_input_value(input0, /*newParticipant*/ ctx[2]);
+    			}
+
+    			if (dirty & /*selectedNewDate*/ 8) {
+    				set_input_value(input1, /*selectedNewDate*/ ctx[3]);
     			}
 
     			if (dirty & /*tableData*/ 2) {
@@ -28058,10 +28143,15 @@ var app = (function () {
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(div0);
+    			if (detaching) detach_dev(t3);
+    			if (detaching) detach_dev(div1);
+    			if (detaching) detach_dev(t6);
     			if (detaching) detach_dev(table);
     			destroy_each(each_blocks_2, detaching);
     			destroy_each(each_blocks_1, detaching);
     			destroy_each(each_blocks, detaching);
+    			run_all(dispose);
     		}
     	};
 
@@ -28069,14 +28159,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(41:2) {#if tableData}",
+    		source: "(80:4) {#if tableData}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (51:10) {#each tableData.rowHeaders as header}
+    // (103:12) {#each tableData.rowHeaders as header}
     function create_each_block_3(ctx) {
     	let th;
 
@@ -28084,7 +28174,7 @@ var app = (function () {
     		c: function create() {
     			th = element("th");
     			th.textContent = "Datum / Punktzahl";
-    			add_location(th, file$1, 51, 12, 1121);
+    			add_location(th, file$1, 103, 14, 2270);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, th, anchor);
@@ -28098,31 +28188,31 @@ var app = (function () {
     		block,
     		id: create_each_block_3.name,
     		type: "each",
-    		source: "(51:10) {#each tableData.rowHeaders as header}",
+    		source: "(103:12) {#each tableData.rowHeaders as header}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (56:10) {#each tableData.rowHeaders as header}
+    // (108:12) {#each tableData.rowHeaders as header}
     function create_each_block_2(ctx) {
     	let th;
-    	let t_value = /*header*/ ctx[9] + "";
+    	let t_value = /*header*/ ctx[16] + "";
     	let t;
 
     	const block = {
     		c: function create() {
     			th = element("th");
     			t = text(t_value);
-    			add_location(th, file$1, 56, 12, 1254);
+    			add_location(th, file$1, 108, 14, 2413);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, th, anchor);
     			append_dev(th, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*tableData*/ 2 && t_value !== (t_value = /*header*/ ctx[9] + "")) set_data_dev(t, t_value);
+    			if (dirty & /*tableData*/ 2 && t_value !== (t_value = /*header*/ ctx[16] + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(th);
@@ -28133,31 +28223,31 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(56:10) {#each tableData.rowHeaders as header}",
+    		source: "(108:12) {#each tableData.rowHeaders as header}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (64:12) {#each data as entry}
+    // (116:14) {#each data as entry}
     function create_each_block_1(ctx) {
     	let td;
-    	let t_value = /*entry*/ ctx[6] + "";
+    	let t_value = /*entry*/ ctx[13] + "";
     	let t;
 
     	const block = {
     		c: function create() {
     			td = element("td");
     			t = text(t_value);
-    			add_location(td, file$1, 64, 14, 1438);
+    			add_location(td, file$1, 116, 16, 2613);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
     			append_dev(td, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*tableData*/ 2 && t_value !== (t_value = /*entry*/ ctx[6] + "")) set_data_dev(t, t_value);
+    			if (dirty & /*tableData*/ 2 && t_value !== (t_value = /*entry*/ ctx[13] + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(td);
@@ -28168,18 +28258,18 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(64:12) {#each data as entry}",
+    		source: "(116:14) {#each data as entry}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (62:8) {#each tableData.rowData as data}
+    // (114:10) {#each tableData.rowData as data}
     function create_each_block(ctx) {
     	let tr;
     	let t;
-    	let each_value_1 = /*data*/ ctx[3];
+    	let each_value_1 = /*data*/ ctx[10];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value_1.length; i += 1) {
@@ -28195,7 +28285,7 @@ var app = (function () {
     			}
 
     			t = space();
-    			add_location(tr, file$1, 62, 10, 1385);
+    			add_location(tr, file$1, 114, 12, 2556);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -28208,7 +28298,7 @@ var app = (function () {
     		},
     		p: function update(ctx, dirty) {
     			if (dirty & /*tableData*/ 2) {
-    				each_value_1 = /*data*/ ctx[3];
+    				each_value_1 = /*data*/ ctx[10];
     				let i;
 
     				for (i = 0; i < each_value_1.length; i += 1) {
@@ -28240,7 +28330,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(62:8) {#each tableData.rowData as data}",
+    		source: "(114:10) {#each tableData.rowData as data}",
     		ctx
     	});
 
@@ -28248,7 +28338,7 @@ var app = (function () {
     }
 
     function create_fragment$1(ctx) {
-    	let if_block_anchor;
+    	let div;
 
     	function select_block_type(ctx, dirty) {
     		if (/*eventId*/ ctx[0]) return create_if_block;
@@ -28260,15 +28350,16 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
+    			div = element("div");
     			if_block.c();
-    			if_block_anchor = empty();
+    			add_location(div, file$1, 77, 0, 1542);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			if_block.m(target, anchor);
-    			insert_dev(target, if_block_anchor, anchor);
+    			insert_dev(target, div, anchor);
+    			if_block.m(div, null);
     		},
     		p: function update(ctx, [dirty]) {
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
@@ -28279,15 +28370,15 @@ var app = (function () {
 
     				if (if_block) {
     					if_block.c();
-    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    					if_block.m(div, null);
     				}
     			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if_block.d(detaching);
-    			if (detaching) detach_dev(if_block_anchor);
+    			if (detaching) detach_dev(div);
+    			if_block.d();
     		}
     	};
 
@@ -28304,9 +28395,50 @@ var app = (function () {
 
     function instance$1($$self, $$props, $$invalidate) {
     	let { eventId } = $$props;
+    	let remoteData;
     	let tableData;
+    	let newParticipant;
+    	let selectedNewDate;
 
     	async function loadData() {
+    		const data = await reader.getEventDataByEventId(eventId);
+    		remoteData = data;
+    		$$invalidate(1, tableData = transform(data));
+    	}
+
+    	async function addNewDate() {
+    		remoteData.dayCount++;
+    		const newDayKey = `day${remoteData.dayCount}`;
+    		remoteData.days[newDayKey] = toTimestamp(selectedNewDate);
+
+    		Object.entries(remoteData.scores).forEach(([key, value]) => {
+    			const participant = key;
+    			value[newDayKey] = -9999;
+    			remoteData.scores[participant] = value;
+    		});
+
+    		const newData = { ...remoteData };
+    		await updater.updateEventData(remoteData.id, newData);
+    		await loadData();
+    		$$invalidate(3, selectedNewDate = "");
+    	}
+
+    	async function addNewParticipant() {
+    		remoteData.participants[newParticipant] = newParticipant;
+    		let newRow = {};
+
+    		for (var i = 1; i <= remoteData.dayCount; i++) {
+    			newRow[`day${i}`] = -9999;
+    		}
+
+    		remoteData.scores[newParticipant] = newRow;
+    		const newData = { ...remoteData };
+    		await updater.updateEventData(remoteData.id, newData);
+    		await loadData();
+    		$$invalidate(2, newParticipant = "");
+    	}
+
+    	afterUpdate(async () => {
     		if (tableData) {
     			return;
     		}
@@ -28315,39 +28447,59 @@ var app = (function () {
     			return;
     		}
 
-    		const data = await reader.getEventDataByEventId(eventId);
+    		await loadData();
+    	});
 
-    		$$invalidate(1, tableData = {
-    			rowHeaders: [...Object.values(data.days).map(value => convertToDate(value))],
-    			rowData: Object.entries(data.scores).map(([key, value]) => {
-    				const participant = key;
-    				const scores = Object.values(value).map(score => score === -9999 ? "#" : score);
-    				return [participant, ...scores];
-    			})
-    		});
-    	}
-
-    	afterUpdate(loadData);
     	const writable_props = ["eventId"];
 
     	Object_1.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Table> was created with unknown prop '${key}'`);
     	});
 
+    	function input0_input_handler() {
+    		newParticipant = this.value;
+    		$$invalidate(2, newParticipant);
+    	}
+
+    	function input1_input_handler() {
+    		selectedNewDate = this.value;
+    		$$invalidate(3, selectedNewDate);
+    	}
+
     	$$self.$set = $$props => {
     		if ("eventId" in $$props) $$invalidate(0, eventId = $$props.eventId);
     	};
 
     	$$self.$capture_state = () => {
-    		return { eventId, tableData };
+    		return {
+    			eventId,
+    			remoteData,
+    			tableData,
+    			newParticipant,
+    			selectedNewDate
+    		};
     	};
 
     	$$self.$inject_state = $$props => {
     		if ("eventId" in $$props) $$invalidate(0, eventId = $$props.eventId);
+    		if ("remoteData" in $$props) remoteData = $$props.remoteData;
     		if ("tableData" in $$props) $$invalidate(1, tableData = $$props.tableData);
+    		if ("newParticipant" in $$props) $$invalidate(2, newParticipant = $$props.newParticipant);
+    		if ("selectedNewDate" in $$props) $$invalidate(3, selectedNewDate = $$props.selectedNewDate);
     	};
 
-    	return [eventId, tableData];
+    	return [
+    		eventId,
+    		tableData,
+    		newParticipant,
+    		selectedNewDate,
+    		addNewDate,
+    		addNewParticipant,
+    		remoteData,
+    		loadData,
+    		input0_input_handler,
+    		input1_input_handler
+    	];
     }
 
     class Table extends SvelteComponentDev {

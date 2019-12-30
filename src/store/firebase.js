@@ -19,3 +19,5 @@ export const eventsCollection = db.collection('events');
 export const eventDataCollection = db.collection('eventData');
 export const participantsCollection = db.collection('participants');
 export const scoresCollection = db.collection('scores');
+
+export const Timestamp = firebase.firestore.Timestamp;
