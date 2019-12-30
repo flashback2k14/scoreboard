@@ -11,35 +11,23 @@
       return;
     }
 
-    if (eventId) {
-      const participants = await reader.getParticipantsByEventId(eventId);
-      const scoresPromHolder = participants.map(async participant => {
-        return await reader.getScoresByEventAndParticipantId(
-          eventId,
-          participant.id
-        );
-      });
-      const scores = await Promise.all(scoresPromHolder);
-
-      tableData = participants.map(participant => {
-        const participantScores = scores
-          .flat()
-          .filter(score => score.participantUid.id === participant.id)
-          .map(score => {
-            return {
-              id: score.id,
-              value: score.value,
-              date: convertToDate(score.date)
-            };
-          });
-
-        return {
-          row: { id: participant.id, name: participant.name },
-          columnsHeader: participantScores.map(ps => ps.date),
-          columnsData: participantScores
-        };
-      });
+    if (!eventId) {
+      return;
     }
+
+    const data = await reader.getEventDataByEventId(eventId);
+    tableData = {
+      rowHeaders: [
+        ...Object.values(data.days).map(value => convertToDate(value))
+      ],
+      rowData: Object.entries(data.scores).map(([key, value]) => {
+        const participant = key;
+        const scores = Object.values(value).map(score =>
+          score === -9999 ? "#" : score
+        );
+        return [participant, ...scores];
+      })
+    };
   }
 
   afterUpdate(loadData);
@@ -51,8 +39,6 @@
 
 {#if eventId}
   {#if tableData}
-    <span>{eventId}</span>
-
     {@debug tableData}
 
     <table
@@ -62,12 +48,25 @@
       <thead>
         <tr id="tableRowHeaderText">
           <th align="left" rowspan="2">Teilnehmer</th>
-          <th>Datum / Punktzahl</th>
-          <th>Datum / Punktzahl</th>
+          {#each tableData.rowHeaders as header}
+            <th>Datum / Punktzahl</th>
+          {/each}
         </tr>
-
+        <tr>
+          {#each tableData.rowHeaders as header}
+            <th>{header}</th>
+          {/each}
+        </tr>
       </thead>
-      <tbody>t</tbody>
+      <tbody>
+        {#each tableData.rowData as data}
+          <tr>
+            {#each data as entry}
+              <td>{entry}</td>
+            {/each}
+          </tr>
+        {/each}
+      </tbody>
     </table>
   {:else}
     <span>Todo: Show Empty Table</span>

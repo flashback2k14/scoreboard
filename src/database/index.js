@@ -1,4 +1,10 @@
-import { auth as firebaseAuth, eventsCollection, participantsCollection, scoresCollection } from '../store/firebase';
+import {
+  auth as firebaseAuth,
+  eventsCollection,
+  eventDataCollection,
+  participantsCollection,
+  scoresCollection
+} from '../store/firebase';
 import { convertDocument } from '../utils';
 
 const auth = {
@@ -23,6 +29,16 @@ const reader = {
       .orderBy('name')
       .get();
     return convertDocument(result.docs);
+  },
+  getEventDataByEventId: async eventId => {
+    const eventRef = eventsCollection.doc(eventId);
+
+    const result = await eventDataCollection
+      .where('eventId', '==', eventRef)
+      .orderBy('days')
+      .get();
+
+    return convertDocument(result.docs)[0];
   },
   getParticipantsByEventId: async eventId => {
     const eventRef = eventsCollection.doc(eventId);
