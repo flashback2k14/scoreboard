@@ -1,6 +1,5 @@
 <script>
-  import { authState } from "rxfire/auth";
-  import { auth } from "../store/firebase.js";
+  import { auth } from "../database";
   import { user } from "../store/store.js";
 
   let loginUser = {
@@ -8,16 +7,14 @@
     password: "hallo123456"
   };
 
-  const unsubscriber = authState(auth).subscribe(remoteUser =>
-    user.set(remoteUser)
-  );
-
-  function login() {
-    auth.signInWithEmailAndPassword(loginUser.email, loginUser.password);
+  async function login() {
+    const result = await auth.login(loginUser);
+    user.set(result.user);
   }
 
-  function logout() {
-    auth.signOut();
+  async function logout() {
+    await auth.logout();
+    user.set(null);
   }
 </script>
 

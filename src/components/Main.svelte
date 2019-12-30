@@ -1,52 +1,35 @@
 <script>
   import Table from "./Table.svelte";
+  import EventSelect from "./EventSelect.svelte";
 
-  import { onDestroy } from "svelte";
-  import { collectionData } from "rxfire/firestore";
-  import { startWith } from "rxjs/operators";
-
-  import { isNotEmpty } from "../utils";
-  import { db } from "../store/firebase.js";
   import { user } from "../store/store.js";
 
-  let localUser;
-  let event;
-  let eventsUnsubscriber;
+  let localeUser;
+  let selectedEventId;
 
-  const userUnsubscriber = user.subscribe(remoteUser => {
-    localUser = remoteUser;
-    if (isNotEmpty(remoteUser)) {
-      const eventsQuery = db
-        .collection("events")
-        .where("userUid", "==", remoteUser.uid)
-        .orderBy("name");
-
-      eventsUnsubscriber = collectionData(eventsQuery, "id")
-        .pipe(startWith([]))
-        .subscribe(events => {
-          event = events[0];
-        });
-    }
+  const userUnsubscriber = user.subscribe(async remoteUser => {
+    localeUser = remoteUser;
   });
 
-  // onDestroy(() => {
-  //   userUnsubscriber();
-  //   if (eventsUnsubscriber) {
-  //     eventsUnsubscriber.unsubscribe();
-  //   }
-  // });
+  async function handleSelectedEvent(event) {
+    selectedEventId = event.detail.id;
+  }
 </script>
 
 <style>
   main {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     height: calc(100vh - 68px - 48px);
     padding: 8px;
   }
 </style>
 
 <main>
-  {#if localUser}
-    <Table {event} />
+  {#if localeUser}
+    <Table eventId={selectedEventId} />
+    <EventSelect on:selected-event={handleSelectedEvent} />
   {:else}
     <span>User is not logged in.</span>
   {/if}

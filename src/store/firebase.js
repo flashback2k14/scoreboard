@@ -13,6 +13,9 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
+const db = firebase.firestore();
 export const auth = firebase.auth();
-
-export const db = firebase.firestore();
+export const eventsCollection = db.collection('events');
+export const eventDataCollection = db.collection('eventData');
+export const participantsCollection = db.collection('participants');
+export const scoresCollection = db.collection('scores');

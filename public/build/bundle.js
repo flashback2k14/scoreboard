@@ -34,6 +34,12 @@ var app = (function () {
     function detach(node) {
         node.parentNode.removeChild(node);
     }
+    function destroy_each(iterations, detaching) {
+        for (let i = 0; i < iterations.length; i += 1) {
+            if (iterations[i])
+                iterations[i].d(detaching);
+        }
+    }
     function element(name) {
         return document.createElement(name);
     }
@@ -64,6 +70,22 @@ var app = (function () {
             input.value = value;
         }
     }
+    function set_style(node, key, value, important) {
+        node.style.setProperty(key, value, important ? 'important' : '');
+    }
+    function select_option(select, value) {
+        for (let i = 0; i < select.options.length; i += 1) {
+            const option = select.options[i];
+            if (option.__value === value) {
+                option.selected = true;
+                return;
+            }
+        }
+    }
+    function select_value(select) {
+        const selected_option = select.querySelector(':checked') || select.options[0];
+        return selected_option && selected_option.__value;
+    }
     function custom_event(type, detail) {
         const e = document.createEvent('CustomEvent');
         e.initCustomEvent(type, false, false, detail);
@@ -73,6 +95,31 @@ var app = (function () {
     let current_component;
     function set_current_component(component) {
         current_component = component;
+    }
+    function get_current_component() {
+        if (!current_component)
+            throw new Error(`Function called outside component initialization`);
+        return current_component;
+    }
+    function afterUpdate(fn) {
+        get_current_component().$$.after_update.push(fn);
+    }
+    function onDestroy(fn) {
+        get_current_component().$$.on_destroy.push(fn);
+    }
+    function createEventDispatcher() {
+        const component = get_current_component();
+        return (type, detail) => {
+            const callbacks = component.$$.callbacks[type];
+            if (callbacks) {
+                // TODO are there situations where events could be dispatched
+                // in a server (non-DOM) environment?
+                const event = custom_event(type, detail);
+                callbacks.slice().forEach(fn => {
+                    fn.call(component, event);
+                });
+            }
+        };
     }
 
     const dirty_components = [];
@@ -316,6 +363,10 @@ var app = (function () {
         else
             dispatch_dev("SvelteDOMSetAttribute", { node, attribute, value });
     }
+    function prop_dev(node, property, value) {
+        node[property] = value;
+        dispatch_dev("SvelteDOMSetProperty", { node, property, value });
+    }
     function set_data_dev(text, data) {
         data = '' + data;
         if (text.data === data)
@@ -336,6 +387,16 @@ var app = (function () {
                 console.warn(`Component was already destroyed`); // eslint-disable-line no-console
             };
         }
+    }
+
+    var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
+
+    function unwrapExports (x) {
+    	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+    }
+
+    function createCommonjsModule(fn, module) {
+    	return module = { exports: {} }, fn(module, module.exports), module.exports;
     }
 
     /*! *****************************************************************************
@@ -556,1186 +617,6 @@ var app = (function () {
         __importStar: __importStar,
         __importDefault: __importDefault
     });
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    function isFunction(x) {
-        return typeof x === 'function';
-    }
-    //# sourceMappingURL=isFunction.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    var _enable_super_gross_mode_that_will_cause_bad_things = false;
-    var config = {
-        Promise: undefined,
-        set useDeprecatedSynchronousErrorHandling(value) {
-            if (value) {
-                var error = /*@__PURE__*/ new Error();
-                /*@__PURE__*/ console.warn('DEPRECATED! RxJS was set to use deprecated synchronous error handling behavior by code at: \n' + error.stack);
-            }
-            _enable_super_gross_mode_that_will_cause_bad_things = value;
-        },
-        get useDeprecatedSynchronousErrorHandling() {
-            return _enable_super_gross_mode_that_will_cause_bad_things;
-        },
-    };
-    //# sourceMappingURL=config.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    function hostReportError(err) {
-        setTimeout(function () { throw err; }, 0);
-    }
-    //# sourceMappingURL=hostReportError.js.map
-
-    /** PURE_IMPORTS_START _config,_util_hostReportError PURE_IMPORTS_END */
-    var empty$1 = {
-        closed: true,
-        next: function (value) { },
-        error: function (err) {
-            if (config.useDeprecatedSynchronousErrorHandling) {
-                throw err;
-            }
-            else {
-                hostReportError(err);
-            }
-        },
-        complete: function () { }
-    };
-    //# sourceMappingURL=Observer.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    var isArray = /*@__PURE__*/ (function () { return Array.isArray || (function (x) { return x && typeof x.length === 'number'; }); })();
-    //# sourceMappingURL=isArray.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    function isObject(x) {
-        return x !== null && typeof x === 'object';
-    }
-    //# sourceMappingURL=isObject.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    var UnsubscriptionErrorImpl = /*@__PURE__*/ (function () {
-        function UnsubscriptionErrorImpl(errors) {
-            Error.call(this);
-            this.message = errors ?
-                errors.length + " errors occurred during unsubscription:\n" + errors.map(function (err, i) { return i + 1 + ") " + err.toString(); }).join('\n  ') : '';
-            this.name = 'UnsubscriptionError';
-            this.errors = errors;
-            return this;
-        }
-        UnsubscriptionErrorImpl.prototype = /*@__PURE__*/ Object.create(Error.prototype);
-        return UnsubscriptionErrorImpl;
-    })();
-    var UnsubscriptionError = UnsubscriptionErrorImpl;
-    //# sourceMappingURL=UnsubscriptionError.js.map
-
-    /** PURE_IMPORTS_START _util_isArray,_util_isObject,_util_isFunction,_util_UnsubscriptionError PURE_IMPORTS_END */
-    var Subscription = /*@__PURE__*/ (function () {
-        function Subscription(unsubscribe) {
-            this.closed = false;
-            this._parentOrParents = null;
-            this._subscriptions = null;
-            if (unsubscribe) {
-                this._unsubscribe = unsubscribe;
-            }
-        }
-        Subscription.prototype.unsubscribe = function () {
-            var errors;
-            if (this.closed) {
-                return;
-            }
-            var _a = this, _parentOrParents = _a._parentOrParents, _unsubscribe = _a._unsubscribe, _subscriptions = _a._subscriptions;
-            this.closed = true;
-            this._parentOrParents = null;
-            this._subscriptions = null;
-            if (_parentOrParents instanceof Subscription) {
-                _parentOrParents.remove(this);
-            }
-            else if (_parentOrParents !== null) {
-                for (var index = 0; index < _parentOrParents.length; ++index) {
-                    var parent_1 = _parentOrParents[index];
-                    parent_1.remove(this);
-                }
-            }
-            if (isFunction(_unsubscribe)) {
-                try {
-                    _unsubscribe.call(this);
-                }
-                catch (e) {
-                    errors = e instanceof UnsubscriptionError ? flattenUnsubscriptionErrors(e.errors) : [e];
-                }
-            }
-            if (isArray(_subscriptions)) {
-                var index = -1;
-                var len = _subscriptions.length;
-                while (++index < len) {
-                    var sub = _subscriptions[index];
-                    if (isObject(sub)) {
-                        try {
-                            sub.unsubscribe();
-                        }
-                        catch (e) {
-                            errors = errors || [];
-                            if (e instanceof UnsubscriptionError) {
-                                errors = errors.concat(flattenUnsubscriptionErrors(e.errors));
-                            }
-                            else {
-                                errors.push(e);
-                            }
-                        }
-                    }
-                }
-            }
-            if (errors) {
-                throw new UnsubscriptionError(errors);
-            }
-        };
-        Subscription.prototype.add = function (teardown) {
-            var subscription = teardown;
-            if (!teardown) {
-                return Subscription.EMPTY;
-            }
-            switch (typeof teardown) {
-                case 'function':
-                    subscription = new Subscription(teardown);
-                case 'object':
-                    if (subscription === this || subscription.closed || typeof subscription.unsubscribe !== 'function') {
-                        return subscription;
-                    }
-                    else if (this.closed) {
-                        subscription.unsubscribe();
-                        return subscription;
-                    }
-                    else if (!(subscription instanceof Subscription)) {
-                        var tmp = subscription;
-                        subscription = new Subscription();
-                        subscription._subscriptions = [tmp];
-                    }
-                    break;
-                default: {
-                    throw new Error('unrecognized teardown ' + teardown + ' added to Subscription.');
-                }
-            }
-            var _parentOrParents = subscription._parentOrParents;
-            if (_parentOrParents === null) {
-                subscription._parentOrParents = this;
-            }
-            else if (_parentOrParents instanceof Subscription) {
-                if (_parentOrParents === this) {
-                    return subscription;
-                }
-                subscription._parentOrParents = [_parentOrParents, this];
-            }
-            else if (_parentOrParents.indexOf(this) === -1) {
-                _parentOrParents.push(this);
-            }
-            else {
-                return subscription;
-            }
-            var subscriptions = this._subscriptions;
-            if (subscriptions === null) {
-                this._subscriptions = [subscription];
-            }
-            else {
-                subscriptions.push(subscription);
-            }
-            return subscription;
-        };
-        Subscription.prototype.remove = function (subscription) {
-            var subscriptions = this._subscriptions;
-            if (subscriptions) {
-                var subscriptionIndex = subscriptions.indexOf(subscription);
-                if (subscriptionIndex !== -1) {
-                    subscriptions.splice(subscriptionIndex, 1);
-                }
-            }
-        };
-        Subscription.EMPTY = (function (empty) {
-            empty.closed = true;
-            return empty;
-        }(new Subscription()));
-        return Subscription;
-    }());
-    function flattenUnsubscriptionErrors(errors) {
-        return errors.reduce(function (errs, err) { return errs.concat((err instanceof UnsubscriptionError) ? err.errors : err); }, []);
-    }
-    //# sourceMappingURL=Subscription.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    var rxSubscriber = /*@__PURE__*/ (function () {
-        return typeof Symbol === 'function'
-            ? /*@__PURE__*/ Symbol('rxSubscriber')
-            : '@@rxSubscriber_' + /*@__PURE__*/ Math.random();
-    })();
-    //# sourceMappingURL=rxSubscriber.js.map
-
-    /** PURE_IMPORTS_START tslib,_util_isFunction,_Observer,_Subscription,_internal_symbol_rxSubscriber,_config,_util_hostReportError PURE_IMPORTS_END */
-    var Subscriber = /*@__PURE__*/ (function (_super) {
-        __extends(Subscriber, _super);
-        function Subscriber(destinationOrNext, error, complete) {
-            var _this = _super.call(this) || this;
-            _this.syncErrorValue = null;
-            _this.syncErrorThrown = false;
-            _this.syncErrorThrowable = false;
-            _this.isStopped = false;
-            switch (arguments.length) {
-                case 0:
-                    _this.destination = empty$1;
-                    break;
-                case 1:
-                    if (!destinationOrNext) {
-                        _this.destination = empty$1;
-                        break;
-                    }
-                    if (typeof destinationOrNext === 'object') {
-                        if (destinationOrNext instanceof Subscriber) {
-                            _this.syncErrorThrowable = destinationOrNext.syncErrorThrowable;
-                            _this.destination = destinationOrNext;
-                            destinationOrNext.add(_this);
-                        }
-                        else {
-                            _this.syncErrorThrowable = true;
-                            _this.destination = new SafeSubscriber(_this, destinationOrNext);
-                        }
-                        break;
-                    }
-                default:
-                    _this.syncErrorThrowable = true;
-                    _this.destination = new SafeSubscriber(_this, destinationOrNext, error, complete);
-                    break;
-            }
-            return _this;
-        }
-        Subscriber.prototype[rxSubscriber] = function () { return this; };
-        Subscriber.create = function (next, error, complete) {
-            var subscriber = new Subscriber(next, error, complete);
-            subscriber.syncErrorThrowable = false;
-            return subscriber;
-        };
-        Subscriber.prototype.next = function (value) {
-            if (!this.isStopped) {
-                this._next(value);
-            }
-        };
-        Subscriber.prototype.error = function (err) {
-            if (!this.isStopped) {
-                this.isStopped = true;
-                this._error(err);
-            }
-        };
-        Subscriber.prototype.complete = function () {
-            if (!this.isStopped) {
-                this.isStopped = true;
-                this._complete();
-            }
-        };
-        Subscriber.prototype.unsubscribe = function () {
-            if (this.closed) {
-                return;
-            }
-            this.isStopped = true;
-            _super.prototype.unsubscribe.call(this);
-        };
-        Subscriber.prototype._next = function (value) {
-            this.destination.next(value);
-        };
-        Subscriber.prototype._error = function (err) {
-            this.destination.error(err);
-            this.unsubscribe();
-        };
-        Subscriber.prototype._complete = function () {
-            this.destination.complete();
-            this.unsubscribe();
-        };
-        Subscriber.prototype._unsubscribeAndRecycle = function () {
-            var _parentOrParents = this._parentOrParents;
-            this._parentOrParents = null;
-            this.unsubscribe();
-            this.closed = false;
-            this.isStopped = false;
-            this._parentOrParents = _parentOrParents;
-            return this;
-        };
-        return Subscriber;
-    }(Subscription));
-    var SafeSubscriber = /*@__PURE__*/ (function (_super) {
-        __extends(SafeSubscriber, _super);
-        function SafeSubscriber(_parentSubscriber, observerOrNext, error, complete) {
-            var _this = _super.call(this) || this;
-            _this._parentSubscriber = _parentSubscriber;
-            var next;
-            var context = _this;
-            if (isFunction(observerOrNext)) {
-                next = observerOrNext;
-            }
-            else if (observerOrNext) {
-                next = observerOrNext.next;
-                error = observerOrNext.error;
-                complete = observerOrNext.complete;
-                if (observerOrNext !== empty$1) {
-                    context = Object.create(observerOrNext);
-                    if (isFunction(context.unsubscribe)) {
-                        _this.add(context.unsubscribe.bind(context));
-                    }
-                    context.unsubscribe = _this.unsubscribe.bind(_this);
-                }
-            }
-            _this._context = context;
-            _this._next = next;
-            _this._error = error;
-            _this._complete = complete;
-            return _this;
-        }
-        SafeSubscriber.prototype.next = function (value) {
-            if (!this.isStopped && this._next) {
-                var _parentSubscriber = this._parentSubscriber;
-                if (!config.useDeprecatedSynchronousErrorHandling || !_parentSubscriber.syncErrorThrowable) {
-                    this.__tryOrUnsub(this._next, value);
-                }
-                else if (this.__tryOrSetError(_parentSubscriber, this._next, value)) {
-                    this.unsubscribe();
-                }
-            }
-        };
-        SafeSubscriber.prototype.error = function (err) {
-            if (!this.isStopped) {
-                var _parentSubscriber = this._parentSubscriber;
-                var useDeprecatedSynchronousErrorHandling = config.useDeprecatedSynchronousErrorHandling;
-                if (this._error) {
-                    if (!useDeprecatedSynchronousErrorHandling || !_parentSubscriber.syncErrorThrowable) {
-                        this.__tryOrUnsub(this._error, err);
-                        this.unsubscribe();
-                    }
-                    else {
-                        this.__tryOrSetError(_parentSubscriber, this._error, err);
-                        this.unsubscribe();
-                    }
-                }
-                else if (!_parentSubscriber.syncErrorThrowable) {
-                    this.unsubscribe();
-                    if (useDeprecatedSynchronousErrorHandling) {
-                        throw err;
-                    }
-                    hostReportError(err);
-                }
-                else {
-                    if (useDeprecatedSynchronousErrorHandling) {
-                        _parentSubscriber.syncErrorValue = err;
-                        _parentSubscriber.syncErrorThrown = true;
-                    }
-                    else {
-                        hostReportError(err);
-                    }
-                    this.unsubscribe();
-                }
-            }
-        };
-        SafeSubscriber.prototype.complete = function () {
-            var _this = this;
-            if (!this.isStopped) {
-                var _parentSubscriber = this._parentSubscriber;
-                if (this._complete) {
-                    var wrappedComplete = function () { return _this._complete.call(_this._context); };
-                    if (!config.useDeprecatedSynchronousErrorHandling || !_parentSubscriber.syncErrorThrowable) {
-                        this.__tryOrUnsub(wrappedComplete);
-                        this.unsubscribe();
-                    }
-                    else {
-                        this.__tryOrSetError(_parentSubscriber, wrappedComplete);
-                        this.unsubscribe();
-                    }
-                }
-                else {
-                    this.unsubscribe();
-                }
-            }
-        };
-        SafeSubscriber.prototype.__tryOrUnsub = function (fn, value) {
-            try {
-                fn.call(this._context, value);
-            }
-            catch (err) {
-                this.unsubscribe();
-                if (config.useDeprecatedSynchronousErrorHandling) {
-                    throw err;
-                }
-                else {
-                    hostReportError(err);
-                }
-            }
-        };
-        SafeSubscriber.prototype.__tryOrSetError = function (parent, fn, value) {
-            if (!config.useDeprecatedSynchronousErrorHandling) {
-                throw new Error('bad call');
-            }
-            try {
-                fn.call(this._context, value);
-            }
-            catch (err) {
-                if (config.useDeprecatedSynchronousErrorHandling) {
-                    parent.syncErrorValue = err;
-                    parent.syncErrorThrown = true;
-                    return true;
-                }
-                else {
-                    hostReportError(err);
-                    return true;
-                }
-            }
-            return false;
-        };
-        SafeSubscriber.prototype._unsubscribe = function () {
-            var _parentSubscriber = this._parentSubscriber;
-            this._context = null;
-            this._parentSubscriber = null;
-            _parentSubscriber.unsubscribe();
-        };
-        return SafeSubscriber;
-    }(Subscriber));
-    //# sourceMappingURL=Subscriber.js.map
-
-    /** PURE_IMPORTS_START _Subscriber PURE_IMPORTS_END */
-    function canReportError(observer) {
-        while (observer) {
-            var _a = observer, closed_1 = _a.closed, destination = _a.destination, isStopped = _a.isStopped;
-            if (closed_1 || isStopped) {
-                return false;
-            }
-            else if (destination && destination instanceof Subscriber) {
-                observer = destination;
-            }
-            else {
-                observer = null;
-            }
-        }
-        return true;
-    }
-    //# sourceMappingURL=canReportError.js.map
-
-    /** PURE_IMPORTS_START _Subscriber,_symbol_rxSubscriber,_Observer PURE_IMPORTS_END */
-    function toSubscriber(nextOrObserver, error, complete) {
-        if (nextOrObserver) {
-            if (nextOrObserver instanceof Subscriber) {
-                return nextOrObserver;
-            }
-            if (nextOrObserver[rxSubscriber]) {
-                return nextOrObserver[rxSubscriber]();
-            }
-        }
-        if (!nextOrObserver && !error && !complete) {
-            return new Subscriber(empty$1);
-        }
-        return new Subscriber(nextOrObserver, error, complete);
-    }
-    //# sourceMappingURL=toSubscriber.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    var observable = /*@__PURE__*/ (function () { return typeof Symbol === 'function' && Symbol.observable || '@@observable'; })();
-    //# sourceMappingURL=observable.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    function noop$1() { }
-    //# sourceMappingURL=noop.js.map
-
-    /** PURE_IMPORTS_START _noop PURE_IMPORTS_END */
-    function pipeFromArray(fns) {
-        if (!fns) {
-            return noop$1;
-        }
-        if (fns.length === 1) {
-            return fns[0];
-        }
-        return function piped(input) {
-            return fns.reduce(function (prev, fn) { return fn(prev); }, input);
-        };
-    }
-    //# sourceMappingURL=pipe.js.map
-
-    /** PURE_IMPORTS_START _util_canReportError,_util_toSubscriber,_symbol_observable,_util_pipe,_config PURE_IMPORTS_END */
-    var Observable = /*@__PURE__*/ (function () {
-        function Observable(subscribe) {
-            this._isScalar = false;
-            if (subscribe) {
-                this._subscribe = subscribe;
-            }
-        }
-        Observable.prototype.lift = function (operator) {
-            var observable = new Observable();
-            observable.source = this;
-            observable.operator = operator;
-            return observable;
-        };
-        Observable.prototype.subscribe = function (observerOrNext, error, complete) {
-            var operator = this.operator;
-            var sink = toSubscriber(observerOrNext, error, complete);
-            if (operator) {
-                sink.add(operator.call(sink, this.source));
-            }
-            else {
-                sink.add(this.source || (config.useDeprecatedSynchronousErrorHandling && !sink.syncErrorThrowable) ?
-                    this._subscribe(sink) :
-                    this._trySubscribe(sink));
-            }
-            if (config.useDeprecatedSynchronousErrorHandling) {
-                if (sink.syncErrorThrowable) {
-                    sink.syncErrorThrowable = false;
-                    if (sink.syncErrorThrown) {
-                        throw sink.syncErrorValue;
-                    }
-                }
-            }
-            return sink;
-        };
-        Observable.prototype._trySubscribe = function (sink) {
-            try {
-                return this._subscribe(sink);
-            }
-            catch (err) {
-                if (config.useDeprecatedSynchronousErrorHandling) {
-                    sink.syncErrorThrown = true;
-                    sink.syncErrorValue = err;
-                }
-                if (canReportError(sink)) {
-                    sink.error(err);
-                }
-                else {
-                    console.warn(err);
-                }
-            }
-        };
-        Observable.prototype.forEach = function (next, promiseCtor) {
-            var _this = this;
-            promiseCtor = getPromiseCtor(promiseCtor);
-            return new promiseCtor(function (resolve, reject) {
-                var subscription;
-                subscription = _this.subscribe(function (value) {
-                    try {
-                        next(value);
-                    }
-                    catch (err) {
-                        reject(err);
-                        if (subscription) {
-                            subscription.unsubscribe();
-                        }
-                    }
-                }, reject, resolve);
-            });
-        };
-        Observable.prototype._subscribe = function (subscriber) {
-            var source = this.source;
-            return source && source.subscribe(subscriber);
-        };
-        Observable.prototype[observable] = function () {
-            return this;
-        };
-        Observable.prototype.pipe = function () {
-            var operations = [];
-            for (var _i = 0; _i < arguments.length; _i++) {
-                operations[_i] = arguments[_i];
-            }
-            if (operations.length === 0) {
-                return this;
-            }
-            return pipeFromArray(operations)(this);
-        };
-        Observable.prototype.toPromise = function (promiseCtor) {
-            var _this = this;
-            promiseCtor = getPromiseCtor(promiseCtor);
-            return new promiseCtor(function (resolve, reject) {
-                var value;
-                _this.subscribe(function (x) { return value = x; }, function (err) { return reject(err); }, function () { return resolve(value); });
-            });
-        };
-        Observable.create = function (subscribe) {
-            return new Observable(subscribe);
-        };
-        return Observable;
-    }());
-    function getPromiseCtor(promiseCtor) {
-        if (!promiseCtor) {
-            promiseCtor =  Promise;
-        }
-        if (!promiseCtor) {
-            throw new Error('no Promise impl found');
-        }
-        return promiseCtor;
-    }
-    //# sourceMappingURL=Observable.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    function isScheduler(value) {
-        return value && typeof value.schedule === 'function';
-    }
-    //# sourceMappingURL=isScheduler.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    var subscribeToArray = function (array) {
-        return function (subscriber) {
-            for (var i = 0, len = array.length; i < len && !subscriber.closed; i++) {
-                subscriber.next(array[i]);
-            }
-            subscriber.complete();
-        };
-    };
-    //# sourceMappingURL=subscribeToArray.js.map
-
-    /** PURE_IMPORTS_START _Observable,_Subscription PURE_IMPORTS_END */
-    function scheduleArray(input, scheduler) {
-        return new Observable(function (subscriber) {
-            var sub = new Subscription();
-            var i = 0;
-            sub.add(scheduler.schedule(function () {
-                if (i === input.length) {
-                    subscriber.complete();
-                    return;
-                }
-                subscriber.next(input[i++]);
-                if (!subscriber.closed) {
-                    sub.add(this.schedule());
-                }
-            }));
-            return sub;
-        });
-    }
-    //# sourceMappingURL=scheduleArray.js.map
-
-    /** PURE_IMPORTS_START _Observable,_util_subscribeToArray,_scheduled_scheduleArray PURE_IMPORTS_END */
-    function fromArray(input, scheduler) {
-        if (!scheduler) {
-            return new Observable(subscribeToArray(input));
-        }
-        else {
-            return scheduleArray(input, scheduler);
-        }
-    }
-    //# sourceMappingURL=fromArray.js.map
-
-    /** PURE_IMPORTS_START _util_isScheduler,_fromArray,_scheduled_scheduleArray PURE_IMPORTS_END */
-    function of() {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var scheduler = args[args.length - 1];
-        if (isScheduler(scheduler)) {
-            args.pop();
-            return scheduleArray(args, scheduler);
-        }
-        else {
-            return fromArray(args);
-        }
-    }
-    //# sourceMappingURL=of.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    function identity(x) {
-        return x;
-    }
-    //# sourceMappingURL=identity.js.map
-
-    /** PURE_IMPORTS_START tslib,_Subscriber PURE_IMPORTS_END */
-    function map(project, thisArg) {
-        return function mapOperation(source) {
-            if (typeof project !== 'function') {
-                throw new TypeError('argument is not a function. Are you looking for `mapTo()`?');
-            }
-            return source.lift(new MapOperator(project, thisArg));
-        };
-    }
-    var MapOperator = /*@__PURE__*/ (function () {
-        function MapOperator(project, thisArg) {
-            this.project = project;
-            this.thisArg = thisArg;
-        }
-        MapOperator.prototype.call = function (subscriber, source) {
-            return source.subscribe(new MapSubscriber(subscriber, this.project, this.thisArg));
-        };
-        return MapOperator;
-    }());
-    var MapSubscriber = /*@__PURE__*/ (function (_super) {
-        __extends(MapSubscriber, _super);
-        function MapSubscriber(destination, project, thisArg) {
-            var _this = _super.call(this, destination) || this;
-            _this.project = project;
-            _this.count = 0;
-            _this.thisArg = thisArg || _this;
-            return _this;
-        }
-        MapSubscriber.prototype._next = function (value) {
-            var result;
-            try {
-                result = this.project.call(this.thisArg, value, this.count++);
-            }
-            catch (err) {
-                this.destination.error(err);
-                return;
-            }
-            this.destination.next(result);
-        };
-        return MapSubscriber;
-    }(Subscriber));
-    //# sourceMappingURL=map.js.map
-
-    /** PURE_IMPORTS_START tslib,_Subscriber PURE_IMPORTS_END */
-    var OuterSubscriber = /*@__PURE__*/ (function (_super) {
-        __extends(OuterSubscriber, _super);
-        function OuterSubscriber() {
-            return _super !== null && _super.apply(this, arguments) || this;
-        }
-        OuterSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
-            this.destination.next(innerValue);
-        };
-        OuterSubscriber.prototype.notifyError = function (error, innerSub) {
-            this.destination.error(error);
-        };
-        OuterSubscriber.prototype.notifyComplete = function (innerSub) {
-            this.destination.complete();
-        };
-        return OuterSubscriber;
-    }(Subscriber));
-    //# sourceMappingURL=OuterSubscriber.js.map
-
-    /** PURE_IMPORTS_START tslib,_Subscriber PURE_IMPORTS_END */
-    var InnerSubscriber = /*@__PURE__*/ (function (_super) {
-        __extends(InnerSubscriber, _super);
-        function InnerSubscriber(parent, outerValue, outerIndex) {
-            var _this = _super.call(this) || this;
-            _this.parent = parent;
-            _this.outerValue = outerValue;
-            _this.outerIndex = outerIndex;
-            _this.index = 0;
-            return _this;
-        }
-        InnerSubscriber.prototype._next = function (value) {
-            this.parent.notifyNext(this.outerValue, value, this.outerIndex, this.index++, this);
-        };
-        InnerSubscriber.prototype._error = function (error) {
-            this.parent.notifyError(error, this);
-            this.unsubscribe();
-        };
-        InnerSubscriber.prototype._complete = function () {
-            this.parent.notifyComplete(this);
-            this.unsubscribe();
-        };
-        return InnerSubscriber;
-    }(Subscriber));
-    //# sourceMappingURL=InnerSubscriber.js.map
-
-    /** PURE_IMPORTS_START _hostReportError PURE_IMPORTS_END */
-    var subscribeToPromise = function (promise) {
-        return function (subscriber) {
-            promise.then(function (value) {
-                if (!subscriber.closed) {
-                    subscriber.next(value);
-                    subscriber.complete();
-                }
-            }, function (err) { return subscriber.error(err); })
-                .then(null, hostReportError);
-            return subscriber;
-        };
-    };
-    //# sourceMappingURL=subscribeToPromise.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    function getSymbolIterator() {
-        if (typeof Symbol !== 'function' || !Symbol.iterator) {
-            return '@@iterator';
-        }
-        return Symbol.iterator;
-    }
-    var iterator = /*@__PURE__*/ getSymbolIterator();
-    //# sourceMappingURL=iterator.js.map
-
-    /** PURE_IMPORTS_START _symbol_iterator PURE_IMPORTS_END */
-    var subscribeToIterable = function (iterable) {
-        return function (subscriber) {
-            var iterator$1 = iterable[iterator]();
-            do {
-                var item = iterator$1.next();
-                if (item.done) {
-                    subscriber.complete();
-                    break;
-                }
-                subscriber.next(item.value);
-                if (subscriber.closed) {
-                    break;
-                }
-            } while (true);
-            if (typeof iterator$1.return === 'function') {
-                subscriber.add(function () {
-                    if (iterator$1.return) {
-                        iterator$1.return();
-                    }
-                });
-            }
-            return subscriber;
-        };
-    };
-    //# sourceMappingURL=subscribeToIterable.js.map
-
-    /** PURE_IMPORTS_START _symbol_observable PURE_IMPORTS_END */
-    var subscribeToObservable = function (obj) {
-        return function (subscriber) {
-            var obs = obj[observable]();
-            if (typeof obs.subscribe !== 'function') {
-                throw new TypeError('Provided object does not correctly implement Symbol.observable');
-            }
-            else {
-                return obs.subscribe(subscriber);
-            }
-        };
-    };
-    //# sourceMappingURL=subscribeToObservable.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    var isArrayLike = (function (x) { return x && typeof x.length === 'number' && typeof x !== 'function'; });
-    //# sourceMappingURL=isArrayLike.js.map
-
-    /** PURE_IMPORTS_START  PURE_IMPORTS_END */
-    function isPromise(value) {
-        return !!value && typeof value.subscribe !== 'function' && typeof value.then === 'function';
-    }
-    //# sourceMappingURL=isPromise.js.map
-
-    /** PURE_IMPORTS_START _subscribeToArray,_subscribeToPromise,_subscribeToIterable,_subscribeToObservable,_isArrayLike,_isPromise,_isObject,_symbol_iterator,_symbol_observable PURE_IMPORTS_END */
-    var subscribeTo = function (result) {
-        if (!!result && typeof result[observable] === 'function') {
-            return subscribeToObservable(result);
-        }
-        else if (isArrayLike(result)) {
-            return subscribeToArray(result);
-        }
-        else if (isPromise(result)) {
-            return subscribeToPromise(result);
-        }
-        else if (!!result && typeof result[iterator] === 'function') {
-            return subscribeToIterable(result);
-        }
-        else {
-            var value = isObject(result) ? 'an invalid object' : "'" + result + "'";
-            var msg = "You provided " + value + " where a stream was expected."
-                + ' You can provide an Observable, Promise, Array, or Iterable.';
-            throw new TypeError(msg);
-        }
-    };
-    //# sourceMappingURL=subscribeTo.js.map
-
-    /** PURE_IMPORTS_START _InnerSubscriber,_subscribeTo,_Observable PURE_IMPORTS_END */
-    function subscribeToResult(outerSubscriber, result, outerValue, outerIndex, innerSubscriber) {
-        if (innerSubscriber === void 0) {
-            innerSubscriber = new InnerSubscriber(outerSubscriber, outerValue, outerIndex);
-        }
-        if (innerSubscriber.closed) {
-            return undefined;
-        }
-        if (result instanceof Observable) {
-            return result.subscribe(innerSubscriber);
-        }
-        return subscribeTo(result)(innerSubscriber);
-    }
-    //# sourceMappingURL=subscribeToResult.js.map
-
-    /** PURE_IMPORTS_START _Observable,_Subscription,_symbol_observable PURE_IMPORTS_END */
-    function scheduleObservable(input, scheduler) {
-        return new Observable(function (subscriber) {
-            var sub = new Subscription();
-            sub.add(scheduler.schedule(function () {
-                var observable$1 = input[observable]();
-                sub.add(observable$1.subscribe({
-                    next: function (value) { sub.add(scheduler.schedule(function () { return subscriber.next(value); })); },
-                    error: function (err) { sub.add(scheduler.schedule(function () { return subscriber.error(err); })); },
-                    complete: function () { sub.add(scheduler.schedule(function () { return subscriber.complete(); })); },
-                }));
-            }));
-            return sub;
-        });
-    }
-    //# sourceMappingURL=scheduleObservable.js.map
-
-    /** PURE_IMPORTS_START _Observable,_Subscription PURE_IMPORTS_END */
-    function schedulePromise(input, scheduler) {
-        return new Observable(function (subscriber) {
-            var sub = new Subscription();
-            sub.add(scheduler.schedule(function () {
-                return input.then(function (value) {
-                    sub.add(scheduler.schedule(function () {
-                        subscriber.next(value);
-                        sub.add(scheduler.schedule(function () { return subscriber.complete(); }));
-                    }));
-                }, function (err) {
-                    sub.add(scheduler.schedule(function () { return subscriber.error(err); }));
-                });
-            }));
-            return sub;
-        });
-    }
-    //# sourceMappingURL=schedulePromise.js.map
-
-    /** PURE_IMPORTS_START _Observable,_Subscription,_symbol_iterator PURE_IMPORTS_END */
-    function scheduleIterable(input, scheduler) {
-        if (!input) {
-            throw new Error('Iterable cannot be null');
-        }
-        return new Observable(function (subscriber) {
-            var sub = new Subscription();
-            var iterator$1;
-            sub.add(function () {
-                if (iterator$1 && typeof iterator$1.return === 'function') {
-                    iterator$1.return();
-                }
-            });
-            sub.add(scheduler.schedule(function () {
-                iterator$1 = input[iterator]();
-                sub.add(scheduler.schedule(function () {
-                    if (subscriber.closed) {
-                        return;
-                    }
-                    var value;
-                    var done;
-                    try {
-                        var result = iterator$1.next();
-                        value = result.value;
-                        done = result.done;
-                    }
-                    catch (err) {
-                        subscriber.error(err);
-                        return;
-                    }
-                    if (done) {
-                        subscriber.complete();
-                    }
-                    else {
-                        subscriber.next(value);
-                        this.schedule();
-                    }
-                }));
-            }));
-            return sub;
-        });
-    }
-    //# sourceMappingURL=scheduleIterable.js.map
-
-    /** PURE_IMPORTS_START _symbol_observable PURE_IMPORTS_END */
-    function isInteropObservable(input) {
-        return input && typeof input[observable] === 'function';
-    }
-    //# sourceMappingURL=isInteropObservable.js.map
-
-    /** PURE_IMPORTS_START _symbol_iterator PURE_IMPORTS_END */
-    function isIterable(input) {
-        return input && typeof input[iterator] === 'function';
-    }
-    //# sourceMappingURL=isIterable.js.map
-
-    /** PURE_IMPORTS_START _scheduleObservable,_schedulePromise,_scheduleArray,_scheduleIterable,_util_isInteropObservable,_util_isPromise,_util_isArrayLike,_util_isIterable PURE_IMPORTS_END */
-    function scheduled(input, scheduler) {
-        if (input != null) {
-            if (isInteropObservable(input)) {
-                return scheduleObservable(input, scheduler);
-            }
-            else if (isPromise(input)) {
-                return schedulePromise(input, scheduler);
-            }
-            else if (isArrayLike(input)) {
-                return scheduleArray(input, scheduler);
-            }
-            else if (isIterable(input) || typeof input === 'string') {
-                return scheduleIterable(input, scheduler);
-            }
-        }
-        throw new TypeError((input !== null && typeof input || input) + ' is not observable');
-    }
-    //# sourceMappingURL=scheduled.js.map
-
-    /** PURE_IMPORTS_START _Observable,_util_subscribeTo,_scheduled_scheduled PURE_IMPORTS_END */
-    function from(input, scheduler) {
-        if (!scheduler) {
-            if (input instanceof Observable) {
-                return input;
-            }
-            return new Observable(subscribeTo(input));
-        }
-        else {
-            return scheduled(input, scheduler);
-        }
-    }
-    //# sourceMappingURL=from.js.map
-
-    /** PURE_IMPORTS_START tslib,_util_subscribeToResult,_OuterSubscriber,_InnerSubscriber,_map,_observable_from PURE_IMPORTS_END */
-    function mergeMap(project, resultSelector, concurrent) {
-        if (concurrent === void 0) {
-            concurrent = Number.POSITIVE_INFINITY;
-        }
-        if (typeof resultSelector === 'function') {
-            return function (source) { return source.pipe(mergeMap(function (a, i) { return from(project(a, i)).pipe(map(function (b, ii) { return resultSelector(a, b, i, ii); })); }, concurrent)); };
-        }
-        else if (typeof resultSelector === 'number') {
-            concurrent = resultSelector;
-        }
-        return function (source) { return source.lift(new MergeMapOperator(project, concurrent)); };
-    }
-    var MergeMapOperator = /*@__PURE__*/ (function () {
-        function MergeMapOperator(project, concurrent) {
-            if (concurrent === void 0) {
-                concurrent = Number.POSITIVE_INFINITY;
-            }
-            this.project = project;
-            this.concurrent = concurrent;
-        }
-        MergeMapOperator.prototype.call = function (observer, source) {
-            return source.subscribe(new MergeMapSubscriber(observer, this.project, this.concurrent));
-        };
-        return MergeMapOperator;
-    }());
-    var MergeMapSubscriber = /*@__PURE__*/ (function (_super) {
-        __extends(MergeMapSubscriber, _super);
-        function MergeMapSubscriber(destination, project, concurrent) {
-            if (concurrent === void 0) {
-                concurrent = Number.POSITIVE_INFINITY;
-            }
-            var _this = _super.call(this, destination) || this;
-            _this.project = project;
-            _this.concurrent = concurrent;
-            _this.hasCompleted = false;
-            _this.buffer = [];
-            _this.active = 0;
-            _this.index = 0;
-            return _this;
-        }
-        MergeMapSubscriber.prototype._next = function (value) {
-            if (this.active < this.concurrent) {
-                this._tryNext(value);
-            }
-            else {
-                this.buffer.push(value);
-            }
-        };
-        MergeMapSubscriber.prototype._tryNext = function (value) {
-            var result;
-            var index = this.index++;
-            try {
-                result = this.project(value, index);
-            }
-            catch (err) {
-                this.destination.error(err);
-                return;
-            }
-            this.active++;
-            this._innerSub(result, value, index);
-        };
-        MergeMapSubscriber.prototype._innerSub = function (ish, value, index) {
-            var innerSubscriber = new InnerSubscriber(this, value, index);
-            var destination = this.destination;
-            destination.add(innerSubscriber);
-            var innerSubscription = subscribeToResult(this, ish, undefined, undefined, innerSubscriber);
-            if (innerSubscription !== innerSubscriber) {
-                destination.add(innerSubscription);
-            }
-        };
-        MergeMapSubscriber.prototype._complete = function () {
-            this.hasCompleted = true;
-            if (this.active === 0 && this.buffer.length === 0) {
-                this.destination.complete();
-            }
-            this.unsubscribe();
-        };
-        MergeMapSubscriber.prototype.notifyNext = function (outerValue, innerValue, outerIndex, innerIndex, innerSub) {
-            this.destination.next(innerValue);
-        };
-        MergeMapSubscriber.prototype.notifyComplete = function (innerSub) {
-            var buffer = this.buffer;
-            this.remove(innerSub);
-            this.active--;
-            if (buffer.length > 0) {
-                this._next(buffer.shift());
-            }
-            else if (this.active === 0 && this.hasCompleted) {
-                this.destination.complete();
-            }
-        };
-        return MergeMapSubscriber;
-    }(OuterSubscriber));
-    //# sourceMappingURL=mergeMap.js.map
-
-    /** PURE_IMPORTS_START _mergeMap,_util_identity PURE_IMPORTS_END */
-    function mergeAll(concurrent) {
-        if (concurrent === void 0) {
-            concurrent = Number.POSITIVE_INFINITY;
-        }
-        return mergeMap(identity, concurrent);
-    }
-    //# sourceMappingURL=mergeAll.js.map
-
-    /** PURE_IMPORTS_START _mergeAll PURE_IMPORTS_END */
-    function concatAll() {
-        return mergeAll(1);
-    }
-    //# sourceMappingURL=concatAll.js.map
-
-    /** PURE_IMPORTS_START _of,_operators_concatAll PURE_IMPORTS_END */
-    function concat() {
-        var observables = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            observables[_i] = arguments[_i];
-        }
-        return concatAll()(of.apply(void 0, observables));
-    }
-    //# sourceMappingURL=concat.js.map
-
-    /** PURE_IMPORTS_START _observable_concat,_util_isScheduler PURE_IMPORTS_END */
-    function startWith() {
-        var array = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            array[_i] = arguments[_i];
-        }
-        var scheduler = array[array.length - 1];
-        if (isScheduler(scheduler)) {
-            array.pop();
-            return function (source) { return concat(array, source, scheduler); };
-        }
-        else {
-            return function (source) { return concat(array, source); };
-        }
-    }
-    //# sourceMappingURL=startWith.js.map
-
-    /**
-     * @license
-     * Copyright 2018 Google Inc.
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *   http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-    /**
-     * Create an observable of authentication state. The observer is only
-     * triggered on sign-in or sign-out.
-     * @param auth firebase.auth.Auth
-     */
-    function authState(auth) {
-        return new Observable(function (subscriber) {
-            var unsubscribe = auth.onAuthStateChanged(subscriber);
-            return { unsubscribe: unsubscribe };
-        });
-    }
-    //# sourceMappingURL=index.esm.js.map
-
-    var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
-
-    function unwrapExports (x) {
-    	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
-    }
-
-    function createCommonjsModule(fn, module) {
-    	return module = { exports: {} }, fn(module, module.exports), module.exports;
-    }
 
     var index_cjs = createCommonjsModule(function (module, exports) {
 
@@ -28567,9 +27448,71 @@ var app = (function () {
     };
     index_cjs$3.initializeApp(firebaseConfig);
 
-    const auth = index_cjs$3.auth();
-
     const db$1 = index_cjs$3.firestore();
+    const auth = index_cjs$3.auth();
+    const eventsCollection = db$1.collection('events');
+    const eventDataCollection = db$1.collection('eventData');
+    const participantsCollection = db$1.collection('participants');
+    const scoresCollection = db$1.collection('scores');
+
+    const convertDocument = docs => {
+      return docs.map(item => {
+        let doc = item.data();
+        doc.id = item.id;
+        return doc;
+      });
+    };
+
+    const convertToDate = firestoreTimestamp => {
+      return new Date(firestoreTimestamp.seconds * 1000).toDateString();
+    };
+
+    const auth$1 = {
+      login: async ({ email, password }) => {
+        return await auth.signInWithEmailAndPassword(email, password);
+      },
+      logout: async () => {
+        return await auth.signOut();
+      }
+    };
+
+    const creator = {
+      addEvent: async (userUid, name) => {
+        return await eventsCollection.add({ userUid, name });
+      }
+    };
+
+    const reader = {
+      getEventByUserId: async userId => {
+        const result = await eventsCollection
+          .where('userUid', '==', userId)
+          .orderBy('name')
+          .get();
+        return convertDocument(result.docs);
+      },
+      getParticipantsByEventId: async eventId => {
+        const eventRef = eventsCollection.doc(eventId);
+
+        const result = await participantsCollection
+          .where('eventUid', '==', eventRef)
+          .orderBy('name')
+          .get();
+
+        return convertDocument(result.docs);
+      },
+      getScoresByEventAndParticipantId: async (eventId, participantId) => {
+        const eventRef = eventsCollection.doc(eventId);
+        const participantRef = participantsCollection.doc(participantId);
+
+        const result = await scoresCollection
+          .where('eventUid', '==', eventRef)
+          .where('participantUid', '==', participantRef)
+          .orderBy('date')
+          .get();
+
+        return convertDocument(result.docs);
+      }
+    };
 
     const subscriber_queue = [];
     /**
@@ -28623,7 +27566,7 @@ var app = (function () {
         return { set, update, subscribe };
     }
 
-    const user = writable({});
+    const user = writable(null);
 
     /* src/components/Header.svelte generated by Svelte v3.16.7 */
     const file = "src/components/Header.svelte";
@@ -28659,26 +27602,26 @@ var app = (function () {
     			button1 = element("button");
     			button1.textContent = "logout";
     			attr_dev(h2, "class", "svelte-11zzfip");
-    			add_location(h2, file, 62, 2, 1259);
+    			add_location(h2, file, 59, 2, 1151);
     			attr_dev(input0, "class", "header-ctrl svelte-11zzfip");
     			attr_dev(input0, "type", "text");
     			attr_dev(input0, "placeholder", "enter your email");
-    			add_location(input0, file, 64, 4, 1291);
+    			add_location(input0, file, 61, 4, 1183);
     			attr_dev(input1, "class", "header-ctrl svelte-11zzfip");
     			attr_dev(input1, "type", "password");
     			attr_dev(input1, "placeholder", "enter your password");
-    			add_location(input1, file, 69, 4, 1421);
+    			add_location(input1, file, 66, 4, 1313);
     			attr_dev(button0, "class", "header-ctrl header-ctrl_button svelte-11zzfip");
-    			add_location(button0, file, 74, 4, 1561);
+    			add_location(button0, file, 71, 4, 1453);
     			attr_dev(button1, "class", "header-ctrl header-ctrl_button svelte-11zzfip");
-    			add_location(button1, file, 77, 4, 1656);
-    			add_location(div, file, 63, 2, 1281);
+    			add_location(button1, file, 74, 4, 1548);
+    			add_location(div, file, 60, 2, 1173);
     			attr_dev(header, "class", "svelte-11zzfip");
-    			add_location(header, file, 61, 0, 1248);
+    			add_location(header, file, 58, 0, 1140);
 
     			dispose = [
-    				listen_dev(input0, "input", /*input0_input_handler*/ ctx[3]),
-    				listen_dev(input1, "input", /*input1_input_handler*/ ctx[4]),
+    				listen_dev(input0, "input", /*input0_input_handler*/ ctx[2]),
+    				listen_dev(input1, "input", /*input1_input_handler*/ ctx[3]),
     				listen_dev(button0, "click", /*login*/ ctx[1], false, false, false),
     				listen_dev(button1, "click", logout, false, false, false)
     			];
@@ -28729,8 +27672,9 @@ var app = (function () {
     	return block;
     }
 
-    function logout() {
-    	auth.signOut();
+    async function logout() {
+    	await auth$1.logout();
+    	user.set(null);
     }
 
     function instance($$self, $$props, $$invalidate) {
@@ -28739,10 +27683,9 @@ var app = (function () {
     		password: "hallo123456"
     	};
 
-    	const unsubscriber = authState(auth).subscribe(remoteUser => user.set(remoteUser));
-
-    	function login() {
-    		auth.signInWithEmailAndPassword(loginUser.email, loginUser.password);
+    	async function login() {
+    		const result = await auth$1.login(loginUser);
+    		user.set(result.user);
     	}
 
     	function input0_input_handler() {
@@ -28763,7 +27706,7 @@ var app = (function () {
     		if ("loginUser" in $$props) $$invalidate(0, loginUser = $$props.loginUser);
     	};
 
-    	return [loginUser, login, unsubscriber, input0_input_handler, input1_input_handler];
+    	return [loginUser, login, input0_input_handler, input1_input_handler];
     }
 
     class Header extends SvelteComponentDev {
@@ -28781,18 +27724,98 @@ var app = (function () {
     }
 
     /* src/components/Table.svelte generated by Svelte v3.16.7 */
-
     const file$1 = "src/components/Table.svelte";
 
-    // (13:0) {:else}
+    // (75:0) {:else}
+    function create_else_block_1(ctx) {
+    	let span;
+
+    	const block = {
+    		c: function create() {
+    			span = element("span");
+    			span.textContent = "No event selected.";
+    			add_location(span, file$1, 75, 2, 1739);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span, anchor);
+    		},
+    		p: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block_1.name,
+    		type: "else",
+    		source: "(75:0) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (52:0) {#if eventId}
+    function create_if_block(ctx) {
+    	let if_block_anchor;
+
+    	function select_block_type_1(ctx, dirty) {
+    		if (/*tableData*/ ctx[1]) return create_if_block_1;
+    		return create_else_block;
+    	}
+
+    	let current_block_type = select_block_type_1(ctx);
+    	let if_block = current_block_type(ctx);
+
+    	const block = {
+    		c: function create() {
+    			if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m: function mount(target, anchor) {
+    			if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (current_block_type === (current_block_type = select_block_type_1(ctx)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(52:0) {#if eventId}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (72:2) {:else}
     function create_else_block(ctx) {
     	let span;
 
     	const block = {
     		c: function create() {
     			span = element("span");
-    			span.textContent = "no event available";
-    			add_location(span, file$1, 13, 2, 125);
+    			span.textContent = "Todo: Show Empty Table";
+    			add_location(span, file$1, 72, 4, 1685);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -28807,42 +27830,110 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(13:0) {:else}",
+    		source: "(72:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (11:0) {#if event}
-    function create_if_block(ctx) {
+    // (53:2) {#if tableData}
+    function create_if_block_1(ctx) {
     	let span;
-    	let t_value = /*event*/ ctx[0].name + "";
-    	let t;
+    	let t0;
+    	let t1;
+    	let t2;
+    	let table;
+    	let thead;
+    	let tr;
+    	let th0;
+    	let t4;
+    	let th1;
+    	let t6;
+    	let th2;
+    	let t8;
+    	let tbody;
 
     	const block = {
     		c: function create() {
     			span = element("span");
-    			t = text(t_value);
-    			add_location(span, file$1, 11, 2, 89);
+    			t0 = text(/*eventId*/ ctx[0]);
+    			t1 = space();
+
+    			{
+    				const tableData = /*tableData*/ ctx[1];
+    				console.log({ tableData });
+    				debugger;
+    			}
+
+    			t2 = space();
+    			table = element("table");
+    			thead = element("thead");
+    			tr = element("tr");
+    			th0 = element("th");
+    			th0.textContent = "Teilnehmer";
+    			t4 = space();
+    			th1 = element("th");
+    			th1.textContent = "Datum / Punktzahl";
+    			t6 = space();
+    			th2 = element("th");
+    			th2.textContent = "Datum / Punktzahl";
+    			t8 = space();
+    			tbody = element("tbody");
+    			tbody.textContent = "t";
+    			add_location(span, file$1, 53, 4, 1271);
+    			attr_dev(th0, "align", "left");
+    			attr_dev(th0, "rowspan", "2");
+    			add_location(th0, file$1, 63, 10, 1486);
+    			add_location(th1, file$1, 64, 10, 1541);
+    			add_location(th2, file$1, 65, 10, 1578);
+    			attr_dev(tr, "id", "tableRowHeaderText");
+    			add_location(tr, file$1, 62, 8, 1447);
+    			add_location(thead, file$1, 61, 6, 1431);
+    			add_location(tbody, file$1, 69, 6, 1641);
+    			attr_dev(table, "border", "solid 1px black");
+    			attr_dev(table, "cellpadding", "4");
+    			set_style(table, "border-collapse", "collapse");
+    			add_location(table, file$1, 57, 4, 1323);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
-    			append_dev(span, t);
+    			append_dev(span, t0);
+    			insert_dev(target, t1, anchor);
+    			insert_dev(target, t2, anchor);
+    			insert_dev(target, table, anchor);
+    			append_dev(table, thead);
+    			append_dev(thead, tr);
+    			append_dev(tr, th0);
+    			append_dev(tr, t4);
+    			append_dev(tr, th1);
+    			append_dev(tr, t6);
+    			append_dev(tr, th2);
+    			append_dev(table, t8);
+    			append_dev(table, tbody);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*event*/ 1 && t_value !== (t_value = /*event*/ ctx[0].name + "")) set_data_dev(t, t_value);
+    			if (dirty & /*eventId*/ 1) set_data_dev(t0, /*eventId*/ ctx[0]);
+
+    			if (dirty & /*tableData*/ 2) {
+    				const tableData = /*tableData*/ ctx[1];
+    				console.log({ tableData });
+    				debugger;
+    			}
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(span);
+    			if (detaching) detach_dev(t1);
+    			if (detaching) detach_dev(t2);
+    			if (detaching) detach_dev(table);
     		}
     	};
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block.name,
+    		id: create_if_block_1.name,
     		type: "if",
-    		source: "(11:0) {#if event}",
+    		source: "(53:2) {#if tableData}",
     		ctx
     	});
 
@@ -28850,12 +27941,11 @@ var app = (function () {
     }
 
     function create_fragment$1(ctx) {
-    	let t;
     	let if_block_anchor;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*event*/ ctx[0]) return create_if_block;
-    		return create_else_block;
+    		if (/*eventId*/ ctx[0]) return create_if_block;
+    		return create_else_block_1;
     	}
 
     	let current_block_type = select_block_type(ctx);
@@ -28863,13 +27953,6 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			{
-    				const event = /*event*/ ctx[0];
-    				console.log({ event });
-    				debugger;
-    			}
-
-    			t = space();
     			if_block.c();
     			if_block_anchor = empty();
     		},
@@ -28877,17 +27960,10 @@ var app = (function () {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, t, anchor);
     			if_block.m(target, anchor);
     			insert_dev(target, if_block_anchor, anchor);
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*event*/ 1) {
-    				const event = /*event*/ ctx[0];
-    				console.log({ event });
-    				debugger;
-    			}
-
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
     				if_block.p(ctx, dirty);
     			} else {
@@ -28903,7 +27979,6 @@ var app = (function () {
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(t);
     			if_block.d(detaching);
     			if (detaching) detach_dev(if_block_anchor);
     		}
@@ -28921,32 +27996,71 @@ var app = (function () {
     }
 
     function instance$1($$self, $$props, $$invalidate) {
-    	let { event } = $$props;
-    	const writable_props = ["event"];
+    	let { eventId } = $$props;
+    	let tableData;
+
+    	async function loadData() {
+    		if (tableData) {
+    			return;
+    		}
+
+    		if (eventId) {
+    			const participants = await reader.getParticipantsByEventId(eventId);
+
+    			const scoresPromHolder = participants.map(async participant => {
+    				return await reader.getScoresByEventAndParticipantId(eventId, participant.id);
+    			});
+
+    			const scores = await Promise.all(scoresPromHolder);
+
+    			$$invalidate(1, tableData = participants.map(participant => {
+    				const participantScores = scores.flat().filter(score => score.participantUid.id === participant.id).map(score => {
+    					return {
+    						id: score.id,
+    						value: score.value,
+    						date: convertToDate(score.date)
+    					};
+    				});
+
+    				return {
+    					row: {
+    						id: participant.id,
+    						name: participant.name
+    					},
+    					columnsHeader: participantScores.map(ps => ps.date),
+    					columnsData: participantScores
+    				};
+    			}));
+    		}
+    	}
+
+    	afterUpdate(loadData);
+    	const writable_props = ["eventId"];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console.warn(`<Table> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$set = $$props => {
-    		if ("event" in $$props) $$invalidate(0, event = $$props.event);
+    		if ("eventId" in $$props) $$invalidate(0, eventId = $$props.eventId);
     	};
 
     	$$self.$capture_state = () => {
-    		return { event };
+    		return { eventId, tableData };
     	};
 
     	$$self.$inject_state = $$props => {
-    		if ("event" in $$props) $$invalidate(0, event = $$props.event);
+    		if ("eventId" in $$props) $$invalidate(0, eventId = $$props.eventId);
+    		if ("tableData" in $$props) $$invalidate(1, tableData = $$props.tableData);
     	};
 
-    	return [event];
+    	return [eventId, tableData];
     }
 
     class Table extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { event: 0 });
+    		init(this, options, instance$1, create_fragment$1, safe_not_equal, { eventId: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -28958,80 +28072,294 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || ({});
 
-    		if (/*event*/ ctx[0] === undefined && !("event" in props)) {
-    			console.warn("<Table> was created without expected prop 'event'");
+    		if (/*eventId*/ ctx[0] === undefined && !("eventId" in props)) {
+    			console.warn("<Table> was created without expected prop 'eventId'");
     		}
     	}
 
-    	get event() {
+    	get eventId() {
     		throw new Error("<Table>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
-    	set event(value) {
+    	set eventId(value) {
     		throw new Error("<Table>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
 
-    /**
-     * @license
-     * Copyright 2018 Google Inc.
-     *
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     *
-     *   http://www.apache.org/licenses/LICENSE-2.0
-     *
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     */
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    function _fromRef(ref, options) {
-        /* eslint-enable @typescript-eslint/no-explicit-any */
-        return new Observable(function (subscriber) {
-            var unsubscribe = ref.onSnapshot(options || {}, subscriber);
-            return { unsubscribe: unsubscribe };
-        });
-    }
-    function fromRef(ref, options) {
-        return _fromRef(ref, options);
-    }
-    function fromCollectionRef(ref, options) {
-        return fromRef(ref, options);
-    }
-    function snapToData(snapshot, idField) {
-        var _a;
-        return __assign(__assign({}, snapshot.data()), (idField ? (_a = {}, _a[idField] = snapshot.id, _a) : null));
-    }
-    /**
-     * Return a stream of document snapshots on a query. These results are in sort order.
-     * @param query
-     */
-    function collection(query) {
-        return fromCollectionRef(query).pipe(map(function (changes) { return changes.docs; }));
-    }
-    /**
-     * Returns a stream of documents mapped to their data payload, and optionally the document ID
-     * @param query
-     */
-    function collectionData(query, idField) {
-        return collection(query).pipe(map(function (arr) {
-            return arr.map(function (snap) { return snapToData(snap, idField); });
-        }));
-    }
-    //# sourceMappingURL=index.esm.js.map
+    /* src/components/EventSelect.svelte generated by Svelte v3.16.7 */
+    const file$2 = "src/components/EventSelect.svelte";
 
-    const isNotEmpty = obj => {
-      return obj && Object.keys(obj).length > 0;
-    };
+    function get_each_context(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[10] = list[i];
+    	return child_ctx;
+    }
+
+    // (77:4) {#each selectableEvents as event}
+    function create_each_block(ctx) {
+    	let option;
+    	let t_value = /*event*/ ctx[10].name + "";
+    	let t;
+    	let option_value_value;
+
+    	const block = {
+    		c: function create() {
+    			option = element("option");
+    			t = text(t_value);
+    			option.__value = option_value_value = /*event*/ ctx[10].id;
+    			option.value = option.__value;
+    			add_location(option, file$2, 77, 6, 1625);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, option, anchor);
+    			append_dev(option, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*selectableEvents*/ 1 && t_value !== (t_value = /*event*/ ctx[10].name + "")) set_data_dev(t, t_value);
+
+    			if (dirty & /*selectableEvents*/ 1 && option_value_value !== (option_value_value = /*event*/ ctx[10].id)) {
+    				prop_dev(option, "__value", option_value_value);
+    			}
+
+    			option.value = option.__value;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(option);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block.name,
+    		type: "each",
+    		source: "(77:4) {#each selectableEvents as event}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$2(ctx) {
+    	let div1;
+    	let select;
+    	let option;
+    	let t1;
+    	let hr;
+    	let t2;
+    	let div0;
+    	let input;
+    	let t3;
+    	let button;
+    	let dispose;
+    	let each_value = /*selectableEvents*/ ctx[0];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block(get_each_context(ctx, each_value, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			div1 = element("div");
+    			select = element("select");
+    			option = element("option");
+    			option.textContent = "Select an event or create one...\n    ";
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t1 = space();
+    			hr = element("hr");
+    			t2 = space();
+    			div0 = element("div");
+    			input = element("input");
+    			t3 = space();
+    			button = element("button");
+    			button.textContent = "Add";
+    			option.__value = "nothing";
+    			option.value = option.__value;
+    			option.selected = true;
+    			option.disabled = true;
+    			add_location(option, file$2, 73, 4, 1485);
+    			attr_dev(select, "class", "ctrl ctrl_select svelte-1ll8a39");
+    			if (/*selectedEvent*/ ctx[1] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[8].call(select));
+    			add_location(select, file$2, 69, 2, 1374);
+    			add_location(hr, file$2, 80, 2, 1698);
+    			set_style(input, "width", "72%");
+    			attr_dev(input, "class", "ctrl svelte-1ll8a39");
+    			attr_dev(input, "type", "text");
+    			attr_dev(input, "placeholder", "add event name");
+    			add_location(input, file$2, 82, 4, 1740);
+    			attr_dev(button, "class", "ctrl ctrl_button svelte-1ll8a39");
+    			add_location(button, file$2, 88, 4, 1886);
+    			attr_dev(div0, "class", "ctrl-container svelte-1ll8a39");
+    			add_location(div0, file$2, 81, 2, 1707);
+    			attr_dev(div1, "class", "container svelte-1ll8a39");
+    			add_location(div1, file$2, 68, 0, 1348);
+
+    			dispose = [
+    				listen_dev(select, "change", /*select_change_handler*/ ctx[8]),
+    				listen_dev(select, "change", /*handleSelectionChange*/ ctx[3], false, false, false),
+    				listen_dev(input, "input", /*input_input_handler*/ ctx[9]),
+    				listen_dev(button, "click", /*addEvent*/ ctx[4], false, false, false)
+    			];
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div1, anchor);
+    			append_dev(div1, select);
+    			append_dev(select, option);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(select, null);
+    			}
+
+    			select_option(select, /*selectedEvent*/ ctx[1]);
+    			append_dev(div1, t1);
+    			append_dev(div1, hr);
+    			append_dev(div1, t2);
+    			append_dev(div1, div0);
+    			append_dev(div0, input);
+    			set_input_value(input, /*addEventInput*/ ctx[2]);
+    			append_dev(div0, t3);
+    			append_dev(div0, button);
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*selectableEvents*/ 1) {
+    				each_value = /*selectableEvents*/ ctx[0];
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(select, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+
+    			if (dirty & /*selectedEvent*/ 2) {
+    				select_option(select, /*selectedEvent*/ ctx[1]);
+    			}
+
+    			if (dirty & /*addEventInput*/ 4 && input.value !== /*addEventInput*/ ctx[2]) {
+    				set_input_value(input, /*addEventInput*/ ctx[2]);
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div1);
+    			destroy_each(each_blocks, detaching);
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$2.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$2($$self, $$props, $$invalidate) {
+    	let localeUser = null;
+    	let selectableEvents = [];
+    	let selectedEvent = null;
+    	let addEventInput = "";
+    	const dispatch = createEventDispatcher();
+
+    	const unsubscriber = user.subscribe(async remoteUser => {
+    		localeUser = remoteUser;
+
+    		if (remoteUser) {
+    			$$invalidate(0, selectableEvents = await reader.getEventByUserId(remoteUser.uid));
+    		}
+    	});
+
+    	function handleSelectionChange() {
+    		dispatch("selected-event", { id: selectedEvent });
+    	}
+
+    	async function addEvent() {
+    		await creator.addEvent(localeUser.uid, addEventInput);
+    		$$invalidate(0, selectableEvents = await reader.getEventByUserId(localeUser.uid));
+    		$$invalidate(2, addEventInput = "");
+    	}
+
+    	onDestroy(unsubscriber);
+
+    	function select_change_handler() {
+    		selectedEvent = select_value(this);
+    		$$invalidate(1, selectedEvent);
+    		$$invalidate(0, selectableEvents);
+    	}
+
+    	function input_input_handler() {
+    		addEventInput = this.value;
+    		$$invalidate(2, addEventInput);
+    	}
+
+    	$$self.$capture_state = () => {
+    		return {};
+    	};
+
+    	$$self.$inject_state = $$props => {
+    		if ("localeUser" in $$props) localeUser = $$props.localeUser;
+    		if ("selectableEvents" in $$props) $$invalidate(0, selectableEvents = $$props.selectableEvents);
+    		if ("selectedEvent" in $$props) $$invalidate(1, selectedEvent = $$props.selectedEvent);
+    		if ("addEventInput" in $$props) $$invalidate(2, addEventInput = $$props.addEventInput);
+    	};
+
+    	return [
+    		selectableEvents,
+    		selectedEvent,
+    		addEventInput,
+    		handleSelectionChange,
+    		addEvent,
+    		localeUser,
+    		dispatch,
+    		unsubscriber,
+    		select_change_handler,
+    		input_input_handler
+    	];
+    }
+
+    class EventSelect extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "EventSelect",
+    			options,
+    			id: create_fragment$2.name
+    		});
+    	}
+    }
 
     /* src/components/Main.svelte generated by Svelte v3.16.7 */
-    const file$2 = "src/components/Main.svelte";
+    const file$3 = "src/components/Main.svelte";
 
-    // (50:2) {:else}
+    // (33:2) {:else}
     function create_else_block$1(ctx) {
     	let span;
 
@@ -29039,7 +28367,7 @@ var app = (function () {
     		c: function create() {
     			span = element("span");
     			span.textContent = "User is not logged in.";
-    			add_location(span, file$2, 50, 4, 1107);
+    			add_location(span, file$3, 33, 4, 693);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -29056,46 +28384,58 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(50:2) {:else}",
+    		source: "(33:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (48:2) {#if localUser}
+    // (30:2) {#if localeUser}
     function create_if_block$1(ctx) {
+    	let t;
     	let current;
 
     	const table = new Table({
-    			props: { event: /*event*/ ctx[1] },
+    			props: { eventId: /*selectedEventId*/ ctx[1] },
     			$$inline: true
     		});
+
+    	const eventselect = new EventSelect({ $$inline: true });
+    	eventselect.$on("selected-event", /*handleSelectedEvent*/ ctx[2]);
 
     	const block = {
     		c: function create() {
     			create_component(table.$$.fragment);
+    			t = space();
+    			create_component(eventselect.$$.fragment);
     		},
     		m: function mount(target, anchor) {
     			mount_component(table, target, anchor);
+    			insert_dev(target, t, anchor);
+    			mount_component(eventselect, target, anchor);
     			current = true;
     		},
     		p: function update(ctx, dirty) {
     			const table_changes = {};
-    			if (dirty & /*event*/ 2) table_changes.event = /*event*/ ctx[1];
+    			if (dirty & /*selectedEventId*/ 2) table_changes.eventId = /*selectedEventId*/ ctx[1];
     			table.$set(table_changes);
     		},
     		i: function intro(local) {
     			if (current) return;
     			transition_in(table.$$.fragment, local);
+    			transition_in(eventselect.$$.fragment, local);
     			current = true;
     		},
     		o: function outro(local) {
     			transition_out(table.$$.fragment, local);
+    			transition_out(eventselect.$$.fragment, local);
     			current = false;
     		},
     		d: function destroy(detaching) {
     			destroy_component(table, detaching);
+    			if (detaching) detach_dev(t);
+    			destroy_component(eventselect, detaching);
     		}
     	};
 
@@ -29103,14 +28443,14 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(48:2) {#if localUser}",
+    		source: "(30:2) {#if localeUser}",
     		ctx
     	});
 
     	return block;
     }
 
-    function create_fragment$2(ctx) {
+    function create_fragment$3(ctx) {
     	let main;
     	let current_block_type_index;
     	let if_block;
@@ -29119,7 +28459,7 @@ var app = (function () {
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
-    		if (/*localUser*/ ctx[0]) return 0;
+    		if (/*localeUser*/ ctx[0]) return 0;
     		return 1;
     	}
 
@@ -29130,8 +28470,8 @@ var app = (function () {
     		c: function create() {
     			main = element("main");
     			if_block.c();
-    			attr_dev(main, "class", "svelte-5ijjet");
-    			add_location(main, file$2, 46, 0, 1046);
+    			attr_dev(main, "class", "svelte-t928sh");
+    			add_location(main, file$3, 28, 0, 553);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -29183,7 +28523,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$2.name,
+    		id: create_fragment$3.name,
     		type: "component",
     		source: "",
     		ctx
@@ -29192,55 +28532,49 @@ var app = (function () {
     	return block;
     }
 
-    function instance$2($$self, $$props, $$invalidate) {
-    	let localUser;
-    	let event;
-    	let eventsUnsubscriber;
+    function instance$3($$self, $$props, $$invalidate) {
+    	let localeUser;
+    	let selectedEventId;
 
-    	const userUnsubscriber = user.subscribe(remoteUser => {
-    		$$invalidate(0, localUser = remoteUser);
-
-    		if (isNotEmpty(remoteUser)) {
-    			const eventsQuery = db$1.collection("events").where("userUid", "==", remoteUser.uid).orderBy("name");
-
-    			eventsUnsubscriber = collectionData(eventsQuery, "id").pipe(startWith([])).subscribe(events => {
-    				$$invalidate(1, event = events[0]);
-    			});
-    		}
+    	const userUnsubscriber = user.subscribe(async remoteUser => {
+    		$$invalidate(0, localeUser = remoteUser);
     	});
+
+    	async function handleSelectedEvent(event) {
+    		$$invalidate(1, selectedEventId = event.detail.id);
+    	}
 
     	$$self.$capture_state = () => {
     		return {};
     	};
 
     	$$self.$inject_state = $$props => {
-    		if ("localUser" in $$props) $$invalidate(0, localUser = $$props.localUser);
-    		if ("event" in $$props) $$invalidate(1, event = $$props.event);
-    		if ("eventsUnsubscriber" in $$props) eventsUnsubscriber = $$props.eventsUnsubscriber;
+    		if ("localeUser" in $$props) $$invalidate(0, localeUser = $$props.localeUser);
+    		if ("selectedEventId" in $$props) $$invalidate(1, selectedEventId = $$props.selectedEventId);
     	};
 
-    	return [localUser, event];
+    	return [localeUser, selectedEventId, handleSelectedEvent];
     }
 
     class Main extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$2, create_fragment$2, safe_not_equal, {});
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Main",
     			options,
-    			id: create_fragment$2.name
+    			id: create_fragment$3.name
     		});
     	}
     }
 
     /* src/components/Footer.svelte generated by Svelte v3.16.7 */
 
-    const file$3 = "src/components/Footer.svelte";
+    const file$4 = "src/components/Footer.svelte";
 
-    function create_fragment$3(ctx) {
+    function create_fragment$4(ctx) {
     	let footer;
     	let span;
 
@@ -29249,9 +28583,9 @@ var app = (function () {
     			footer = element("footer");
     			span = element("span");
     			span.textContent = "developed by flashback2k14";
-    			add_location(span, file$3, 15, 2, 181);
+    			add_location(span, file$4, 15, 2, 181);
     			attr_dev(footer, "class", "svelte-12i6chs");
-    			add_location(footer, file$3, 14, 0, 170);
+    			add_location(footer, file$4, 14, 0, 170);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -29270,7 +28604,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$3.name,
+    		id: create_fragment$4.name,
     		type: "component",
     		source: "",
     		ctx
@@ -29282,21 +28616,21 @@ var app = (function () {
     class Footer extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, null, create_fragment$3, safe_not_equal, {});
+    		init(this, options, null, create_fragment$4, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Footer",
     			options,
-    			id: create_fragment$3.name
+    			id: create_fragment$4.name
     		});
     	}
     }
 
     /* src/components/App.svelte generated by Svelte v3.16.7 */
-    const file$4 = "src/components/App.svelte";
+    const file$5 = "src/components/App.svelte";
 
-    function create_fragment$4(ctx) {
+    function create_fragment$5(ctx) {
     	let div;
     	let t0;
     	let t1;
@@ -29314,7 +28648,7 @@ var app = (function () {
     			t1 = space();
     			create_component(footer.$$.fragment);
     			attr_dev(div, "class", "container svelte-1gxwenc");
-    			add_location(div, file$4, 15, 0, 257);
+    			add_location(div, file$5, 15, 0, 257);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -29352,7 +28686,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$4.name,
+    		id: create_fragment$5.name,
     		type: "component",
     		source: "",
     		ctx
@@ -29364,13 +28698,13 @@ var app = (function () {
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, null, create_fragment$4, safe_not_equal, {});
+    		init(this, options, null, create_fragment$5, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "App",
     			options,
-    			id: create_fragment$4.name
+    			id: create_fragment$5.name
     		});
     	}
     }
