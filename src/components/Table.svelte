@@ -107,7 +107,7 @@
   .table-scroll table tr:nth-child(1) th:last-child,
   .table-scroll table td:last-child {
     position: sticky;
-    top: 0;
+    right: 0;
     background-color: #ddd;
   }
 
