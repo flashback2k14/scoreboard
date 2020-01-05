@@ -23,7 +23,8 @@ export const transform = data => {
     rowData: Object.entries(data.scores).map(([key, value]) => {
       const participant = key;
       const scores = Object.values(value);
-      return [participant, ...scores];
+      const sum = scores.reduce((acc, curr) => acc + curr, 0);
+      return [participant, ...scores, sum];
     })
   };
 };
@@ -33,7 +34,7 @@ export const transformScores = rowData => {
   rowData.forEach(row => {
     let newScores = {};
     row
-      .slice(1)
+      .slice(1, row.length - 1)
       .map(entry => Number(entry))
       .forEach((value, i) => {
         newScores[`day${i + 1}`] = value;

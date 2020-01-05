@@ -27482,7 +27482,8 @@ var app = (function () {
         rowData: Object.entries(data.scores).map(([key, value]) => {
           const participant = key;
           const scores = Object.values(value);
-          return [participant, ...scores];
+          const sum = scores.reduce((acc, curr) => acc + curr, 0);
+          return [participant, ...scores, sum];
         })
       };
     };
@@ -27492,7 +27493,7 @@ var app = (function () {
       rowData.forEach(row => {
         let newScores = {};
         row
-          .slice(1)
+          .slice(1, row.length - 1)
           .map(entry => Number(entry))
           .forEach((value, i) => {
             newScores[`day${i + 1}`] = value;
@@ -27805,7 +27806,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (153:2) {:else}
+    // (214:2) {:else}
     function create_else_block_2(ctx) {
     	let span;
 
@@ -27813,7 +27814,7 @@ var app = (function () {
     		c: function create() {
     			span = element("span");
     			span.textContent = "No event selected.";
-    			add_location(span, file$1, 153, 4, 3480);
+    			add_location(span, file$1, 214, 4, 4797);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -27828,14 +27829,14 @@ var app = (function () {
     		block,
     		id: create_else_block_2.name,
     		type: "else",
-    		source: "(153:2) {:else}",
+    		source: "(214:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (97:2) {#if eventId}
+    // (148:2) {#if eventId}
     function create_if_block(ctx) {
     	let if_block_anchor;
 
@@ -27879,14 +27880,14 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(97:2) {#if eventId}",
+    		source: "(148:2) {#if eventId}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (150:4) {:else}
+    // (211:4) {:else}
     function create_else_block_1(ctx) {
     	let span;
 
@@ -27894,7 +27895,7 @@ var app = (function () {
     		c: function create() {
     			span = element("span");
     			span.textContent = "Todo: Show Empty Table";
-    			add_location(span, file$1, 150, 6, 3420);
+    			add_location(span, file$1, 211, 6, 4737);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -27909,14 +27910,14 @@ var app = (function () {
     		block,
     		id: create_else_block_1.name,
     		type: "else",
-    		source: "(150:4) {:else}",
+    		source: "(211:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (98:4) {#if tableData}
+    // (149:4) {#if tableData}
     function create_if_block_1(ctx) {
     	let div0;
     	let input0;
@@ -27928,14 +27929,17 @@ var app = (function () {
     	let t3;
     	let button1;
     	let t5;
+    	let div2;
     	let table;
     	let thead;
     	let tr0;
-    	let th;
+    	let th0;
     	let t7;
     	let t8;
+    	let th1;
+    	let t10;
     	let tr1;
-    	let t9;
+    	let t11;
     	let tbody;
     	let dispose;
     	let each_value_3 = /*tableData*/ ctx[1].rowHeaders;
@@ -27973,11 +27977,12 @@ var app = (function () {
     			button1 = element("button");
     			button1.textContent = "Add new Date";
     			t5 = space();
+    			div2 = element("div");
     			table = element("table");
     			thead = element("thead");
     			tr0 = element("tr");
-    			th = element("th");
-    			th.textContent = "Teilnehmer";
+    			th0 = element("th");
+    			th0.textContent = "Teilnehmer";
     			t7 = space();
 
     			for (let i = 0; i < each_blocks_2.length; i += 1) {
@@ -27985,39 +27990,55 @@ var app = (function () {
     			}
 
     			t8 = space();
+    			th1 = element("th");
+    			th1.textContent = "Summe";
+    			t10 = space();
     			tr1 = element("tr");
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].c();
     			}
 
-    			t9 = space();
+    			t11 = space();
     			tbody = element("tbody");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
+    			attr_dev(input0, "class", "ctrl ctrl_input svelte-15wtvsz");
     			attr_dev(input0, "type", "text");
     			attr_dev(input0, "placeholder", "enter new participant");
-    			add_location(input0, file$1, 101, 8, 2001);
-    			add_location(button0, file$1, 105, 8, 2125);
-    			add_location(div0, file$1, 100, 6, 1987);
+    			add_location(input0, file$1, 152, 8, 2907);
+    			attr_dev(button0, "class", "ctrl ctrl_button svelte-15wtvsz");
+    			add_location(button0, file$1, 157, 8, 3065);
+    			attr_dev(div0, "class", "ctrl-container svelte-15wtvsz");
+    			add_location(div0, file$1, 151, 6, 2870);
+    			attr_dev(input1, "class", "ctrl ctrl_input svelte-15wtvsz");
     			attr_dev(input1, "type", "date");
-    			add_location(input1, file$1, 109, 8, 2225);
-    			add_location(button1, file$1, 110, 8, 2284);
-    			add_location(div1, file$1, 108, 6, 2211);
-    			attr_dev(th, "align", "left");
-    			attr_dev(th, "rowspan", "2");
-    			add_location(th, file$1, 119, 12, 2507);
-    			add_location(tr0, file$1, 118, 10, 2490);
-    			add_location(tr1, file$1, 124, 10, 2690);
-    			add_location(thead, file$1, 117, 8, 2472);
-    			add_location(tbody, file$1, 130, 8, 2839);
+    			add_location(input1, file$1, 163, 8, 3233);
+    			attr_dev(button1, "class", "ctrl ctrl_button svelte-15wtvsz");
+    			add_location(button1, file$1, 167, 8, 3346);
+    			attr_dev(div1, "class", "ctrl-container svelte-15wtvsz");
+    			add_location(div1, file$1, 162, 6, 3196);
+    			attr_dev(th0, "align", "left");
+    			attr_dev(th0, "rowspan", "2");
+    			attr_dev(th0, "class", "svelte-15wtvsz");
+    			add_location(th0, file$1, 176, 14, 3596);
+    			attr_dev(th1, "align", "left");
+    			attr_dev(th1, "rowspan", "2");
+    			attr_dev(th1, "class", "svelte-15wtvsz");
+    			add_location(th1, file$1, 180, 14, 3773);
+    			add_location(tr0, file$1, 175, 12, 3577);
+    			add_location(tr1, file$1, 182, 12, 3843);
+    			add_location(thead, file$1, 174, 10, 3557);
+    			add_location(tbody, file$1, 188, 10, 4004);
     			attr_dev(table, "border", "solid 1px black");
     			attr_dev(table, "cellpadding", "4");
-    			set_style(table, "border-collapse", "collapse");
-    			add_location(table, file$1, 113, 6, 2356);
+    			attr_dev(table, "class", "svelte-15wtvsz");
+    			add_location(table, file$1, 173, 8, 3498);
+    			attr_dev(div2, "class", "table-scroll svelte-15wtvsz");
+    			add_location(div2, file$1, 172, 6, 3463);
 
     			dispose = [
     				listen_dev(input0, "input", /*input0_input_handler*/ ctx[9]),
@@ -28039,24 +28060,27 @@ var app = (function () {
     			append_dev(div1, t3);
     			append_dev(div1, button1);
     			insert_dev(target, t5, anchor);
-    			insert_dev(target, table, anchor);
+    			insert_dev(target, div2, anchor);
+    			append_dev(div2, table);
     			append_dev(table, thead);
     			append_dev(thead, tr0);
-    			append_dev(tr0, th);
+    			append_dev(tr0, th0);
     			append_dev(tr0, t7);
 
     			for (let i = 0; i < each_blocks_2.length; i += 1) {
     				each_blocks_2[i].m(tr0, null);
     			}
 
-    			append_dev(thead, t8);
+    			append_dev(tr0, t8);
+    			append_dev(tr0, th1);
+    			append_dev(thead, t10);
     			append_dev(thead, tr1);
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].m(tr1, null);
     			}
 
-    			append_dev(table, t9);
+    			append_dev(table, t11);
     			append_dev(table, tbody);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
@@ -28083,7 +28107,7 @@ var app = (function () {
     					if (!each_blocks_2[i]) {
     						each_blocks_2[i] = create_each_block_3(child_ctx);
     						each_blocks_2[i].c();
-    						each_blocks_2[i].m(tr0, null);
+    						each_blocks_2[i].m(tr0, t8);
     					}
     				}
 
@@ -28145,7 +28169,7 @@ var app = (function () {
     			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(div1);
     			if (detaching) detach_dev(t5);
-    			if (detaching) detach_dev(table);
+    			if (detaching) detach_dev(div2);
     			destroy_each(each_blocks_2, detaching);
     			destroy_each(each_blocks_1, detaching);
     			destroy_each(each_blocks, detaching);
@@ -28157,14 +28181,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(98:4) {#if tableData}",
+    		source: "(149:4) {#if tableData}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (121:12) {#each tableData.rowHeaders as header}
+    // (178:14) {#each tableData.rowHeaders as header}
     function create_each_block_3(ctx) {
     	let th;
 
@@ -28172,7 +28196,8 @@ var app = (function () {
     		c: function create() {
     			th = element("th");
     			th.textContent = "Datum / Punktzahl";
-    			add_location(th, file$1, 121, 14, 2617);
+    			attr_dev(th, "class", "svelte-15wtvsz");
+    			add_location(th, file$1, 178, 16, 3710);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, th, anchor);
@@ -28186,14 +28211,14 @@ var app = (function () {
     		block,
     		id: create_each_block_3.name,
     		type: "each",
-    		source: "(121:12) {#each tableData.rowHeaders as header}",
+    		source: "(178:14) {#each tableData.rowHeaders as header}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (126:12) {#each tableData.rowHeaders as header}
+    // (184:14) {#each tableData.rowHeaders as header}
     function create_each_block_2(ctx) {
     	let th;
     	let t_value = /*header*/ ctx[18] + "";
@@ -28203,7 +28228,8 @@ var app = (function () {
     		c: function create() {
     			th = element("th");
     			t = text(t_value);
-    			add_location(th, file$1, 126, 14, 2760);
+    			attr_dev(th, "class", "svelte-15wtvsz");
+    			add_location(th, file$1, 184, 16, 3917);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, th, anchor);
@@ -28221,14 +28247,14 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(126:12) {#each tableData.rowHeaders as header}",
+    		source: "(184:14) {#each tableData.rowHeaders as header}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (138:18) {:else}
+    // (198:20) {:else}
     function create_else_block(ctx) {
     	let input;
     	let input_value_value;
@@ -28243,7 +28269,7 @@ var app = (function () {
     			input = element("input");
     			attr_dev(input, "type", "number");
     			input.value = input_value_value = /*entry*/ ctx[15];
-    			add_location(input, file$1, 138, 20, 3111);
+    			add_location(input, file$1, 198, 22, 4395);
     			dispose = listen_dev(input, "blur", blur_handler, false, false, false);
     		},
     		m: function mount(target, anchor) {
@@ -28266,14 +28292,49 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(138:18) {:else}",
+    		source: "(198:20) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (136:18) {#if colIndex === 0}
+    // (196:59) 
+    function create_if_block_3(ctx) {
+    	let span;
+    	let t_value = /*entry*/ ctx[15] + "";
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			span = element("span");
+    			t = text(t_value);
+    			add_location(span, file$1, 196, 22, 4324);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span, anchor);
+    			append_dev(span, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*tableData*/ 2 && t_value !== (t_value = /*entry*/ ctx[15] + "")) set_data_dev(t, t_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_3.name,
+    		type: "if",
+    		source: "(196:59) ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (194:20) {#if colIndex === 0}
     function create_if_block_2(ctx) {
     	let span;
     	let t_value = /*entry*/ ctx[15] + "";
@@ -28283,7 +28344,7 @@ var app = (function () {
     		c: function create() {
     			span = element("span");
     			t = text(t_value);
-    			add_location(span, file$1, 136, 20, 3044);
+    			add_location(span, file$1, 194, 22, 4221);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -28301,19 +28362,20 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(136:18) {#if colIndex === 0}",
+    		source: "(194:20) {#if colIndex === 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (134:14) {#each data as entry, colIndex}
+    // (192:16) {#each data as entry, colIndex}
     function create_each_block_1(ctx) {
     	let td;
 
     	function select_block_type_2(ctx, dirty) {
     		if (/*colIndex*/ ctx[17] === 0) return create_if_block_2;
+    		if (/*colIndex*/ ctx[17] === /*data*/ ctx[12].length - 1) return create_if_block_3;
     		return create_else_block;
     	}
 
@@ -28324,14 +28386,25 @@ var app = (function () {
     		c: function create() {
     			td = element("td");
     			if_block.c();
-    			add_location(td, file$1, 134, 16, 2980);
+    			attr_dev(td, "class", "svelte-15wtvsz");
+    			add_location(td, file$1, 192, 18, 4153);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
     			if_block.m(td, null);
     		},
     		p: function update(ctx, dirty) {
-    			if_block.p(ctx, dirty);
+    			if (current_block_type === (current_block_type = select_block_type_2(ctx)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(td, null);
+    				}
+    			}
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(td);
@@ -28343,14 +28416,14 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(134:14) {#each data as entry, colIndex}",
+    		source: "(192:16) {#each data as entry, colIndex}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (132:10) {#each tableData.rowData as data, rowIndex}
+    // (190:12) {#each tableData.rowData as data, rowIndex}
     function create_each_block(ctx) {
     	let tr;
     	let t;
@@ -28370,7 +28443,7 @@ var app = (function () {
     			}
 
     			t = space();
-    			add_location(tr, file$1, 132, 12, 2913);
+    			add_location(tr, file$1, 190, 14, 4082);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -28415,7 +28488,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(132:10) {#each tableData.rowData as data, rowIndex}",
+    		source: "(190:12) {#each tableData.rowData as data, rowIndex}",
     		ctx
     	});
 
@@ -28437,7 +28510,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			if_block.c();
-    			add_location(div, file$1, 95, 0, 1904);
+    			add_location(div, file$1, 146, 0, 2787);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -28734,7 +28807,7 @@ var app = (function () {
     			attr_dev(input, "placeholder", "add event name");
     			add_location(input, file$2, 82, 4, 1740);
     			attr_dev(button, "class", "ctrl ctrl_button svelte-1ll8a39");
-    			add_location(button, file$2, 88, 4, 1886);
+    			add_location(button, file$2, 88, 4, 1885);
     			attr_dev(div0, "class", "ctrl-container svelte-1ll8a39");
     			add_location(div0, file$2, 81, 2, 1707);
     			attr_dev(div1, "class", "container svelte-1ll8a39");
@@ -28901,7 +28974,7 @@ var app = (function () {
     /* src/components/Main.svelte generated by Svelte v3.16.7 */
     const file$3 = "src/components/Main.svelte";
 
-    // (33:2) {:else}
+    // (48:2) {:else}
     function create_else_block$1(ctx) {
     	let span;
 
@@ -28909,7 +28982,7 @@ var app = (function () {
     		c: function create() {
     			span = element("span");
     			span.textContent = "User is not logged in.";
-    			add_location(span, file$3, 33, 4, 693);
+    			add_location(span, file$3, 48, 4, 927);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -28926,16 +28999,18 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(33:2) {:else}",
+    		source: "(48:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (30:2) {#if localeUser}
+    // (41:2) {#if localeUser}
     function create_if_block$1(ctx) {
+    	let div0;
     	let t;
+    	let div1;
     	let current;
 
     	const table = new Table({
@@ -28948,14 +29023,22 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
+    			div0 = element("div");
     			create_component(table.$$.fragment);
     			t = space();
+    			div1 = element("div");
     			create_component(eventselect.$$.fragment);
+    			attr_dev(div0, "class", "left-col svelte-13tq44i");
+    			add_location(div0, file$3, 41, 4, 736);
+    			attr_dev(div1, "class", "right-col svelte-13tq44i");
+    			add_location(div1, file$3, 44, 4, 816);
     		},
     		m: function mount(target, anchor) {
-    			mount_component(table, target, anchor);
+    			insert_dev(target, div0, anchor);
+    			mount_component(table, div0, null);
     			insert_dev(target, t, anchor);
-    			mount_component(eventselect, target, anchor);
+    			insert_dev(target, div1, anchor);
+    			mount_component(eventselect, div1, null);
     			current = true;
     		},
     		p: function update(ctx, dirty) {
@@ -28975,9 +29058,11 @@ var app = (function () {
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			destroy_component(table, detaching);
+    			if (detaching) detach_dev(div0);
+    			destroy_component(table);
     			if (detaching) detach_dev(t);
-    			destroy_component(eventselect, detaching);
+    			if (detaching) detach_dev(div1);
+    			destroy_component(eventselect);
     		}
     	};
 
@@ -28985,7 +29070,7 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(30:2) {#if localeUser}",
+    		source: "(41:2) {#if localeUser}",
     		ctx
     	});
 
@@ -29012,8 +29097,8 @@ var app = (function () {
     		c: function create() {
     			main = element("main");
     			if_block.c();
-    			attr_dev(main, "class", "svelte-t928sh");
-    			add_location(main, file$3, 28, 0, 553);
+    			attr_dev(main, "class", "svelte-13tq44i");
+    			add_location(main, file$3, 39, 0, 706);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");

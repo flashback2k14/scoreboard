@@ -82,7 +82,7 @@
   <div class="ctrl-container">
     <input
       bind:value={addEventInput}
-      style=" width: 72%;"
+      style="width: 72%;"
       class="ctrl"
       type="text"
       placeholder="add event name" />
