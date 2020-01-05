@@ -27468,13 +27468,11 @@ var app = (function () {
     };
 
     const convertToDate = firestoreTimestamp => {
-      return new Date(firestoreTimestamp.seconds * 1000).toDateString();
+      return firestoreTimestamp.toDate().toDateString();
     };
 
     const toTimestamp = strDate => {
       const date = Date.parse(strDate);
-      // return { seconds: date / 1000, nanoseconds: 0 };
-      // return date / 1000;
       return new Timestamp(date / 1000, 0);
     };
 
@@ -27483,10 +27481,25 @@ var app = (function () {
         rowHeaders: [...Object.values(data.days).map(value => convertToDate(value))],
         rowData: Object.entries(data.scores).map(([key, value]) => {
           const participant = key;
-          const scores = Object.values(value).map(score => (score === -9999 ? '#' : score));
+          const scores = Object.values(value);
           return [participant, ...scores];
         })
       };
+    };
+
+    const transformScores = rowData => {
+      let scores = {};
+      rowData.forEach(row => {
+        let newScores = {};
+        row
+          .slice(1)
+          .map(entry => Number(entry))
+          .forEach((value, i) => {
+            newScores[`day${i + 1}`] = value;
+          });
+        scores[row[0]] = newScores;
+      });
+      return scores;
     };
 
     const auth$1 = {
@@ -27768,37 +27781,39 @@ var app = (function () {
 
     function get_each_context_1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[13] = list[i];
+    	child_ctx[15] = list[i];
+    	child_ctx[17] = i;
     	return child_ctx;
     }
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[10] = list[i];
+    	child_ctx[12] = list[i];
+    	child_ctx[14] = i;
     	return child_ctx;
     }
 
     function get_each_context_2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[16] = list[i];
+    	child_ctx[18] = list[i];
     	return child_ctx;
     }
 
     function get_each_context_3(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[16] = list[i];
+    	child_ctx[18] = list[i];
     	return child_ctx;
     }
 
-    // (126:2) {:else}
-    function create_else_block_1(ctx) {
+    // (153:2) {:else}
+    function create_else_block_2(ctx) {
     	let span;
 
     	const block = {
     		c: function create() {
     			span = element("span");
     			span.textContent = "No event selected.";
-    			add_location(span, file$1, 126, 4, 2798);
+    			add_location(span, file$1, 153, 4, 3480);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -27811,22 +27826,22 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_else_block_1.name,
+    		id: create_else_block_2.name,
     		type: "else",
-    		source: "(126:2) {:else}",
+    		source: "(153:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (79:2) {#if eventId}
+    // (97:2) {#if eventId}
     function create_if_block(ctx) {
     	let if_block_anchor;
 
     	function select_block_type_1(ctx, dirty) {
     		if (/*tableData*/ ctx[1]) return create_if_block_1;
-    		return create_else_block;
+    		return create_else_block_1;
     	}
 
     	let current_block_type = select_block_type_1(ctx);
@@ -27864,22 +27879,22 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(79:2) {#if eventId}",
+    		source: "(97:2) {#if eventId}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (123:4) {:else}
-    function create_else_block(ctx) {
+    // (150:4) {:else}
+    function create_else_block_1(ctx) {
     	let span;
 
     	const block = {
     		c: function create() {
     			span = element("span");
     			span.textContent = "Todo: Show Empty Table";
-    			add_location(span, file$1, 123, 6, 2738);
+    			add_location(span, file$1, 150, 6, 3420);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -27892,36 +27907,35 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_else_block.name,
+    		id: create_else_block_1.name,
     		type: "else",
-    		source: "(123:4) {:else}",
+    		source: "(150:4) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (80:4) {#if tableData}
+    // (98:4) {#if tableData}
     function create_if_block_1(ctx) {
-    	let t0;
     	let div0;
     	let input0;
-    	let t1;
+    	let t0;
     	let button0;
-    	let t3;
+    	let t2;
     	let div1;
     	let input1;
-    	let t4;
+    	let t3;
     	let button1;
-    	let t6;
+    	let t5;
     	let table;
     	let thead;
     	let tr0;
     	let th;
+    	let t7;
     	let t8;
-    	let t9;
     	let tr1;
-    	let t10;
+    	let t9;
     	let tbody;
     	let dispose;
     	let each_value_3 = /*tableData*/ ctx[1].rowHeaders;
@@ -27947,44 +27961,37 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			{
-    				const tableData = /*tableData*/ ctx[1];
-    				console.log({ tableData });
-    				debugger;
-    			}
-
-    			t0 = space();
     			div0 = element("div");
     			input0 = element("input");
-    			t1 = space();
+    			t0 = space();
     			button0 = element("button");
     			button0.textContent = "Add new Participant";
-    			t3 = space();
+    			t2 = space();
     			div1 = element("div");
     			input1 = element("input");
-    			t4 = space();
+    			t3 = space();
     			button1 = element("button");
     			button1.textContent = "Add new Date";
-    			t6 = space();
+    			t5 = space();
     			table = element("table");
     			thead = element("thead");
     			tr0 = element("tr");
     			th = element("th");
     			th.textContent = "Teilnehmer";
-    			t8 = space();
+    			t7 = space();
 
     			for (let i = 0; i < each_blocks_2.length; i += 1) {
     				each_blocks_2[i].c();
     			}
 
-    			t9 = space();
+    			t8 = space();
     			tr1 = element("tr");
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].c();
     			}
 
-    			t10 = space();
+    			t9 = space();
     			tbody = element("tbody");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
@@ -27993,65 +28000,63 @@ var app = (function () {
 
     			attr_dev(input0, "type", "text");
     			attr_dev(input0, "placeholder", "enter new participant");
-    			add_location(input0, file$1, 83, 8, 1630);
-    			add_location(button0, file$1, 87, 8, 1754);
-    			add_location(div0, file$1, 82, 6, 1616);
+    			add_location(input0, file$1, 101, 8, 2001);
+    			add_location(button0, file$1, 105, 8, 2125);
+    			add_location(div0, file$1, 100, 6, 1987);
     			attr_dev(input1, "type", "date");
-    			add_location(input1, file$1, 91, 8, 1854);
-    			add_location(button1, file$1, 92, 8, 1913);
-    			add_location(div1, file$1, 90, 6, 1840);
+    			add_location(input1, file$1, 109, 8, 2225);
+    			add_location(button1, file$1, 110, 8, 2284);
+    			add_location(div1, file$1, 108, 6, 2211);
     			attr_dev(th, "align", "left");
     			attr_dev(th, "rowspan", "2");
-    			add_location(th, file$1, 101, 12, 2160);
-    			attr_dev(tr0, "id", "tableRowHeaderText");
-    			add_location(tr0, file$1, 100, 10, 2119);
-    			add_location(tr1, file$1, 106, 10, 2343);
-    			add_location(thead, file$1, 99, 8, 2101);
-    			add_location(tbody, file$1, 112, 8, 2492);
+    			add_location(th, file$1, 119, 12, 2507);
+    			add_location(tr0, file$1, 118, 10, 2490);
+    			add_location(tr1, file$1, 124, 10, 2690);
+    			add_location(thead, file$1, 117, 8, 2472);
+    			add_location(tbody, file$1, 130, 8, 2839);
     			attr_dev(table, "border", "solid 1px black");
     			attr_dev(table, "cellpadding", "4");
     			set_style(table, "border-collapse", "collapse");
-    			add_location(table, file$1, 95, 6, 1985);
+    			add_location(table, file$1, 113, 6, 2356);
 
     			dispose = [
-    				listen_dev(input0, "input", /*input0_input_handler*/ ctx[8]),
+    				listen_dev(input0, "input", /*input0_input_handler*/ ctx[9]),
     				listen_dev(button0, "click", /*addNewParticipant*/ ctx[5], false, false, false),
-    				listen_dev(input1, "input", /*input1_input_handler*/ ctx[9]),
+    				listen_dev(input1, "input", /*input1_input_handler*/ ctx[10]),
     				listen_dev(button1, "click", /*addNewDate*/ ctx[4], false, false, false)
     			];
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, t0, anchor);
     			insert_dev(target, div0, anchor);
     			append_dev(div0, input0);
     			set_input_value(input0, /*newParticipant*/ ctx[2]);
-    			append_dev(div0, t1);
+    			append_dev(div0, t0);
     			append_dev(div0, button0);
-    			insert_dev(target, t3, anchor);
+    			insert_dev(target, t2, anchor);
     			insert_dev(target, div1, anchor);
     			append_dev(div1, input1);
     			set_input_value(input1, /*selectedNewDate*/ ctx[3]);
-    			append_dev(div1, t4);
+    			append_dev(div1, t3);
     			append_dev(div1, button1);
-    			insert_dev(target, t6, anchor);
+    			insert_dev(target, t5, anchor);
     			insert_dev(target, table, anchor);
     			append_dev(table, thead);
     			append_dev(thead, tr0);
     			append_dev(tr0, th);
-    			append_dev(tr0, t8);
+    			append_dev(tr0, t7);
 
     			for (let i = 0; i < each_blocks_2.length; i += 1) {
     				each_blocks_2[i].m(tr0, null);
     			}
 
-    			append_dev(thead, t9);
+    			append_dev(thead, t8);
     			append_dev(thead, tr1);
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].m(tr1, null);
     			}
 
-    			append_dev(table, t10);
+    			append_dev(table, t9);
     			append_dev(table, tbody);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
@@ -28059,12 +28064,6 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*tableData*/ 2) {
-    				const tableData = /*tableData*/ ctx[1];
-    				console.log({ tableData });
-    				debugger;
-    			}
-
     			if (dirty & /*newParticipant*/ 4 && input0.value !== /*newParticipant*/ ctx[2]) {
     				set_input_value(input0, /*newParticipant*/ ctx[2]);
     			}
@@ -28118,7 +28117,7 @@ var app = (function () {
     				each_blocks_1.length = each_value_2.length;
     			}
 
-    			if (dirty & /*tableData*/ 2) {
+    			if (dirty & /*tableData, handleOnBlur*/ 66) {
     				each_value = /*tableData*/ ctx[1].rowData;
     				let i;
 
@@ -28142,11 +28141,10 @@ var app = (function () {
     			}
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(t0);
     			if (detaching) detach_dev(div0);
-    			if (detaching) detach_dev(t3);
+    			if (detaching) detach_dev(t2);
     			if (detaching) detach_dev(div1);
-    			if (detaching) detach_dev(t6);
+    			if (detaching) detach_dev(t5);
     			if (detaching) detach_dev(table);
     			destroy_each(each_blocks_2, detaching);
     			destroy_each(each_blocks_1, detaching);
@@ -28159,14 +28157,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(80:4) {#if tableData}",
+    		source: "(98:4) {#if tableData}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (103:12) {#each tableData.rowHeaders as header}
+    // (121:12) {#each tableData.rowHeaders as header}
     function create_each_block_3(ctx) {
     	let th;
 
@@ -28174,7 +28172,7 @@ var app = (function () {
     		c: function create() {
     			th = element("th");
     			th.textContent = "Datum / Punktzahl";
-    			add_location(th, file$1, 103, 14, 2270);
+    			add_location(th, file$1, 121, 14, 2617);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, th, anchor);
@@ -28188,31 +28186,31 @@ var app = (function () {
     		block,
     		id: create_each_block_3.name,
     		type: "each",
-    		source: "(103:12) {#each tableData.rowHeaders as header}",
+    		source: "(121:12) {#each tableData.rowHeaders as header}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (108:12) {#each tableData.rowHeaders as header}
+    // (126:12) {#each tableData.rowHeaders as header}
     function create_each_block_2(ctx) {
     	let th;
-    	let t_value = /*header*/ ctx[16] + "";
+    	let t_value = /*header*/ ctx[18] + "";
     	let t;
 
     	const block = {
     		c: function create() {
     			th = element("th");
     			t = text(t_value);
-    			add_location(th, file$1, 108, 14, 2413);
+    			add_location(th, file$1, 126, 14, 2760);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, th, anchor);
     			append_dev(th, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*tableData*/ 2 && t_value !== (t_value = /*header*/ ctx[16] + "")) set_data_dev(t, t_value);
+    			if (dirty & /*tableData*/ 2 && t_value !== (t_value = /*header*/ ctx[18] + "")) set_data_dev(t, t_value);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(th);
@@ -28223,34 +28221,121 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(108:12) {#each tableData.rowHeaders as header}",
+    		source: "(126:12) {#each tableData.rowHeaders as header}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (116:14) {#each data as entry}
-    function create_each_block_1(ctx) {
-    	let td;
-    	let t_value = /*entry*/ ctx[13] + "";
+    // (138:18) {:else}
+    function create_else_block(ctx) {
+    	let input;
+    	let input_value_value;
+    	let dispose;
+
+    	function blur_handler(...args) {
+    		return /*blur_handler*/ ctx[11](/*rowIndex*/ ctx[14], /*colIndex*/ ctx[17], ...args);
+    	}
+
+    	const block = {
+    		c: function create() {
+    			input = element("input");
+    			attr_dev(input, "type", "number");
+    			input.value = input_value_value = /*entry*/ ctx[15];
+    			add_location(input, file$1, 138, 20, 3111);
+    			dispose = listen_dev(input, "blur", blur_handler, false, false, false);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, input, anchor);
+    		},
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
+
+    			if (dirty & /*tableData*/ 2 && input_value_value !== (input_value_value = /*entry*/ ctx[15])) {
+    				prop_dev(input, "value", input_value_value);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(input);
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block.name,
+    		type: "else",
+    		source: "(138:18) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (136:18) {#if colIndex === 0}
+    function create_if_block_2(ctx) {
+    	let span;
+    	let t_value = /*entry*/ ctx[15] + "";
     	let t;
 
     	const block = {
     		c: function create() {
-    			td = element("td");
+    			span = element("span");
     			t = text(t_value);
-    			add_location(td, file$1, 116, 16, 2613);
+    			add_location(span, file$1, 136, 20, 3044);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, span, anchor);
+    			append_dev(span, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*tableData*/ 2 && t_value !== (t_value = /*entry*/ ctx[15] + "")) set_data_dev(t, t_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(span);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_2.name,
+    		type: "if",
+    		source: "(136:18) {#if colIndex === 0}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (134:14) {#each data as entry, colIndex}
+    function create_each_block_1(ctx) {
+    	let td;
+
+    	function select_block_type_2(ctx, dirty) {
+    		if (/*colIndex*/ ctx[17] === 0) return create_if_block_2;
+    		return create_else_block;
+    	}
+
+    	let current_block_type = select_block_type_2(ctx);
+    	let if_block = current_block_type(ctx);
+
+    	const block = {
+    		c: function create() {
+    			td = element("td");
+    			if_block.c();
+    			add_location(td, file$1, 134, 16, 2980);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, td, anchor);
-    			append_dev(td, t);
+    			if_block.m(td, null);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*tableData*/ 2 && t_value !== (t_value = /*entry*/ ctx[13] + "")) set_data_dev(t, t_value);
+    			if_block.p(ctx, dirty);
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(td);
+    			if_block.d();
     		}
     	};
 
@@ -28258,18 +28343,18 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(116:14) {#each data as entry}",
+    		source: "(134:14) {#each data as entry, colIndex}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (114:10) {#each tableData.rowData as data}
+    // (132:10) {#each tableData.rowData as data, rowIndex}
     function create_each_block(ctx) {
     	let tr;
     	let t;
-    	let each_value_1 = /*data*/ ctx[10];
+    	let each_value_1 = /*data*/ ctx[12];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value_1.length; i += 1) {
@@ -28285,7 +28370,7 @@ var app = (function () {
     			}
 
     			t = space();
-    			add_location(tr, file$1, 114, 12, 2556);
+    			add_location(tr, file$1, 132, 12, 2913);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, tr, anchor);
@@ -28297,8 +28382,8 @@ var app = (function () {
     			append_dev(tr, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*tableData*/ 2) {
-    				each_value_1 = /*data*/ ctx[10];
+    			if (dirty & /*tableData, handleOnBlur*/ 66) {
+    				each_value_1 = /*data*/ ctx[12];
     				let i;
 
     				for (i = 0; i < each_value_1.length; i += 1) {
@@ -28330,7 +28415,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(114:10) {#each tableData.rowData as data}",
+    		source: "(132:10) {#each tableData.rowData as data, rowIndex}",
     		ctx
     	});
 
@@ -28342,7 +28427,7 @@ var app = (function () {
 
     	function select_block_type(ctx, dirty) {
     		if (/*eventId*/ ctx[0]) return create_if_block;
-    		return create_else_block_1;
+    		return create_else_block_2;
     	}
 
     	let current_block_type = select_block_type(ctx);
@@ -28352,7 +28437,7 @@ var app = (function () {
     		c: function create() {
     			div = element("div");
     			if_block.c();
-    			add_location(div, file$1, 77, 0, 1542);
+    			add_location(div, file$1, 95, 0, 1904);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -28413,7 +28498,7 @@ var app = (function () {
 
     		Object.entries(remoteData.scores).forEach(([key, value]) => {
     			const participant = key;
-    			value[newDayKey] = -9999;
+    			value[newDayKey] = 0;
     			remoteData.scores[participant] = value;
     		});
 
@@ -28428,7 +28513,7 @@ var app = (function () {
     		let newRow = {};
 
     		for (var i = 1; i <= remoteData.dayCount; i++) {
-    			newRow[`day${i}`] = -9999;
+    			newRow[`day${i}`] = 0;
     		}
 
     		remoteData.scores[newParticipant] = newRow;
@@ -28436,6 +28521,14 @@ var app = (function () {
     		await updater.updateEventData(remoteData.id, newData);
     		await loadData();
     		$$invalidate(2, newParticipant = "");
+    	}
+
+    	async function handleOnBlur(e, rowIndex, colIndex) {
+    		$$invalidate(1, tableData.rowData[rowIndex][colIndex] = e.target.value, tableData);
+    		const newScores = transformScores(tableData.rowData);
+    		const newData = { ...remoteData, scores: newScores };
+    		await updater.updateEventData(remoteData.id, newData);
+    		await loadData();
     	}
 
     	afterUpdate(async () => {
@@ -28466,6 +28559,8 @@ var app = (function () {
     		$$invalidate(3, selectedNewDate);
     	}
 
+    	const blur_handler = (rowIndex, colIndex, e) => handleOnBlur(e, rowIndex, colIndex);
+
     	$$self.$set = $$props => {
     		if ("eventId" in $$props) $$invalidate(0, eventId = $$props.eventId);
     	};
@@ -28495,10 +28590,12 @@ var app = (function () {
     		selectedNewDate,
     		addNewDate,
     		addNewParticipant,
+    		handleOnBlur,
     		remoteData,
     		loadData,
     		input0_input_handler,
-    		input1_input_handler
+    		input1_input_handler,
+    		blur_handler
     	];
     }
 

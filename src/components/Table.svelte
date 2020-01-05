@@ -1,7 +1,12 @@
 <script>
   import { afterUpdate } from "svelte";
   import { reader, updater } from "../database";
-  import { convertToDate, toTimestamp, transform } from "../utils";
+  import {
+    convertToDate,
+    toTimestamp,
+    transform,
+    transformScores
+  } from "../utils";
 
   export let eventId;
 
@@ -24,7 +29,7 @@
 
     Object.entries(remoteData.scores).forEach(([key, value]) => {
       const participant = key;
-      value[newDayKey] = -9999;
+      value[newDayKey] = 0;
       remoteData.scores[participant] = value;
     });
 
@@ -43,7 +48,7 @@
 
     let newRow = {};
     for (var i = 1; i <= remoteData.dayCount; i++) {
-      newRow[`day${i}`] = -9999;
+      newRow[`day${i}`] = 0;
     }
 
     remoteData.scores[newParticipant] = newRow;
@@ -56,6 +61,19 @@
     await loadData();
 
     newParticipant = "";
+  }
+
+  async function handleOnBlur(e, rowIndex, colIndex) {
+    tableData.rowData[rowIndex][colIndex] = e.target.value;
+    const newScores = transformScores(tableData.rowData);
+
+    const newData = {
+      ...remoteData,
+      scores: newScores
+    };
+
+    await updater.updateEventData(remoteData.id, newData);
+    await loadData();
   }
 
   afterUpdate(async () => {
@@ -78,7 +96,7 @@
 <div>
   {#if eventId}
     {#if tableData}
-      {@debug tableData}
+      <!-- {@debug tableData} -->
 
       <div>
         <input
@@ -98,7 +116,7 @@
         cellpadding="4"
         style="border-collapse: collapse;">
         <thead>
-          <tr id="tableRowHeaderText">
+          <tr>
             <th align="left" rowspan="2">Teilnehmer</th>
             {#each tableData.rowHeaders as header}
               <th>Datum / Punktzahl</th>
@@ -111,10 +129,19 @@
           </tr>
         </thead>
         <tbody>
-          {#each tableData.rowData as data}
+          {#each tableData.rowData as data, rowIndex}
             <tr>
-              {#each data as entry}
-                <td>{entry}</td>
+              {#each data as entry, colIndex}
+                <td>
+                  {#if colIndex === 0}
+                    <span>{entry}</span>
+                  {:else}
+                    <input
+                      type="number"
+                      value={entry}
+                      on:blur={e => handleOnBlur(e, rowIndex, colIndex)} />
+                  {/if}
+                </td>
               {/each}
             </tr>
           {/each}
