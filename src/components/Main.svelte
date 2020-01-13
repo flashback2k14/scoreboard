@@ -1,4 +1,5 @@
 <script>
+  import { onDestroy } from "svelte";
   import Table from "./Table.svelte";
   import EventSelect from "./EventSelect.svelte";
 
@@ -7,13 +8,15 @@
   let localeUser;
   let selectedEventId;
 
-  const userUnsubscriber = user.subscribe(async remoteUser => {
+  const unsubscriber = user.subscribe(async remoteUser => {
     localeUser = remoteUser;
   });
 
   async function handleSelectedEvent(event) {
     selectedEventId = event.detail.id;
   }
+
+  onDestroy(unsubscriber);
 </script>
 
 <style>
@@ -26,13 +29,13 @@
   }
 
   .left-col {
-    width: 76%;
+    width: 74%;
     padding-right: 6px;
     border-right: 1px solid black;
   }
 
   .right-col {
-    width: 23%;
+    width: 25%;
     padding-left: 4px;
   }
 </style>

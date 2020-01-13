@@ -3,12 +3,19 @@
   import { reader, updater } from "../database";
   import {
     convertToDate,
-    toTimestamp,
-    transform,
-    transformScores
+    convertToTimestamp,
+    convertToTableData,
+    updateScores,
+    initTableData
   } from "../utils";
 
   export let eventId;
+
+  $: {
+    if (eventId) {
+      loadData();
+    }
+  }
 
   let remoteData;
   let tableData;
@@ -19,13 +26,13 @@
   async function loadData() {
     const data = await reader.getEventDataByEventId(eventId);
     remoteData = data;
-    tableData = transform(data);
+    tableData = data ? convertToTableData(data) : initTableData();
   }
 
   async function addNewDate() {
     remoteData.dayCount++;
     const newDayKey = `day${remoteData.dayCount}`;
-    remoteData.days[newDayKey] = toTimestamp(selectedNewDate);
+    remoteData.days[newDayKey] = convertToTimestamp(selectedNewDate);
 
     Object.entries(remoteData.scores).forEach(([key, value]) => {
       const participant = key;
@@ -65,7 +72,7 @@
 
   async function handleOnBlur(e, rowIndex, colIndex) {
     tableData.rowData[rowIndex][colIndex] = e.target.value;
-    const newScores = transformScores(tableData.rowData);
+    const newScores = updateScores(tableData.rowData);
 
     const newData = {
       ...remoteData,
@@ -75,18 +82,6 @@
     await updater.updateEventData(remoteData.id, newData);
     await loadData();
   }
-
-  afterUpdate(async () => {
-    if (tableData) {
-      return;
-    }
-
-    if (!eventId) {
-      return;
-    }
-
-    await loadData();
-  });
 </script>
 
 <style>
@@ -146,30 +141,27 @@
 
 <div>
   {#if eventId}
+    <!-- {@debug tableData} -->
+
+    <div class="ctrl-container">
+      <input
+        bind:value={newParticipant}
+        class="ctrl ctrl_input"
+        type="text"
+        placeholder="enter new participant" />
+      <button class="ctrl ctrl_button" on:click={addNewParticipant}>
+        Add new Participant
+      </button>
+    </div>
+
+    <div class="ctrl-container">
+      <input bind:value={selectedNewDate} class="ctrl ctrl_input" type="date" />
+      <button class="ctrl ctrl_button" on:click={addNewDate}>
+        Add new Date
+      </button>
+    </div>
+
     {#if tableData}
-      <!-- {@debug tableData} -->
-
-      <div class="ctrl-container">
-        <input
-          bind:value={newParticipant}
-          class="ctrl ctrl_input"
-          type="text"
-          placeholder="enter new participant" />
-        <button class="ctrl ctrl_button" on:click={addNewParticipant}>
-          Add new Participant
-        </button>
-      </div>
-
-      <div class="ctrl-container">
-        <input
-          bind:value={selectedNewDate}
-          class="ctrl ctrl_input"
-          type="date" />
-        <button class="ctrl ctrl_button" on:click={addNewDate}>
-          Add new Date
-        </button>
-      </div>
-
       <div class="table-scroll">
         <table border="solid 1px black" cellpadding="4">
           <thead>
@@ -208,8 +200,6 @@
           </tbody>
         </table>
       </div>
-    {:else}
-      <span>Todo: Show Empty Table</span>
     {/if}
   {:else}
     <span>No event selected.</span>

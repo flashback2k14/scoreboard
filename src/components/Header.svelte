@@ -1,5 +1,5 @@
 <script>
-  import { auth } from "../database";
+  import { auth, reader } from "../database";
   import { user } from "../store/store.js";
 
   let loginUser = {
@@ -9,7 +9,8 @@
 
   async function login() {
     const result = await auth.login(loginUser);
-    user.set(result.user);
+    const details = await reader.getUserByUserId(result.user.uid);
+    user.set({ ...result.user, ...details });
   }
 
   async function logout() {

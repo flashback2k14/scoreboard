@@ -1,10 +1,4 @@
-import {
-  auth as firebaseAuth,
-  eventsCollection,
-  eventDataCollection,
-  participantsCollection,
-  scoresCollection
-} from '../store/firebase';
+import { auth as firebaseAuth, usersCollection, eventsCollection, eventDataCollection } from '../store/firebase';
 import { convertDocument } from '../utils';
 
 const auth = {
@@ -17,56 +11,54 @@ const auth = {
 };
 
 const creator = {
-  addEvent: async (userUid, name) => {
-    return await eventsCollection.add({ userUid, name });
+  addEvent: async (uid, name) => {
+    return await eventsCollection.add({ uid, name });
+  },
+  addEventData: async eid => {
+    const eventRef = eventsCollection.doc(eid);
+
+    const data = {
+      dayCount: 0,
+      days: {},
+      eid: eventRef,
+      participants: {},
+      scores: {}
+    };
+
+    return await eventDataCollection.add(data);
   }
 };
 
 const reader = {
-  getEventByUserId: async userId => {
+  getUserByUserId: async uid => {
+    const result = await usersCollection
+      .where('uid', '==', uid)
+      .orderBy('name')
+      .get();
+    return convertDocument(result.docs)[0];
+  },
+  getEventByUserId: async uid => {
     const result = await eventsCollection
-      .where('userUid', '==', userId)
+      .where('uid', '==', uid)
       .orderBy('name')
       .get();
     return convertDocument(result.docs);
   },
-  getEventDataByEventId: async eventId => {
-    const eventRef = eventsCollection.doc(eventId);
+  getEventDataByEventId: async eid => {
+    const eventRef = eventsCollection.doc(eid);
 
     const result = await eventDataCollection
-      .where('eventId', '==', eventRef)
+      .where('eid', '==', eventRef)
       .orderBy('days')
       .get();
 
     return convertDocument(result.docs)[0];
-  },
-  getParticipantsByEventId: async eventId => {
-    const eventRef = eventsCollection.doc(eventId);
-
-    const result = await participantsCollection
-      .where('eventUid', '==', eventRef)
-      .orderBy('name')
-      .get();
-
-    return convertDocument(result.docs);
-  },
-  getScoresByEventAndParticipantId: async (eventId, participantId) => {
-    const eventRef = eventsCollection.doc(eventId);
-    const participantRef = participantsCollection.doc(participantId);
-
-    const result = await scoresCollection
-      .where('eventUid', '==', eventRef)
-      .where('participantUid', '==', participantRef)
-      .orderBy('date')
-      .get();
-
-    return convertDocument(result.docs);
   }
 };
 
 const updater = {
-  updateEventData: async (eventDataId, data) => {
-    return await eventDataCollection.doc(eventDataId).update(data);
+  updateEventData: async (edId, data) => {
+    return await eventDataCollection.doc(edId).update(data);
   }
 };
 

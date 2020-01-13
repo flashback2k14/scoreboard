@@ -12,12 +12,12 @@ export const convertToDate = firestoreTimestamp => {
   return firestoreTimestamp.toDate().toDateString();
 };
 
-export const toTimestamp = strDate => {
+export const convertToTimestamp = strDate => {
   const date = Date.parse(strDate);
   return new Timestamp(date / 1000, 0);
 };
 
-export const transform = data => {
+export const convertToTableData = data => {
   return {
     rowHeaders: [...Object.values(data.days).map(value => convertToDate(value))],
     rowData: Object.entries(data.scores).map(([key, value]) => {
@@ -29,7 +29,7 @@ export const transform = data => {
   };
 };
 
-export const transformScores = rowData => {
+export const updateScores = rowData => {
   let scores = {};
   rowData.forEach(row => {
     let newScores = {};
@@ -42,4 +42,11 @@ export const transformScores = rowData => {
     scores[row[0]] = newScores;
   });
   return scores;
+};
+
+export const initTableData = () => {
+  return {
+    rowHeaders: [],
+    rowData: []
+  };
 };

@@ -2,7 +2,7 @@
   import { onDestroy, createEventDispatcher } from "svelte";
 
   import { user } from "../store/store.js";
-  import { creator, reader } from "../database/index.js";
+  import { creator, reader } from "../database";
 
   let localeUser = null;
   let selectableEvents = [];
@@ -23,7 +23,8 @@
   }
 
   async function addEvent() {
-    await creator.addEvent(localeUser.uid, addEventInput);
+    const createdEvent = await creator.addEvent(localeUser.uid, addEventInput);
+    await creator.addEventData(createdEvent.id);
     selectableEvents = await reader.getEventByUserId(localeUser.uid);
     addEventInput = "";
   }
