@@ -42,23 +42,28 @@
   }
 
   .ctrl {
+    box-sizing: border-box;
     padding: 8px;
-    margin-right: 4px;
-    background: inherit;
-    border: 1px solid steelblue;
-    border-radius: 4px;
     font-size: medium;
+    border: 1px solid lightgray;
+    border-radius: 4px;
     outline: none;
+    font-family: inherit;
   }
 
   .ctrl:hover,
   .ctrl:focus {
-    border: 2px solid steelblue;
+    border: 1px solid steelblue;
   }
 
   .ctrl_select {
     width: calc(100% - 4px);
-    font-size: larger;
+    height: 36px;
+    font-size: medium;
+  }
+
+  .ctrl_input {
+    width: 82%;
   }
 
   .ctrl_button {
@@ -83,8 +88,7 @@
   <div class="ctrl-container">
     <input
       bind:value={addEventInput}
-      style="width: 72%;"
-      class="ctrl"
+      class="ctrl ctrl_input"
       type="text"
       placeholder="add event name" />
     <button class="ctrl ctrl_button" on:click={addEvent}>Add</button>

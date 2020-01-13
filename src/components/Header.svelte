@@ -1,22 +1,41 @@
 <script>
+  import { onMount } from "svelte";
   import { auth, reader } from "../database";
   import { user } from "../store/store.js";
 
   let loginUser = {
-    email: "john.doe@flbk.dev",
-    password: "hallo123456"
+    email: "",
+    password: ""
   };
 
   async function login() {
     const result = await auth.login(loginUser);
     const details = await reader.getUserByUserId(result.user.uid);
+    localStorage.setItem("ys-login", btoa(JSON.stringify(loginUser)));
     user.set({ ...result.user, ...details });
   }
 
   async function logout() {
     await auth.logout();
+    localStorage.removeItem("ys-login");
+    loginUser = { email: "", password: "" };
     user.set(null);
   }
+
+  onMount(async () => {
+    const cryptedUser = localStorage.getItem("ys-login");
+    if (!cryptedUser) {
+      return;
+    }
+
+    const user = JSON.parse(atob(cryptedUser));
+    if (!user) {
+      return;
+    }
+
+    loginUser = user;
+    await login();
+  });
 </script>
 
 <style>
@@ -36,22 +55,27 @@
     letter-spacing: 0.1em;
   }
 
-  .header-ctrl {
+  .ctrl {
+    box-sizing: border-box;
     padding: 8px;
-    margin-right: 4px;
-    background: inherit;
+    font-size: medium;
     border: 1px solid steelblue;
     border-radius: 4px;
-    font-size: medium;
     outline: none;
+    font-family: inherit;
+    background: inherit;
   }
 
-  .header-ctrl:hover,
-  .header-ctrl:focus {
-    border: 2px solid steelblue;
+  .ctrl:hover,
+  .ctrl:focus {
+    border: 1px solid lightgray;
   }
 
-  .header-ctrl_button {
+  .ctrl_input {
+    width: 250px;
+  }
+
+  .ctrl_button {
     text-transform: uppercase;
     cursor: pointer;
   }
@@ -62,19 +86,15 @@
   <div>
     <input
       bind:value={loginUser.email}
-      class="header-ctrl"
+      class="ctrl ctrl_input"
       type="text"
       placeholder="enter your email" />
     <input
       bind:value={loginUser.password}
-      class="header-ctrl"
+      class="ctrl ctrl_input"
       type="password"
       placeholder="enter your password" />
-    <button class="header-ctrl header-ctrl_button" on:click={login}>
-      login
-    </button>
-    <button class="header-ctrl header-ctrl_button" on:click={logout}>
-      logout
-    </button>
+    <button class="ctrl ctrl_button" on:click={login}>login</button>
+    <button class="ctrl ctrl_button" on:click={logout}>logout</button>
   </div>
 </header>

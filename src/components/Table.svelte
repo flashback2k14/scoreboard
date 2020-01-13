@@ -110,27 +110,36 @@
     border-collapse: collapse;
   }
 
+  .ctrls-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
   .ctrl-container {
     margin-top: 4px;
   }
 
   .ctrl {
+    box-sizing: border-box;
     padding: 8px;
-    margin-right: 4px;
-    background: inherit;
-    border: 1px solid steelblue;
-    border-radius: 4px;
     font-size: medium;
+    border: 1px solid lightgray;
+    border-radius: 4px;
     outline: none;
+    font-family: inherit;
   }
 
   .ctrl:hover,
   .ctrl:focus {
-    border: 2px solid steelblue;
+    border: 1px solid steelblue;
   }
 
   .ctrl_input {
     width: 250px;
+  }
+
+  .ctrl_date {
+    padding: 5px;
   }
 
   .ctrl_button {
@@ -143,26 +152,33 @@
   {#if eventId}
     <!-- {@debug tableData} -->
 
-    <div class="ctrl-container">
-      <input
-        bind:value={newParticipant}
-        class="ctrl ctrl_input"
-        type="text"
-        placeholder="enter new participant" />
-      <button class="ctrl ctrl_button" on:click={addNewParticipant}>
-        Add new Participant
-      </button>
-    </div>
+    <div class="ctrls-container">
 
-    <div class="ctrl-container">
-      <input bind:value={selectedNewDate} class="ctrl ctrl_input" type="date" />
-      <button class="ctrl ctrl_button" on:click={addNewDate}>
-        Add new Date
-      </button>
+      <div class="ctrl-container">
+        <input
+          bind:value={selectedNewDate}
+          class="ctrl ctrl_input ctrl_date"
+          type="date" />
+        <button class="ctrl ctrl_button" on:click={addNewDate}>
+          Add new Date
+        </button>
+      </div>
+
+      <div class="ctrl-container">
+        <input
+          bind:value={newParticipant}
+          class="ctrl ctrl_input"
+          type="text"
+          placeholder="enter new participant" />
+        <button class="ctrl ctrl_button" on:click={addNewParticipant}>
+          Add new Participant
+        </button>
+      </div>
+
     </div>
 
     {#if tableData}
-      <div class="table-scroll">
+      <div class="ctrl-container table-scroll">
         <table border="solid 1px black" cellpadding="4">
           <thead>
             <tr>
