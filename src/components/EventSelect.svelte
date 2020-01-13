@@ -7,7 +7,9 @@
   let onlyAdmin = false;
   let localeUser = null;
   let selectableEvents = [];
+  let selectableUsers = [];
   let selectedEvent = null;
+  let selectedUser = null;
   let addEventInput = "";
 
   const dispatch = createEventDispatcher();
@@ -15,19 +17,18 @@
   const unsubscriber = user.subscribe(async remoteUser => {
     localeUser = remoteUser;
     onlyAdmin = remoteUser.role === "admin";
+
     if (remoteUser) {
-      if (remoteUser.role === "read-only") {
-        selectableEvents = await reader.getEventsByViewerRefs(
-          remoteUser.events
-        );
-      } else {
-        selectableEvents = await reader.getEventsByUserId(remoteUser.uid);
-      }
+      selectableEvents =
+        remoteUser.role === "read-only"
+          ? await reader.getEventsByViewerRefs(remoteUser.events)
+          : await reader.getEventsByUserId(remoteUser.uid);
     }
   });
 
-  function handleSelectionChange() {
+  async function handleEventSelectionChange() {
     dispatch("selected-event", { id: selectedEvent });
+    selectableUsers = await reader.getUsersByRole("read-only");
   }
 
   async function addEvent() {
@@ -36,6 +37,8 @@
     selectableEvents = await reader.getEventsByUserId(localeUser.uid);
     addEventInput = "";
   }
+
+  async function addUsers() {}
 
   onDestroy(unsubscriber);
 </script>
@@ -84,7 +87,7 @@
   <select
     class="ctrl ctrl_select"
     bind:value={selectedEvent}
-    on:change={handleSelectionChange}>
+    on:change={handleEventSelectionChange}>
     <option value="nothing" selected disabled>
       Select an event or create one...
     </option>
@@ -95,6 +98,7 @@
 
   {#if onlyAdmin}
     <hr />
+
     <div class="ctrl-container">
       <input
         bind:value={addEventInput}
@@ -103,5 +107,23 @@
         placeholder="add event name" />
       <button class="ctrl ctrl_button" on:click={addEvent}>Add</button>
     </div>
+
+    {#if selectableUsers.length > 0}
+      <hr />
+
+      <div class="ctrl-container">
+        <select class="ctrl ctrl_select" multiple bind:value={selectedUser}>
+          {#each selectableUsers as user}
+            <option value={user.id}>{user.name}</option>
+          {/each}
+        </select>
+        <button
+          class="ctrl ctrl_button"
+          style="margin-top: 4px"
+          on:click={addUsers}>
+          Save
+        </button>
+      </div>
+    {/if}
   {/if}
 </div>

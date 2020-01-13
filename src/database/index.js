@@ -37,6 +37,13 @@ const reader = {
       .get();
     return convertDocument(result.docs)[0];
   },
+  getUsersByRole: async role => {
+    const result = await usersCollection
+      .where('role', '==', role)
+      .orderBy('name')
+      .get();
+    return convertDocument(result.docs);
+  },
   getEventsByUserId: async uid => {
     const result = await eventsCollection
       .where('uid', '==', uid)

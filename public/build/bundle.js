@@ -70,6 +70,9 @@ var app = (function () {
             input.value = value;
         }
     }
+    function set_style(node, key, value, important) {
+        node.style.setProperty(key, value, important ? 'important' : '');
+    }
     function select_option(select, value) {
         for (let i = 0; i < select.options.length; i += 1) {
             const option = select.options[i];
@@ -79,9 +82,18 @@ var app = (function () {
             }
         }
     }
+    function select_options(select, value) {
+        for (let i = 0; i < select.options.length; i += 1) {
+            const option = select.options[i];
+            option.selected = ~value.indexOf(option.__value);
+        }
+    }
     function select_value(select) {
         const selected_option = select.querySelector(':checked') || select.options[0];
         return selected_option && selected_option.__value;
+    }
+    function select_multiple_value(select) {
+        return [].map.call(select.querySelectorAll(':checked'), option => option.__value);
     }
     function custom_event(type, detail) {
         const e = document.createEvent('CustomEvent');
@@ -27572,6 +27584,13 @@ var app = (function () {
           .get();
         return convertDocument(result.docs)[0];
       },
+      getUsersByRole: async role => {
+        const result = await usersCollection
+          .where('role', '==', role)
+          .orderBy('name')
+          .get();
+        return convertDocument(result.docs);
+      },
       getEventsByUserId: async uid => {
         const result = await eventsCollection
           .where('uid', '==', uid)
@@ -28756,14 +28775,20 @@ var app = (function () {
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[11] = list[i];
+    	child_ctx[14] = list[i];
     	return child_ctx;
     }
 
-    // (91:4) {#each selectableEvents as event}
-    function create_each_block$1(ctx) {
+    function get_each_context_1$1(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[17] = list[i];
+    	return child_ctx;
+    }
+
+    // (94:4) {#each selectableEvents as event}
+    function create_each_block_1$1(ctx) {
     	let option;
-    	let t_value = /*event*/ ctx[11].name + "";
+    	let t_value = /*event*/ ctx[17].name + "";
     	let t;
     	let option_value_value;
 
@@ -28771,18 +28796,18 @@ var app = (function () {
     		c: function create() {
     			option = element("option");
     			t = text(t_value);
-    			option.__value = option_value_value = /*event*/ ctx[11].id;
+    			option.__value = option_value_value = /*event*/ ctx[17].id;
     			option.value = option.__value;
-    			add_location(option, file$2, 91, 6, 1991);
+    			add_location(option, file$2, 94, 6, 2105);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option, anchor);
     			append_dev(option, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*selectableEvents*/ 2 && t_value !== (t_value = /*event*/ ctx[11].name + "")) set_data_dev(t, t_value);
+    			if (dirty & /*selectableEvents*/ 2 && t_value !== (t_value = /*event*/ ctx[17].name + "")) set_data_dev(t, t_value);
 
-    			if (dirty & /*selectableEvents*/ 2 && option_value_value !== (option_value_value = /*event*/ ctx[11].id)) {
+    			if (dirty & /*selectableEvents*/ 2 && option_value_value !== (option_value_value = /*event*/ ctx[17].id)) {
     				prop_dev(option, "__value", option_value_value);
     			}
 
@@ -28795,16 +28820,16 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_each_block$1.name,
+    		id: create_each_block_1$1.name,
     		type: "each",
-    		source: "(91:4) {#each selectableEvents as event}",
+    		source: "(94:4) {#each selectableEvents as event}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (96:2) {#if onlyAdmin}
+    // (99:2) {#if onlyAdmin}
     function create_if_block$1(ctx) {
     	let hr;
     	let t0;
@@ -28812,7 +28837,10 @@ var app = (function () {
     	let input;
     	let t1;
     	let button;
+    	let t3;
+    	let if_block_anchor;
     	let dispose;
+    	let if_block = /*selectableUsers*/ ctx[2].length > 0 && create_if_block_1$1(ctx);
 
     	const block = {
     		c: function create() {
@@ -28823,19 +28851,22 @@ var app = (function () {
     			t1 = space();
     			button = element("button");
     			button.textContent = "Add";
-    			add_location(hr, file$2, 96, 4, 2085);
+    			t3 = space();
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    			add_location(hr, file$2, 99, 4, 2199);
     			attr_dev(input, "class", "ctrl ctrl_input svelte-ow12m8");
     			attr_dev(input, "type", "text");
     			attr_dev(input, "placeholder", "add event name");
-    			add_location(input, file$2, 98, 6, 2131);
+    			add_location(input, file$2, 102, 6, 2246);
     			attr_dev(button, "class", "ctrl ctrl_button svelte-ow12m8");
-    			add_location(button, file$2, 103, 6, 2271);
+    			add_location(button, file$2, 107, 6, 2386);
     			attr_dev(div, "class", "ctrl-container svelte-ow12m8");
-    			add_location(div, file$2, 97, 4, 2096);
+    			add_location(div, file$2, 101, 4, 2211);
 
     			dispose = [
-    				listen_dev(input, "input", /*input_input_handler*/ ctx[10]),
-    				listen_dev(button, "click", /*addEvent*/ ctx[5], false, false, false)
+    				listen_dev(input, "input", /*input_input_handler*/ ctx[12]),
+    				listen_dev(button, "click", /*addEvent*/ ctx[7], false, false, false)
     			];
     		},
     		m: function mount(target, anchor) {
@@ -28843,19 +28874,38 @@ var app = (function () {
     			insert_dev(target, t0, anchor);
     			insert_dev(target, div, anchor);
     			append_dev(div, input);
-    			set_input_value(input, /*addEventInput*/ ctx[3]);
+    			set_input_value(input, /*addEventInput*/ ctx[5]);
     			append_dev(div, t1);
     			append_dev(div, button);
+    			insert_dev(target, t3, anchor);
+    			if (if_block) if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*addEventInput*/ 8 && input.value !== /*addEventInput*/ ctx[3]) {
-    				set_input_value(input, /*addEventInput*/ ctx[3]);
+    			if (dirty & /*addEventInput*/ 32 && input.value !== /*addEventInput*/ ctx[5]) {
+    				set_input_value(input, /*addEventInput*/ ctx[5]);
+    			}
+
+    			if (/*selectableUsers*/ ctx[2].length > 0) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block_1$1(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
     			}
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(hr);
     			if (detaching) detach_dev(t0);
     			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(t3);
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
     			run_all(dispose);
     		}
     	};
@@ -28864,76 +28914,76 @@ var app = (function () {
     		block,
     		id: create_if_block$1.name,
     		type: "if",
-    		source: "(96:2) {#if onlyAdmin}",
+    		source: "(99:2) {#if onlyAdmin}",
     		ctx
     	});
 
     	return block;
     }
 
-    function create_fragment$2(ctx) {
+    // (111:4) {#if selectableUsers.length > 0}
+    function create_if_block_1$1(ctx) {
+    	let hr;
+    	let t0;
     	let div;
     	let select;
-    	let option;
     	let t1;
+    	let button;
     	let dispose;
-    	let each_value = /*selectableEvents*/ ctx[1];
+    	let each_value = /*selectableUsers*/ ctx[2];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
     		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
     	}
 
-    	let if_block = /*onlyAdmin*/ ctx[0] && create_if_block$1(ctx);
-
     	const block = {
     		c: function create() {
+    			hr = element("hr");
+    			t0 = space();
     			div = element("div");
     			select = element("select");
-    			option = element("option");
-    			option.textContent = "Select an event or create one...\n    ";
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
     			t1 = space();
-    			if (if_block) if_block.c();
-    			option.__value = "nothing";
-    			option.value = option.__value;
-    			option.selected = true;
-    			option.disabled = true;
-    			add_location(option, file$2, 87, 4, 1851);
+    			button = element("button");
+    			button.textContent = "Save";
+    			add_location(hr, file$2, 111, 6, 2507);
     			attr_dev(select, "class", "ctrl ctrl_select svelte-ow12m8");
-    			if (/*selectedEvent*/ ctx[2] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[9].call(select));
-    			add_location(select, file$2, 83, 2, 1740);
-    			attr_dev(div, "class", "container svelte-ow12m8");
-    			add_location(div, file$2, 82, 0, 1714);
+    			select.multiple = true;
+    			if (/*selectedUser*/ ctx[4] === void 0) add_render_callback(() => /*select_change_handler_1*/ ctx[13].call(select));
+    			add_location(select, file$2, 114, 8, 2558);
+    			attr_dev(button, "class", "ctrl ctrl_button svelte-ow12m8");
+    			set_style(button, "margin-top", "4px");
+    			add_location(button, file$2, 119, 8, 2770);
+    			attr_dev(div, "class", "ctrl-container svelte-ow12m8");
+    			add_location(div, file$2, 113, 6, 2521);
 
     			dispose = [
-    				listen_dev(select, "change", /*select_change_handler*/ ctx[9]),
-    				listen_dev(select, "change", /*handleSelectionChange*/ ctx[4], false, false, false)
+    				listen_dev(select, "change", /*select_change_handler_1*/ ctx[13]),
+    				listen_dev(button, "click", addUsers, false, false, false)
     			];
     		},
-    		l: function claim(nodes) {
-    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
-    		},
     		m: function mount(target, anchor) {
+    			insert_dev(target, hr, anchor);
+    			insert_dev(target, t0, anchor);
     			insert_dev(target, div, anchor);
     			append_dev(div, select);
-    			append_dev(select, option);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(select, null);
     			}
 
-    			select_option(select, /*selectedEvent*/ ctx[2]);
+    			select_options(select, /*selectedUser*/ ctx[4]);
     			append_dev(div, t1);
-    			if (if_block) if_block.m(div, null);
+    			append_dev(div, button);
     		},
-    		p: function update(ctx, [dirty]) {
-    			if (dirty & /*selectableEvents*/ 2) {
-    				each_value = /*selectableEvents*/ ctx[1];
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*selectableUsers*/ 4) {
+    				each_value = /*selectableUsers*/ ctx[2];
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -28955,8 +29005,160 @@ var app = (function () {
     				each_blocks.length = each_value.length;
     			}
 
-    			if (dirty & /*selectedEvent*/ 4) {
-    				select_option(select, /*selectedEvent*/ ctx[2]);
+    			if (dirty & /*selectedUser*/ 16) {
+    				select_options(select, /*selectedUser*/ ctx[4]);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(hr);
+    			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(div);
+    			destroy_each(each_blocks, detaching);
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1$1.name,
+    		type: "if",
+    		source: "(111:4) {#if selectableUsers.length > 0}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (116:10) {#each selectableUsers as user}
+    function create_each_block$1(ctx) {
+    	let option;
+    	let t_value = /*user*/ ctx[14].name + "";
+    	let t;
+    	let option_value_value;
+
+    	const block = {
+    		c: function create() {
+    			option = element("option");
+    			t = text(t_value);
+    			option.__value = option_value_value = /*user*/ ctx[14].id;
+    			option.value = option.__value;
+    			add_location(option, file$2, 116, 12, 2681);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, option, anchor);
+    			append_dev(option, t);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*selectableUsers*/ 4 && t_value !== (t_value = /*user*/ ctx[14].name + "")) set_data_dev(t, t_value);
+
+    			if (dirty & /*selectableUsers*/ 4 && option_value_value !== (option_value_value = /*user*/ ctx[14].id)) {
+    				prop_dev(option, "__value", option_value_value);
+    			}
+
+    			option.value = option.__value;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(option);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$1.name,
+    		type: "each",
+    		source: "(116:10) {#each selectableUsers as user}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$2(ctx) {
+    	let div;
+    	let select;
+    	let option;
+    	let t1;
+    	let dispose;
+    	let each_value_1 = /*selectableEvents*/ ctx[1];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value_1.length; i += 1) {
+    		each_blocks[i] = create_each_block_1$1(get_each_context_1$1(ctx, each_value_1, i));
+    	}
+
+    	let if_block = /*onlyAdmin*/ ctx[0] && create_if_block$1(ctx);
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			select = element("select");
+    			option = element("option");
+    			option.textContent = "Select an event or create one...\n    ";
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t1 = space();
+    			if (if_block) if_block.c();
+    			option.__value = "nothing";
+    			option.value = option.__value;
+    			option.selected = true;
+    			option.disabled = true;
+    			add_location(option, file$2, 90, 4, 1965);
+    			attr_dev(select, "class", "ctrl ctrl_select svelte-ow12m8");
+    			if (/*selectedEvent*/ ctx[3] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[11].call(select));
+    			add_location(select, file$2, 86, 2, 1849);
+    			attr_dev(div, "class", "container svelte-ow12m8");
+    			add_location(div, file$2, 85, 0, 1823);
+
+    			dispose = [
+    				listen_dev(select, "change", /*select_change_handler*/ ctx[11]),
+    				listen_dev(select, "change", /*handleEventSelectionChange*/ ctx[6], false, false, false)
+    			];
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, select);
+    			append_dev(select, option);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(select, null);
+    			}
+
+    			select_option(select, /*selectedEvent*/ ctx[3]);
+    			append_dev(div, t1);
+    			if (if_block) if_block.m(div, null);
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*selectableEvents*/ 2) {
+    				each_value_1 = /*selectableEvents*/ ctx[1];
+    				let i;
+
+    				for (i = 0; i < each_value_1.length; i += 1) {
+    					const child_ctx = get_each_context_1$1(ctx, each_value_1, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block_1$1(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(select, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value_1.length;
+    			}
+
+    			if (dirty & /*selectedEvent*/ 8) {
+    				select_option(select, /*selectedEvent*/ ctx[3]);
     			}
 
     			if (/*onlyAdmin*/ ctx[0]) {
@@ -28993,11 +29195,17 @@ var app = (function () {
     	return block;
     }
 
+    async function addUsers() {
+    	
+    }
+
     function instance$2($$self, $$props, $$invalidate) {
     	let onlyAdmin = false;
     	let localeUser = null;
     	let selectableEvents = [];
+    	let selectableUsers = [];
     	let selectedEvent = null;
+    	let selectedUser = null;
     	let addEventInput = "";
     	const dispatch = createEventDispatcher();
 
@@ -29006,36 +29214,41 @@ var app = (function () {
     		$$invalidate(0, onlyAdmin = remoteUser.role === "admin");
 
     		if (remoteUser) {
-    			if (remoteUser.role === "read-only") {
-    				$$invalidate(1, selectableEvents = await reader.getEventsByViewerRefs(remoteUser.events));
-    			} else {
-    				$$invalidate(1, selectableEvents = await reader.getEventsByUserId(remoteUser.uid));
-    			}
+    			$$invalidate(1, selectableEvents = remoteUser.role === "read-only"
+    			? await reader.getEventsByViewerRefs(remoteUser.events)
+    			: await reader.getEventsByUserId(remoteUser.uid));
     		}
     	});
 
-    	function handleSelectionChange() {
+    	async function handleEventSelectionChange() {
     		dispatch("selected-event", { id: selectedEvent });
+    		$$invalidate(2, selectableUsers = await reader.getUsersByRole("read-only"));
     	}
 
     	async function addEvent() {
     		const createdEvent = await creator.addEvent(localeUser.uid, addEventInput);
     		await creator.addEventData(createdEvent.id);
     		$$invalidate(1, selectableEvents = await reader.getEventsByUserId(localeUser.uid));
-    		$$invalidate(3, addEventInput = "");
+    		$$invalidate(5, addEventInput = "");
     	}
 
     	onDestroy(unsubscriber);
 
     	function select_change_handler() {
     		selectedEvent = select_value(this);
-    		$$invalidate(2, selectedEvent);
+    		$$invalidate(3, selectedEvent);
     		$$invalidate(1, selectableEvents);
     	}
 
     	function input_input_handler() {
     		addEventInput = this.value;
-    		$$invalidate(3, addEventInput);
+    		$$invalidate(5, addEventInput);
+    	}
+
+    	function select_change_handler_1() {
+    		selectedUser = select_multiple_value(this);
+    		$$invalidate(4, selectedUser);
+    		$$invalidate(2, selectableUsers);
     	}
 
     	$$self.$capture_state = () => {
@@ -29046,22 +29259,27 @@ var app = (function () {
     		if ("onlyAdmin" in $$props) $$invalidate(0, onlyAdmin = $$props.onlyAdmin);
     		if ("localeUser" in $$props) localeUser = $$props.localeUser;
     		if ("selectableEvents" in $$props) $$invalidate(1, selectableEvents = $$props.selectableEvents);
-    		if ("selectedEvent" in $$props) $$invalidate(2, selectedEvent = $$props.selectedEvent);
-    		if ("addEventInput" in $$props) $$invalidate(3, addEventInput = $$props.addEventInput);
+    		if ("selectableUsers" in $$props) $$invalidate(2, selectableUsers = $$props.selectableUsers);
+    		if ("selectedEvent" in $$props) $$invalidate(3, selectedEvent = $$props.selectedEvent);
+    		if ("selectedUser" in $$props) $$invalidate(4, selectedUser = $$props.selectedUser);
+    		if ("addEventInput" in $$props) $$invalidate(5, addEventInput = $$props.addEventInput);
     	};
 
     	return [
     		onlyAdmin,
     		selectableEvents,
+    		selectableUsers,
     		selectedEvent,
+    		selectedUser,
     		addEventInput,
-    		handleSelectionChange,
+    		handleEventSelectionChange,
     		addEvent,
     		localeUser,
     		dispatch,
     		unsubscriber,
     		select_change_handler,
-    		input_input_handler
+    		input_input_handler,
+    		select_change_handler_1
     	];
     }
 
