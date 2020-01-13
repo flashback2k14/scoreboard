@@ -4,6 +4,7 @@
   import { user } from "../store/store.js";
   import { creator, reader } from "../database";
 
+  let onlyAdmin = false;
   let localeUser = null;
   let selectableEvents = [];
   let selectedEvent = null;
@@ -13,8 +14,15 @@
 
   const unsubscriber = user.subscribe(async remoteUser => {
     localeUser = remoteUser;
+    onlyAdmin = remoteUser.role === "admin";
     if (remoteUser) {
-      selectableEvents = await reader.getEventByUserId(remoteUser.uid);
+      if (remoteUser.role === "read-only") {
+        selectableEvents = await reader.getEventsByViewerRefs(
+          remoteUser.events
+        );
+      } else {
+        selectableEvents = await reader.getEventsByUserId(remoteUser.uid);
+      }
     }
   });
 
@@ -25,7 +33,7 @@
   async function addEvent() {
     const createdEvent = await creator.addEvent(localeUser.uid, addEventInput);
     await creator.addEventData(createdEvent.id);
-    selectableEvents = await reader.getEventByUserId(localeUser.uid);
+    selectableEvents = await reader.getEventsByUserId(localeUser.uid);
     addEventInput = "";
   }
 
@@ -84,13 +92,16 @@
       <option value={event.id}>{event.name}</option>
     {/each}
   </select>
-  <hr />
-  <div class="ctrl-container">
-    <input
-      bind:value={addEventInput}
-      class="ctrl ctrl_input"
-      type="text"
-      placeholder="add event name" />
-    <button class="ctrl ctrl_button" on:click={addEvent}>Add</button>
-  </div>
+
+  {#if onlyAdmin}
+    <hr />
+    <div class="ctrl-container">
+      <input
+        bind:value={addEventInput}
+        class="ctrl ctrl_input"
+        type="text"
+        placeholder="add event name" />
+      <button class="ctrl ctrl_button" on:click={addEvent}>Add</button>
+    </div>
+  {/if}
 </div>

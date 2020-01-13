@@ -43,7 +43,7 @@
 <main>
   {#if localeUser}
     <div class="left-col">
-      <Table eventId={selectedEventId} />
+      <Table eventId={selectedEventId} userRole={localeUser.role} />
     </div>
     <div class="right-col">
       <EventSelect on:selected-event={handleSelectedEvent} />

@@ -10,13 +10,19 @@
   } from "../utils";
 
   export let eventId;
+  export let userRole;
 
   $: {
     if (eventId) {
       loadData();
     }
+
+    if (userRole) {
+      onlyAdmin = userRole === "admin";
+    }
   }
 
+  let onlyAdmin;
   let remoteData;
   let tableData;
 
@@ -152,30 +158,32 @@
   {#if eventId}
     <!-- {@debug tableData} -->
 
-    <div class="ctrls-container">
+    {#if onlyAdmin}
+      <div class="ctrls-container">
 
-      <div class="ctrl-container">
-        <input
-          bind:value={selectedNewDate}
-          class="ctrl ctrl_input ctrl_date"
-          type="date" />
-        <button class="ctrl ctrl_button" on:click={addNewDate}>
-          Add new Date
-        </button>
+        <div class="ctrl-container">
+          <input
+            bind:value={selectedNewDate}
+            class="ctrl ctrl_input ctrl_date"
+            type="date" />
+          <button class="ctrl ctrl_button" on:click={addNewDate}>
+            Add new Date
+          </button>
+        </div>
+
+        <div class="ctrl-container">
+          <input
+            bind:value={newParticipant}
+            class="ctrl ctrl_input"
+            type="text"
+            placeholder="enter new participant" />
+          <button class="ctrl ctrl_button" on:click={addNewParticipant}>
+            Add new Participant
+          </button>
+        </div>
+
       </div>
-
-      <div class="ctrl-container">
-        <input
-          bind:value={newParticipant}
-          class="ctrl ctrl_input"
-          type="text"
-          placeholder="enter new participant" />
-        <button class="ctrl ctrl_button" on:click={addNewParticipant}>
-          Add new Participant
-        </button>
-      </div>
-
-    </div>
+    {/if}
 
     {#if tableData}
       <div class="ctrl-container table-scroll">
@@ -199,9 +207,7 @@
               <tr>
                 {#each data as entry, colIndex}
                   <td>
-                    {#if colIndex === 0}
-                      <span>{entry}</span>
-                    {:else if colIndex === data.length - 1}
+                    {#if colIndex === 0 || colIndex === data.length - 1 || !onlyAdmin}
                       <span>{entry}</span>
                     {:else}
                       <input
