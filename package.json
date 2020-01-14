@@ -15,10 +15,10 @@
     "rollup-plugin-livereload": "^1.0.4",
     "rollup-plugin-svelte": "^5.1.1",
     "rollup-plugin-terser": "^5.2.0",
-    "svelte": "^3.16.7"
+    "svelte": "^3.17.1"
   },
   "dependencies": {
-    "firebase": "^7.6.1",
+    "firebase": "^7.6.2",
     "sirv-cli": "^0.4.5"
   }
 }

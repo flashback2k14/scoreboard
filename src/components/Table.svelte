@@ -93,7 +93,7 @@
 <style>
   .table-scroll {
     width: inherit;
-    overflow-x: scroll;
+    overflow-x: auto;
     margin-top: 4px;
     margin-bottom: 8px;
   }

@@ -9,7 +9,7 @@
   let selectableEvents = [];
   let selectableUsers = [];
   let selectedEvent = null;
-  let selectedUser = null;
+  let selectedUsers = [];
   let addEventInput = "";
 
   const dispatch = createEventDispatcher();
@@ -27,6 +27,7 @@
   });
 
   async function handleEventSelectionChange() {
+    selectableUsers = [];
     dispatch("selected-event", { id: selectedEvent });
     selectableUsers = await reader.getUsersByRole("read-only");
   }
@@ -38,7 +39,21 @@
     addEventInput = "";
   }
 
-  async function addUsers() {}
+  function shouldBeSelected(userId) {
+    for (const user of selectableUsers) {
+      if (user.id === userId) {
+        for (const event of user.events) {
+          if (event.id.localeCompare(selectedEvent) !== -1) {
+            return true;
+          }
+        }
+      }
+    }
+
+    return false;
+  }
+
+  function addUsers() {}
 
   onDestroy(unsubscriber);
 </script>
@@ -71,6 +86,10 @@
     width: calc(100% - 4px);
     height: 36px;
     font-size: medium;
+  }
+
+  .ctrl_select-multi {
+    height: 78px;
   }
 
   .ctrl_input {
@@ -112,9 +131,14 @@
       <hr />
 
       <div class="ctrl-container">
-        <select class="ctrl ctrl_select" multiple bind:value={selectedUser}>
+        <select
+          class="ctrl ctrl_select ctrl_select-multi"
+          multiple
+          bind:value={selectedUsers}>
           {#each selectableUsers as user}
-            <option value={user.id}>{user.name}</option>
+            <option value={user.id}>
+              {user.name} {shouldBeSelected(user.id) ? ' - selected' : ''}
+            </option>
           {/each}
         </select>
         <button
