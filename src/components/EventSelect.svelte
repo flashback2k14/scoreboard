@@ -27,6 +27,7 @@
   });
 
   async function handleEventSelectionChange() {
+    selectedUsers = [];
     selectableUsers = [];
     dispatch("selected-event", { id: selectedEvent });
     selectableUsers = await reader.getUsersByRole("read-only");
@@ -39,21 +40,20 @@
     addEventInput = "";
   }
 
-  function shouldBeSelected(userId) {
-    for (const user of selectableUsers) {
-      if (user.id === userId) {
-        for (const event of user.events) {
-          if (event.id.localeCompare(selectedEvent) !== -1) {
-            return true;
-          }
-        }
+  function shouldBeSelected(userId, events) {
+    for (const event of events) {
+      if (event.id === selectedEvent) {
+        selectedUsers.push(userId);
+        return true;
       }
     }
-
     return false;
   }
 
-  function addUsers() {}
+  function addUsers() {
+    console.log(selectedUsers);
+    console.log(Array.from(new Set([...selectedUsers])));
+  }
 
   onDestroy(unsubscriber);
 </script>
@@ -137,7 +137,7 @@
           bind:value={selectedUsers}>
           {#each selectableUsers as user}
             <option value={user.id}>
-              {user.name} {shouldBeSelected(user.id) ? ' - selected' : ''}
+              {user.name} {shouldBeSelected(user.id, user.events) ? '' : ''}
             </option>
           {/each}
         </select>
