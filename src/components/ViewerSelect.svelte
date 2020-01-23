@@ -6,7 +6,6 @@
 
   let onlyAdmin = false;
   let selectableUsers = [];
-  let selectedUsers = [];
 
   $: {
     if (eventId) {
@@ -19,7 +18,6 @@
   }
 
   async function loadData() {
-    selectedUsers = [];
     selectableUsers = [];
     selectableUsers = await reader.getUsersByRole("read-only");
   }
@@ -27,27 +25,35 @@
   function shouldBeSelected(userId, events) {
     for (const event of events) {
       if (event.id === eventId) {
-        selectedUsers.push(userId);
         return true;
       }
     }
     return false;
   }
 
-  function addUsers() {
-    console.log(selectedUsers);
-    console.log(Array.from(new Set([...selectedUsers])));
+  function handleChangedViewerSelection(user) {
+    return function(event) {
+      console.log(event.target.checked);
+      console.log(user.uid);
+    };
   }
 </script>
 
 <style>
   .ctrl-container {
-    margin-top: 4px;
+    /* margin-top: 4px; */
+  }
+
+  ul {
+    list-style: none;
+    margin-top: 0;
+    padding-left: 0;
   }
 
   .ctrl {
     box-sizing: border-box;
     padding: 8px;
+    margin-bottom: 4px;
     font-size: medium;
     border: 1px solid lightgray;
     border-radius: 4px;
@@ -60,45 +66,56 @@
     border: 1px solid steelblue;
   }
 
-  .ctrl_select {
-    width: calc(100% - 4px);
-    height: 36px;
-    font-size: medium;
+  input[type="checkbox"] {
+    display: none;
   }
 
-  .ctrl_select-multi {
-    height: 78px;
-  }
-
-  .ctrl_input {
-    width: 82%;
-  }
-
-  .ctrl_button {
-    text-transform: uppercase;
+  label {
+    display: inline-block;
     cursor: pointer;
+    padding-left: 25px;
+    width: 90%;
+    position: relative;
+  }
+
+  input[type="checkbox"] + label:after {
+    font-family: "Material Icons";
+    content: "";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    position: absolute;
+    left: 0;
+    border: 2px solid lightgray;
+    border-radius: 2px;
+  }
+
+  input[type="checkbox"]:checked + label:after {
+    content: "\E5CA";
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+    line-height: 16px;
+    background: steelblue;
+    border-color: steelblue;
   }
 </style>
 
 {#if onlyAdmin}
   <hr />
 
-  <div class="ctrl-container">
-    <select
-      class="ctrl ctrl_select ctrl_select-multi"
-      multiple
-      bind:value={selectedUsers}>
-      {#each selectableUsers as user}
-        <option value={user.id}>
-          {user.name} {shouldBeSelected(user.id, user.events) ? '' : ''}
-        </option>
-      {/each}
-    </select>
-    <button
-      class="ctrl ctrl_button"
-      style="margin-top: 4px"
-      on:click={addUsers}>
-      Save
-    </button>
-  </div>
+  <ul>
+    {#each selectableUsers as user, i}
+      <li>
+        <div class="ctrl">
+          <input
+            id={'liCheckbox' + i}
+            type="checkbox"
+            checked={shouldBeSelected(user.uid, user.events)}
+            on:change={handleChangedViewerSelection(user)} />
+          <label for={'liCheckbox' + i}>{user.name}</label>
+        </div>
+      </li>
+    {/each}
+  </ul>
 {/if}

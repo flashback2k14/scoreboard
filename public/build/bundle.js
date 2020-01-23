@@ -70,9 +70,6 @@ var app = (function () {
             input.value = value;
         }
     }
-    function set_style(node, key, value, important) {
-        node.style.setProperty(key, value, important ? 'important' : '');
-    }
     function select_option(select, value) {
         for (let i = 0; i < select.options.length; i += 1) {
             const option = select.options[i];
@@ -82,18 +79,9 @@ var app = (function () {
             }
         }
     }
-    function select_options(select, value) {
-        for (let i = 0; i < select.options.length; i += 1) {
-            const option = select.options[i];
-            option.selected = ~value.indexOf(option.__value);
-        }
-    }
     function select_value(select) {
         const selected_option = select.querySelector(':checked') || select.options[0];
         return selected_option && selected_option.__value;
-    }
-    function select_multiple_value(select) {
-        return [].map.call(select.querySelectorAll(':checked'), option => option.__value);
     }
     function custom_event(type, detail) {
         const e = document.createEvent('CustomEvent');
@@ -29104,19 +29092,16 @@ var app = (function () {
 
     function get_each_context$2(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[9] = list[i];
+    	child_ctx[6] = list[i];
+    	child_ctx[8] = i;
     	return child_ctx;
     }
 
-    // (83:0) {#if onlyAdmin}
+    // (104:0) {#if onlyAdmin}
     function create_if_block$2(ctx) {
     	let hr;
-    	let t0;
-    	let div;
-    	let select;
-    	let t1;
-    	let button;
-    	let dispose;
+    	let t;
+    	let ul;
     	let each_value = /*selectableUsers*/ ctx[1];
     	let each_blocks = [];
 
@@ -29127,49 +29112,28 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			hr = element("hr");
-    			t0 = space();
-    			div = element("div");
-    			select = element("select");
+    			t = space();
+    			ul = element("ul");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			t1 = space();
-    			button = element("button");
-    			button.textContent = "Save";
-    			add_location(hr, file$3, 83, 2, 1369);
-    			attr_dev(select, "class", "ctrl ctrl_select ctrl_select-multi svelte-8fb1ct");
-    			select.multiple = true;
-    			if (/*selectedUsers*/ ctx[2] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[8].call(select));
-    			add_location(select, file$3, 86, 4, 1412);
-    			attr_dev(button, "class", "ctrl ctrl_button svelte-8fb1ct");
-    			set_style(button, "margin-top", "4px");
-    			add_location(button, file$3, 96, 4, 1712);
-    			attr_dev(div, "class", "ctrl-container svelte-8fb1ct");
-    			add_location(div, file$3, 85, 2, 1379);
+    			add_location(hr, file$3, 104, 2, 1827);
+    			attr_dev(ul, "class", "svelte-1pt8vi7");
+    			add_location(ul, file$3, 106, 2, 1837);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, hr, anchor);
-    			insert_dev(target, t0, anchor);
-    			insert_dev(target, div, anchor);
-    			append_dev(div, select);
+    			insert_dev(target, t, anchor);
+    			insert_dev(target, ul, anchor);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(select, null);
+    				each_blocks[i].m(ul, null);
     			}
-
-    			select_options(select, /*selectedUsers*/ ctx[2]);
-    			append_dev(div, t1);
-    			append_dev(div, button);
-
-    			dispose = [
-    				listen_dev(select, "change", /*select_change_handler*/ ctx[8]),
-    				listen_dev(button, "click", /*addUsers*/ ctx[4], false, false, false)
-    			];
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*selectableUsers, shouldBeSelected*/ 10) {
+    			if (dirty & /*selectableUsers, shouldBeSelected, handleChangedViewerSelection*/ 6) {
     				each_value = /*selectableUsers*/ ctx[1];
     				let i;
 
@@ -29181,7 +29145,7 @@ var app = (function () {
     					} else {
     						each_blocks[i] = create_each_block$2(child_ctx);
     						each_blocks[i].c();
-    						each_blocks[i].m(select, null);
+    						each_blocks[i].m(ul, null);
     					}
     				}
 
@@ -29191,17 +29155,12 @@ var app = (function () {
 
     				each_blocks.length = each_value.length;
     			}
-
-    			if (dirty & /*selectedUsers*/ 4) {
-    				select_options(select, /*selectedUsers*/ ctx[2]);
-    			}
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(hr);
-    			if (detaching) detach_dev(t0);
-    			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(t);
+    			if (detaching) detach_dev(ul);
     			destroy_each(each_blocks, detaching);
-    			run_all(dispose);
     		}
     	};
 
@@ -29209,61 +29168,81 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(83:0) {#if onlyAdmin}",
+    		source: "(104:0) {#if onlyAdmin}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (91:6) {#each selectableUsers as user}
+    // (108:4) {#each selectableUsers as user, i}
     function create_each_block$2(ctx) {
-    	let option;
-    	let t0_value = /*user*/ ctx[9].name + "";
+    	let li;
+    	let div;
+    	let input;
+    	let input_id_value;
+    	let input_checked_value;
     	let t0;
+    	let label;
+    	let t1_value = /*user*/ ctx[6].name + "";
     	let t1;
-
-    	let t2_value = (/*shouldBeSelected*/ ctx[3](/*user*/ ctx[9].id, /*user*/ ctx[9].events)
-    	? ""
-    	: "") + "";
-
+    	let label_for_value;
     	let t2;
-    	let t3;
-    	let option_value_value;
+    	let dispose;
 
     	const block = {
     		c: function create() {
-    			option = element("option");
-    			t0 = text(t0_value);
-    			t1 = space();
-    			t2 = text(t2_value);
-    			t3 = space();
-    			option.__value = option_value_value = /*user*/ ctx[9].id;
-    			option.value = option.__value;
-    			add_location(option, file$3, 91, 8, 1564);
+    			li = element("li");
+    			div = element("div");
+    			input = element("input");
+    			t0 = space();
+    			label = element("label");
+    			t1 = text(t1_value);
+    			t2 = space();
+    			attr_dev(input, "id", input_id_value = "liCheckbox" + /*i*/ ctx[8]);
+    			attr_dev(input, "type", "checkbox");
+    			input.checked = input_checked_value = /*shouldBeSelected*/ ctx[2](/*user*/ ctx[6].uid, /*user*/ ctx[6].events);
+    			attr_dev(input, "class", "svelte-1pt8vi7");
+    			add_location(input, file$3, 110, 10, 1929);
+    			attr_dev(label, "for", label_for_value = "liCheckbox" + /*i*/ ctx[8]);
+    			attr_dev(label, "class", "svelte-1pt8vi7");
+    			add_location(label, file$3, 115, 10, 2132);
+    			attr_dev(div, "class", "ctrl svelte-1pt8vi7");
+    			add_location(div, file$3, 109, 8, 1900);
+    			add_location(li, file$3, 108, 6, 1887);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, option, anchor);
-    			append_dev(option, t0);
-    			append_dev(option, t1);
-    			append_dev(option, t2);
-    			append_dev(option, t3);
+    			insert_dev(target, li, anchor);
+    			append_dev(li, div);
+    			append_dev(div, input);
+    			append_dev(div, t0);
+    			append_dev(div, label);
+    			append_dev(label, t1);
+    			append_dev(li, t2);
+
+    			dispose = listen_dev(
+    				input,
+    				"change",
+    				function () {
+    					if (is_function(handleChangedViewerSelection(/*user*/ ctx[6]))) handleChangedViewerSelection(/*user*/ ctx[6]).apply(this, arguments);
+    				},
+    				false,
+    				false,
+    				false
+    			);
     		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*selectableUsers*/ 2 && t0_value !== (t0_value = /*user*/ ctx[9].name + "")) set_data_dev(t0, t0_value);
+    		p: function update(new_ctx, dirty) {
+    			ctx = new_ctx;
 
-    			if (dirty & /*selectableUsers*/ 2 && t2_value !== (t2_value = (/*shouldBeSelected*/ ctx[3](/*user*/ ctx[9].id, /*user*/ ctx[9].events)
-    			? ""
-    			: "") + "")) set_data_dev(t2, t2_value);
-
-    			if (dirty & /*selectableUsers*/ 2 && option_value_value !== (option_value_value = /*user*/ ctx[9].id)) {
-    				prop_dev(option, "__value", option_value_value);
+    			if (dirty & /*selectableUsers*/ 2 && input_checked_value !== (input_checked_value = /*shouldBeSelected*/ ctx[2](/*user*/ ctx[6].uid, /*user*/ ctx[6].events))) {
+    				prop_dev(input, "checked", input_checked_value);
     			}
 
-    			option.value = option.__value;
+    			if (dirty & /*selectableUsers*/ 2 && t1_value !== (t1_value = /*user*/ ctx[6].name + "")) set_data_dev(t1, t1_value);
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(option);
+    			if (detaching) detach_dev(li);
+    			dispose();
     		}
     	};
 
@@ -29271,7 +29250,7 @@ var app = (function () {
     		block,
     		id: create_each_block$2.name,
     		type: "each",
-    		source: "(91:6) {#each selectableUsers as user}",
+    		source: "(108:4) {#each selectableUsers as user, i}",
     		ctx
     	});
 
@@ -29327,15 +29306,20 @@ var app = (function () {
     	return block;
     }
 
+    function handleChangedViewerSelection(user) {
+    	return function (event) {
+    		console.log(event.target.checked);
+    		console.log(user.uid);
+    	};
+    }
+
     function instance$3($$self, $$props, $$invalidate) {
     	let { eventId } = $$props;
     	let { userRole } = $$props;
     	let onlyAdmin = false;
     	let selectableUsers = [];
-    	let selectedUsers = [];
 
     	async function loadData() {
-    		$$invalidate(2, selectedUsers = []);
     		$$invalidate(1, selectableUsers = []);
     		$$invalidate(1, selectableUsers = await reader.getUsersByRole("read-only"));
     	}
@@ -29343,17 +29327,11 @@ var app = (function () {
     	function shouldBeSelected(userId, events) {
     		for (const event of events) {
     			if (event.id === eventId) {
-    				selectedUsers.push(userId);
     				return true;
     			}
     		}
 
     		return false;
-    	}
-
-    	function addUsers() {
-    		console.log(selectedUsers);
-    		console.log(Array.from(new Set([...selectedUsers])));
     	}
 
     	const writable_props = ["eventId", "userRole"];
@@ -29362,15 +29340,9 @@ var app = (function () {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<ViewerSelect> was created with unknown prop '${key}'`);
     	});
 
-    	function select_change_handler() {
-    		selectedUsers = select_multiple_value(this);
-    		$$invalidate(2, selectedUsers);
-    		$$invalidate(1, selectableUsers);
-    	}
-
     	$$self.$set = $$props => {
-    		if ("eventId" in $$props) $$invalidate(5, eventId = $$props.eventId);
-    		if ("userRole" in $$props) $$invalidate(6, userRole = $$props.userRole);
+    		if ("eventId" in $$props) $$invalidate(3, eventId = $$props.eventId);
+    		if ("userRole" in $$props) $$invalidate(4, userRole = $$props.userRole);
     	};
 
     	$$self.$capture_state = () => {
@@ -29378,21 +29350,19 @@ var app = (function () {
     			eventId,
     			userRole,
     			onlyAdmin,
-    			selectableUsers,
-    			selectedUsers
+    			selectableUsers
     		};
     	};
 
     	$$self.$inject_state = $$props => {
-    		if ("eventId" in $$props) $$invalidate(5, eventId = $$props.eventId);
-    		if ("userRole" in $$props) $$invalidate(6, userRole = $$props.userRole);
+    		if ("eventId" in $$props) $$invalidate(3, eventId = $$props.eventId);
+    		if ("userRole" in $$props) $$invalidate(4, userRole = $$props.userRole);
     		if ("onlyAdmin" in $$props) $$invalidate(0, onlyAdmin = $$props.onlyAdmin);
     		if ("selectableUsers" in $$props) $$invalidate(1, selectableUsers = $$props.selectableUsers);
-    		if ("selectedUsers" in $$props) $$invalidate(2, selectedUsers = $$props.selectedUsers);
     	};
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*eventId, userRole*/ 96) {
+    		if ($$self.$$.dirty & /*eventId, userRole*/ 24) {
     			 {
     				if (eventId) {
     					loadData();
@@ -29405,23 +29375,13 @@ var app = (function () {
     		}
     	};
 
-    	return [
-    		onlyAdmin,
-    		selectableUsers,
-    		selectedUsers,
-    		shouldBeSelected,
-    		addUsers,
-    		eventId,
-    		userRole,
-    		loadData,
-    		select_change_handler
-    	];
+    	return [onlyAdmin, selectableUsers, shouldBeSelected, eventId, userRole];
     }
 
     class ViewerSelect extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { eventId: 5, userRole: 6 });
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { eventId: 3, userRole: 4 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -29433,11 +29393,11 @@ var app = (function () {
     		const { ctx } = this.$$;
     		const props = options.props || ({});
 
-    		if (/*eventId*/ ctx[5] === undefined && !("eventId" in props)) {
+    		if (/*eventId*/ ctx[3] === undefined && !("eventId" in props)) {
     			console_1.warn("<ViewerSelect> was created without expected prop 'eventId'");
     		}
 
-    		if (/*userRole*/ ctx[6] === undefined && !("userRole" in props)) {
+    		if (/*userRole*/ ctx[4] === undefined && !("userRole" in props)) {
     			console_1.warn("<ViewerSelect> was created without expected prop 'userRole'");
     		}
     	}
@@ -29462,7 +29422,7 @@ var app = (function () {
     /* src/components/Main.svelte generated by Svelte v3.17.1 */
     const file$4 = "src/components/Main.svelte";
 
-    // (53:2) {:else}
+    // (54:2) {:else}
     function create_else_block$1(ctx) {
     	let span;
 
@@ -29470,7 +29430,7 @@ var app = (function () {
     		c: function create() {
     			span = element("span");
     			span.textContent = "User is not logged in.";
-    			add_location(span, file$4, 53, 4, 1144);
+    			add_location(span, file$4, 54, 4, 1165);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -29487,14 +29447,14 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(53:2) {:else}",
+    		source: "(54:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (45:2) {#if localeUser}
+    // (46:2) {#if localeUser}
     function create_if_block$3(ctx) {
     	let div0;
     	let t0;
@@ -29530,10 +29490,10 @@ var app = (function () {
     			create_component(eventselect.$$.fragment);
     			t1 = space();
     			create_component(viewerselect.$$.fragment);
-    			attr_dev(div0, "class", "left-col svelte-wxh60i");
-    			add_location(div0, file$4, 45, 4, 850);
-    			attr_dev(div1, "class", "right-col svelte-wxh60i");
-    			add_location(div1, file$4, 48, 4, 957);
+    			attr_dev(div0, "class", "left-col svelte-1jj0awn");
+    			add_location(div0, file$4, 46, 4, 871);
+    			attr_dev(div1, "class", "right-col svelte-1jj0awn");
+    			add_location(div1, file$4, 49, 4, 978);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div0, anchor);
@@ -29582,7 +29542,7 @@ var app = (function () {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(45:2) {#if localeUser}",
+    		source: "(46:2) {#if localeUser}",
     		ctx
     	});
 
@@ -29609,8 +29569,8 @@ var app = (function () {
     		c: function create() {
     			main = element("main");
     			if_block.c();
-    			attr_dev(main, "class", "svelte-wxh60i");
-    			add_location(main, file$4, 43, 0, 820);
+    			attr_dev(main, "class", "svelte-1jj0awn");
+    			add_location(main, file$4, 44, 0, 841);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
