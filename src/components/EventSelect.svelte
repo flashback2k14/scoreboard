@@ -7,9 +7,7 @@
   let onlyAdmin = false;
   let localeUser = null;
   let selectableEvents = [];
-  let selectableUsers = [];
   let selectedEvent = null;
-  let selectedUsers = [];
   let addEventInput = "";
 
   const dispatch = createEventDispatcher();
@@ -27,10 +25,7 @@
   });
 
   async function handleEventSelectionChange() {
-    selectedUsers = [];
-    selectableUsers = [];
     dispatch("selected-event", { id: selectedEvent });
-    selectableUsers = await reader.getUsersByRole("read-only");
   }
 
   async function addEvent() {
@@ -38,21 +33,6 @@
     await creator.addEventData(createdEvent.id);
     selectableEvents = await reader.getEventsByUserId(localeUser.uid);
     addEventInput = "";
-  }
-
-  function shouldBeSelected(userId, events) {
-    for (const event of events) {
-      if (event.id === selectedEvent) {
-        selectedUsers.push(userId);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function addUsers() {
-    console.log(selectedUsers);
-    console.log(Array.from(new Set([...selectedUsers])));
   }
 
   onDestroy(unsubscriber);
@@ -86,10 +66,6 @@
     width: calc(100% - 4px);
     height: 36px;
     font-size: medium;
-  }
-
-  .ctrl_select-multi {
-    height: 78px;
   }
 
   .ctrl_input {
@@ -126,28 +102,5 @@
         placeholder="add event name" />
       <button class="ctrl ctrl_button" on:click={addEvent}>Add</button>
     </div>
-
-    {#if selectableUsers.length > 0}
-      <hr />
-
-      <div class="ctrl-container">
-        <select
-          class="ctrl ctrl_select ctrl_select-multi"
-          multiple
-          bind:value={selectedUsers}>
-          {#each selectableUsers as user}
-            <option value={user.id}>
-              {user.name} {shouldBeSelected(user.id, user.events) ? '' : ''}
-            </option>
-          {/each}
-        </select>
-        <button
-          class="ctrl ctrl_button"
-          style="margin-top: 4px"
-          on:click={addUsers}>
-          Save
-        </button>
-      </div>
-    {/if}
   {/if}
 </div>

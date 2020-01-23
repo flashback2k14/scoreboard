@@ -28776,20 +28776,14 @@ var app = (function () {
 
     function get_each_context$1(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[16] = list[i];
+    	child_ctx[11] = list[i];
     	return child_ctx;
     }
 
-    function get_each_context_1$1(ctx, list, i) {
-    	const child_ctx = ctx.slice();
-    	child_ctx[19] = list[i];
-    	return child_ctx;
-    }
-
-    // (113:4) {#each selectableEvents as event}
-    function create_each_block_1$1(ctx) {
+    // (89:4) {#each selectableEvents as event}
+    function create_each_block$1(ctx) {
     	let option;
-    	let t_value = /*event*/ ctx[19].name + "";
+    	let t_value = /*event*/ ctx[11].name + "";
     	let t;
     	let option_value_value;
 
@@ -28797,280 +28791,18 @@ var app = (function () {
     		c: function create() {
     			option = element("option");
     			t = text(t_value);
-    			option.__value = option_value_value = /*event*/ ctx[19].id;
+    			option.__value = option_value_value = /*event*/ ctx[11].id;
     			option.value = option.__value;
-    			add_location(option, file$2, 113, 6, 2501);
+    			add_location(option, file$2, 89, 6, 1954);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option, anchor);
     			append_dev(option, t);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty & /*selectableEvents*/ 2 && t_value !== (t_value = /*event*/ ctx[19].name + "")) set_data_dev(t, t_value);
+    			if (dirty & /*selectableEvents*/ 2 && t_value !== (t_value = /*event*/ ctx[11].name + "")) set_data_dev(t, t_value);
 
-    			if (dirty & /*selectableEvents*/ 2 && option_value_value !== (option_value_value = /*event*/ ctx[19].id)) {
-    				prop_dev(option, "__value", option_value_value);
-    			}
-
-    			option.value = option.__value;
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(option);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_each_block_1$1.name,
-    		type: "each",
-    		source: "(113:4) {#each selectableEvents as event}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (118:2) {#if onlyAdmin}
-    function create_if_block$1(ctx) {
-    	let hr;
-    	let t0;
-    	let div;
-    	let input;
-    	let t1;
-    	let button;
-    	let t3;
-    	let if_block_anchor;
-    	let dispose;
-    	let if_block = /*selectableUsers*/ ctx[2].length > 0 && create_if_block_1$1(ctx);
-
-    	const block = {
-    		c: function create() {
-    			hr = element("hr");
-    			t0 = space();
-    			div = element("div");
-    			input = element("input");
-    			t1 = space();
-    			button = element("button");
-    			button.textContent = "Add";
-    			t3 = space();
-    			if (if_block) if_block.c();
-    			if_block_anchor = empty();
-    			add_location(hr, file$2, 118, 4, 2595);
-    			attr_dev(input, "class", "ctrl ctrl_input svelte-1yzr6o3");
-    			attr_dev(input, "type", "text");
-    			attr_dev(input, "placeholder", "add event name");
-    			add_location(input, file$2, 121, 6, 2642);
-    			attr_dev(button, "class", "ctrl ctrl_button svelte-1yzr6o3");
-    			add_location(button, file$2, 126, 6, 2782);
-    			attr_dev(div, "class", "ctrl-container svelte-1yzr6o3");
-    			add_location(div, file$2, 120, 4, 2607);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, hr, anchor);
-    			insert_dev(target, t0, anchor);
-    			insert_dev(target, div, anchor);
-    			append_dev(div, input);
-    			set_input_value(input, /*addEventInput*/ ctx[5]);
-    			append_dev(div, t1);
-    			append_dev(div, button);
-    			insert_dev(target, t3, anchor);
-    			if (if_block) if_block.m(target, anchor);
-    			insert_dev(target, if_block_anchor, anchor);
-
-    			dispose = [
-    				listen_dev(input, "input", /*input_input_handler*/ ctx[14]),
-    				listen_dev(button, "click", /*addEvent*/ ctx[7], false, false, false)
-    			];
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*addEventInput*/ 32 && input.value !== /*addEventInput*/ ctx[5]) {
-    				set_input_value(input, /*addEventInput*/ ctx[5]);
-    			}
-
-    			if (/*selectableUsers*/ ctx[2].length > 0) {
-    				if (if_block) {
-    					if_block.p(ctx, dirty);
-    				} else {
-    					if_block = create_if_block_1$1(ctx);
-    					if_block.c();
-    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
-    				}
-    			} else if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
-    			}
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(hr);
-    			if (detaching) detach_dev(t0);
-    			if (detaching) detach_dev(div);
-    			if (detaching) detach_dev(t3);
-    			if (if_block) if_block.d(detaching);
-    			if (detaching) detach_dev(if_block_anchor);
-    			run_all(dispose);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block$1.name,
-    		type: "if",
-    		source: "(118:2) {#if onlyAdmin}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (130:4) {#if selectableUsers.length > 0}
-    function create_if_block_1$1(ctx) {
-    	let hr;
-    	let t0;
-    	let div;
-    	let select;
-    	let t1;
-    	let button;
-    	let dispose;
-    	let each_value = /*selectableUsers*/ ctx[2];
-    	let each_blocks = [];
-
-    	for (let i = 0; i < each_value.length; i += 1) {
-    		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
-    	}
-
-    	const block = {
-    		c: function create() {
-    			hr = element("hr");
-    			t0 = space();
-    			div = element("div");
-    			select = element("select");
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].c();
-    			}
-
-    			t1 = space();
-    			button = element("button");
-    			button.textContent = "Save";
-    			add_location(hr, file$2, 130, 6, 2903);
-    			attr_dev(select, "class", "ctrl ctrl_select ctrl_select-multi svelte-1yzr6o3");
-    			select.multiple = true;
-    			if (/*selectedUsers*/ ctx[4] === void 0) add_render_callback(() => /*select_change_handler_1*/ ctx[15].call(select));
-    			add_location(select, file$2, 133, 8, 2954);
-    			attr_dev(button, "class", "ctrl ctrl_button svelte-1yzr6o3");
-    			set_style(button, "margin-top", "4px");
-    			add_location(button, file$2, 143, 8, 3294);
-    			attr_dev(div, "class", "ctrl-container svelte-1yzr6o3");
-    			add_location(div, file$2, 132, 6, 2917);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, hr, anchor);
-    			insert_dev(target, t0, anchor);
-    			insert_dev(target, div, anchor);
-    			append_dev(div, select);
-
-    			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(select, null);
-    			}
-
-    			select_options(select, /*selectedUsers*/ ctx[4]);
-    			append_dev(div, t1);
-    			append_dev(div, button);
-
-    			dispose = [
-    				listen_dev(select, "change", /*select_change_handler_1*/ ctx[15]),
-    				listen_dev(button, "click", /*addUsers*/ ctx[9], false, false, false)
-    			];
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*selectableUsers, shouldBeSelected*/ 260) {
-    				each_value = /*selectableUsers*/ ctx[2];
-    				let i;
-
-    				for (i = 0; i < each_value.length; i += 1) {
-    					const child_ctx = get_each_context$1(ctx, each_value, i);
-
-    					if (each_blocks[i]) {
-    						each_blocks[i].p(child_ctx, dirty);
-    					} else {
-    						each_blocks[i] = create_each_block$1(child_ctx);
-    						each_blocks[i].c();
-    						each_blocks[i].m(select, null);
-    					}
-    				}
-
-    				for (; i < each_blocks.length; i += 1) {
-    					each_blocks[i].d(1);
-    				}
-
-    				each_blocks.length = each_value.length;
-    			}
-
-    			if (dirty & /*selectedUsers*/ 16) {
-    				select_options(select, /*selectedUsers*/ ctx[4]);
-    			}
-    		},
-    		d: function destroy(detaching) {
-    			if (detaching) detach_dev(hr);
-    			if (detaching) detach_dev(t0);
-    			if (detaching) detach_dev(div);
-    			destroy_each(each_blocks, detaching);
-    			run_all(dispose);
-    		}
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_if_block_1$1.name,
-    		type: "if",
-    		source: "(130:4) {#if selectableUsers.length > 0}",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    // (138:10) {#each selectableUsers as user}
-    function create_each_block$1(ctx) {
-    	let option;
-    	let t0_value = /*user*/ ctx[16].name + "";
-    	let t0;
-    	let t1;
-
-    	let t2_value = (/*shouldBeSelected*/ ctx[8](/*user*/ ctx[16].id, /*user*/ ctx[16].events)
-    	? ""
-    	: "") + "";
-
-    	let t2;
-    	let t3;
-    	let option_value_value;
-
-    	const block = {
-    		c: function create() {
-    			option = element("option");
-    			t0 = text(t0_value);
-    			t1 = space();
-    			t2 = text(t2_value);
-    			t3 = space();
-    			option.__value = option_value_value = /*user*/ ctx[16].id;
-    			option.value = option.__value;
-    			add_location(option, file$2, 138, 12, 3126);
-    		},
-    		m: function mount(target, anchor) {
-    			insert_dev(target, option, anchor);
-    			append_dev(option, t0);
-    			append_dev(option, t1);
-    			append_dev(option, t2);
-    			append_dev(option, t3);
-    		},
-    		p: function update(ctx, dirty) {
-    			if (dirty & /*selectableUsers*/ 4 && t0_value !== (t0_value = /*user*/ ctx[16].name + "")) set_data_dev(t0, t0_value);
-
-    			if (dirty & /*selectableUsers*/ 4 && t2_value !== (t2_value = (/*shouldBeSelected*/ ctx[8](/*user*/ ctx[16].id, /*user*/ ctx[16].events)
-    			? ""
-    			: "") + "")) set_data_dev(t2, t2_value);
-
-    			if (dirty & /*selectableUsers*/ 4 && option_value_value !== (option_value_value = /*user*/ ctx[16].id)) {
+    			if (dirty & /*selectableEvents*/ 2 && option_value_value !== (option_value_value = /*event*/ ctx[11].id)) {
     				prop_dev(option, "__value", option_value_value);
     			}
 
@@ -29085,7 +28817,74 @@ var app = (function () {
     		block,
     		id: create_each_block$1.name,
     		type: "each",
-    		source: "(138:10) {#each selectableUsers as user}",
+    		source: "(89:4) {#each selectableEvents as event}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (94:2) {#if onlyAdmin}
+    function create_if_block$1(ctx) {
+    	let hr;
+    	let t0;
+    	let div;
+    	let input;
+    	let t1;
+    	let button;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			hr = element("hr");
+    			t0 = space();
+    			div = element("div");
+    			input = element("input");
+    			t1 = space();
+    			button = element("button");
+    			button.textContent = "Add";
+    			add_location(hr, file$2, 94, 4, 2048);
+    			attr_dev(input, "class", "ctrl ctrl_input svelte-ow12m8");
+    			attr_dev(input, "type", "text");
+    			attr_dev(input, "placeholder", "add event name");
+    			add_location(input, file$2, 97, 6, 2095);
+    			attr_dev(button, "class", "ctrl ctrl_button svelte-ow12m8");
+    			add_location(button, file$2, 102, 6, 2235);
+    			attr_dev(div, "class", "ctrl-container svelte-ow12m8");
+    			add_location(div, file$2, 96, 4, 2060);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, hr, anchor);
+    			insert_dev(target, t0, anchor);
+    			insert_dev(target, div, anchor);
+    			append_dev(div, input);
+    			set_input_value(input, /*addEventInput*/ ctx[3]);
+    			append_dev(div, t1);
+    			append_dev(div, button);
+
+    			dispose = [
+    				listen_dev(input, "input", /*input_input_handler*/ ctx[10]),
+    				listen_dev(button, "click", /*addEvent*/ ctx[5], false, false, false)
+    			];
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*addEventInput*/ 8 && input.value !== /*addEventInput*/ ctx[3]) {
+    				set_input_value(input, /*addEventInput*/ ctx[3]);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(hr);
+    			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(div);
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$1.name,
+    		type: "if",
+    		source: "(94:2) {#if onlyAdmin}",
     		ctx
     	});
 
@@ -29098,11 +28897,11 @@ var app = (function () {
     	let option;
     	let t1;
     	let dispose;
-    	let each_value_1 = /*selectableEvents*/ ctx[1];
+    	let each_value = /*selectableEvents*/ ctx[1];
     	let each_blocks = [];
 
-    	for (let i = 0; i < each_value_1.length; i += 1) {
-    		each_blocks[i] = create_each_block_1$1(get_each_context_1$1(ctx, each_value_1, i));
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$1(get_each_context$1(ctx, each_value, i));
     	}
 
     	let if_block = /*onlyAdmin*/ ctx[0] && create_if_block$1(ctx);
@@ -29124,12 +28923,12 @@ var app = (function () {
     			option.value = option.__value;
     			option.selected = true;
     			option.disabled = true;
-    			add_location(option, file$2, 109, 4, 2361);
-    			attr_dev(select, "class", "ctrl ctrl_select svelte-1yzr6o3");
-    			if (/*selectedEvent*/ ctx[3] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[13].call(select));
-    			add_location(select, file$2, 105, 2, 2245);
-    			attr_dev(div, "class", "container svelte-1yzr6o3");
-    			add_location(div, file$2, 104, 0, 2219);
+    			add_location(option, file$2, 85, 4, 1814);
+    			attr_dev(select, "class", "ctrl ctrl_select svelte-ow12m8");
+    			if (/*selectedEvent*/ ctx[2] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[9].call(select));
+    			add_location(select, file$2, 81, 2, 1698);
+    			attr_dev(div, "class", "container svelte-ow12m8");
+    			add_location(div, file$2, 80, 0, 1672);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -29143,27 +28942,27 @@ var app = (function () {
     				each_blocks[i].m(select, null);
     			}
 
-    			select_option(select, /*selectedEvent*/ ctx[3]);
+    			select_option(select, /*selectedEvent*/ ctx[2]);
     			append_dev(div, t1);
     			if (if_block) if_block.m(div, null);
 
     			dispose = [
-    				listen_dev(select, "change", /*select_change_handler*/ ctx[13]),
-    				listen_dev(select, "change", /*handleEventSelectionChange*/ ctx[6], false, false, false)
+    				listen_dev(select, "change", /*select_change_handler*/ ctx[9]),
+    				listen_dev(select, "change", /*handleEventSelectionChange*/ ctx[4], false, false, false)
     			];
     		},
     		p: function update(ctx, [dirty]) {
     			if (dirty & /*selectableEvents*/ 2) {
-    				each_value_1 = /*selectableEvents*/ ctx[1];
+    				each_value = /*selectableEvents*/ ctx[1];
     				let i;
 
-    				for (i = 0; i < each_value_1.length; i += 1) {
-    					const child_ctx = get_each_context_1$1(ctx, each_value_1, i);
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$1(ctx, each_value, i);
 
     					if (each_blocks[i]) {
     						each_blocks[i].p(child_ctx, dirty);
     					} else {
-    						each_blocks[i] = create_each_block_1$1(child_ctx);
+    						each_blocks[i] = create_each_block$1(child_ctx);
     						each_blocks[i].c();
     						each_blocks[i].m(select, null);
     					}
@@ -29173,11 +28972,11 @@ var app = (function () {
     					each_blocks[i].d(1);
     				}
 
-    				each_blocks.length = each_value_1.length;
+    				each_blocks.length = each_value.length;
     			}
 
-    			if (dirty & /*selectedEvent*/ 8) {
-    				select_option(select, /*selectedEvent*/ ctx[3]);
+    			if (dirty & /*selectedEvent*/ 4) {
+    				select_option(select, /*selectedEvent*/ ctx[2]);
     			}
 
     			if (/*onlyAdmin*/ ctx[0]) {
@@ -29218,9 +29017,7 @@ var app = (function () {
     	let onlyAdmin = false;
     	let localeUser = null;
     	let selectableEvents = [];
-    	let selectableUsers = [];
     	let selectedEvent = null;
-    	let selectedUsers = [];
     	let addEventInput = "";
     	const dispatch = createEventDispatcher();
 
@@ -29236,52 +29033,27 @@ var app = (function () {
     	});
 
     	async function handleEventSelectionChange() {
-    		$$invalidate(4, selectedUsers = []);
-    		$$invalidate(2, selectableUsers = []);
     		dispatch("selected-event", { id: selectedEvent });
-    		$$invalidate(2, selectableUsers = await reader.getUsersByRole("read-only"));
     	}
 
     	async function addEvent() {
     		const createdEvent = await creator.addEvent(localeUser.uid, addEventInput);
     		await creator.addEventData(createdEvent.id);
     		$$invalidate(1, selectableEvents = await reader.getEventsByUserId(localeUser.uid));
-    		$$invalidate(5, addEventInput = "");
-    	}
-
-    	function shouldBeSelected(userId, events) {
-    		for (const event of events) {
-    			if (event.id === selectedEvent) {
-    				selectedUsers.push(userId);
-    				return true;
-    			}
-    		}
-
-    		return false;
-    	}
-
-    	function addUsers() {
-    		console.log(selectedUsers);
-    		console.log(Array.from(new Set([...selectedUsers])));
+    		$$invalidate(3, addEventInput = "");
     	}
 
     	onDestroy(unsubscriber);
 
     	function select_change_handler() {
     		selectedEvent = select_value(this);
-    		$$invalidate(3, selectedEvent);
+    		$$invalidate(2, selectedEvent);
     		$$invalidate(1, selectableEvents);
     	}
 
     	function input_input_handler() {
     		addEventInput = this.value;
-    		$$invalidate(5, addEventInput);
-    	}
-
-    	function select_change_handler_1() {
-    		selectedUsers = select_multiple_value(this);
-    		$$invalidate(4, selectedUsers);
-    		$$invalidate(2, selectableUsers);
+    		$$invalidate(3, addEventInput);
     	}
 
     	$$self.$capture_state = () => {
@@ -29292,29 +29064,22 @@ var app = (function () {
     		if ("onlyAdmin" in $$props) $$invalidate(0, onlyAdmin = $$props.onlyAdmin);
     		if ("localeUser" in $$props) localeUser = $$props.localeUser;
     		if ("selectableEvents" in $$props) $$invalidate(1, selectableEvents = $$props.selectableEvents);
-    		if ("selectableUsers" in $$props) $$invalidate(2, selectableUsers = $$props.selectableUsers);
-    		if ("selectedEvent" in $$props) $$invalidate(3, selectedEvent = $$props.selectedEvent);
-    		if ("selectedUsers" in $$props) $$invalidate(4, selectedUsers = $$props.selectedUsers);
-    		if ("addEventInput" in $$props) $$invalidate(5, addEventInput = $$props.addEventInput);
+    		if ("selectedEvent" in $$props) $$invalidate(2, selectedEvent = $$props.selectedEvent);
+    		if ("addEventInput" in $$props) $$invalidate(3, addEventInput = $$props.addEventInput);
     	};
 
     	return [
     		onlyAdmin,
     		selectableEvents,
-    		selectableUsers,
     		selectedEvent,
-    		selectedUsers,
     		addEventInput,
     		handleEventSelectionChange,
     		addEvent,
-    		shouldBeSelected,
-    		addUsers,
     		localeUser,
     		dispatch,
     		unsubscriber,
     		select_change_handler,
-    		input_input_handler,
-    		select_change_handler_1
+    		input_input_handler
     	];
     }
 
@@ -29332,10 +29097,372 @@ var app = (function () {
     	}
     }
 
-    /* src/components/Main.svelte generated by Svelte v3.17.1 */
-    const file$3 = "src/components/Main.svelte";
+    /* src/components/ViewerSelect.svelte generated by Svelte v3.17.1 */
 
-    // (51:2) {:else}
+    const { console: console_1 } = globals;
+    const file$3 = "src/components/ViewerSelect.svelte";
+
+    function get_each_context$2(ctx, list, i) {
+    	const child_ctx = ctx.slice();
+    	child_ctx[9] = list[i];
+    	return child_ctx;
+    }
+
+    // (83:0) {#if onlyAdmin}
+    function create_if_block$2(ctx) {
+    	let hr;
+    	let t0;
+    	let div;
+    	let select;
+    	let t1;
+    	let button;
+    	let dispose;
+    	let each_value = /*selectableUsers*/ ctx[1];
+    	let each_blocks = [];
+
+    	for (let i = 0; i < each_value.length; i += 1) {
+    		each_blocks[i] = create_each_block$2(get_each_context$2(ctx, each_value, i));
+    	}
+
+    	const block = {
+    		c: function create() {
+    			hr = element("hr");
+    			t0 = space();
+    			div = element("div");
+    			select = element("select");
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].c();
+    			}
+
+    			t1 = space();
+    			button = element("button");
+    			button.textContent = "Save";
+    			add_location(hr, file$3, 83, 2, 1369);
+    			attr_dev(select, "class", "ctrl ctrl_select ctrl_select-multi svelte-8fb1ct");
+    			select.multiple = true;
+    			if (/*selectedUsers*/ ctx[2] === void 0) add_render_callback(() => /*select_change_handler*/ ctx[8].call(select));
+    			add_location(select, file$3, 86, 4, 1412);
+    			attr_dev(button, "class", "ctrl ctrl_button svelte-8fb1ct");
+    			set_style(button, "margin-top", "4px");
+    			add_location(button, file$3, 96, 4, 1712);
+    			attr_dev(div, "class", "ctrl-container svelte-8fb1ct");
+    			add_location(div, file$3, 85, 2, 1379);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, hr, anchor);
+    			insert_dev(target, t0, anchor);
+    			insert_dev(target, div, anchor);
+    			append_dev(div, select);
+
+    			for (let i = 0; i < each_blocks.length; i += 1) {
+    				each_blocks[i].m(select, null);
+    			}
+
+    			select_options(select, /*selectedUsers*/ ctx[2]);
+    			append_dev(div, t1);
+    			append_dev(div, button);
+
+    			dispose = [
+    				listen_dev(select, "change", /*select_change_handler*/ ctx[8]),
+    				listen_dev(button, "click", /*addUsers*/ ctx[4], false, false, false)
+    			];
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*selectableUsers, shouldBeSelected*/ 10) {
+    				each_value = /*selectableUsers*/ ctx[1];
+    				let i;
+
+    				for (i = 0; i < each_value.length; i += 1) {
+    					const child_ctx = get_each_context$2(ctx, each_value, i);
+
+    					if (each_blocks[i]) {
+    						each_blocks[i].p(child_ctx, dirty);
+    					} else {
+    						each_blocks[i] = create_each_block$2(child_ctx);
+    						each_blocks[i].c();
+    						each_blocks[i].m(select, null);
+    					}
+    				}
+
+    				for (; i < each_blocks.length; i += 1) {
+    					each_blocks[i].d(1);
+    				}
+
+    				each_blocks.length = each_value.length;
+    			}
+
+    			if (dirty & /*selectedUsers*/ 4) {
+    				select_options(select, /*selectedUsers*/ ctx[2]);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(hr);
+    			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(div);
+    			destroy_each(each_blocks, detaching);
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$2.name,
+    		type: "if",
+    		source: "(83:0) {#if onlyAdmin}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (91:6) {#each selectableUsers as user}
+    function create_each_block$2(ctx) {
+    	let option;
+    	let t0_value = /*user*/ ctx[9].name + "";
+    	let t0;
+    	let t1;
+
+    	let t2_value = (/*shouldBeSelected*/ ctx[3](/*user*/ ctx[9].id, /*user*/ ctx[9].events)
+    	? ""
+    	: "") + "";
+
+    	let t2;
+    	let t3;
+    	let option_value_value;
+
+    	const block = {
+    		c: function create() {
+    			option = element("option");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			t2 = text(t2_value);
+    			t3 = space();
+    			option.__value = option_value_value = /*user*/ ctx[9].id;
+    			option.value = option.__value;
+    			add_location(option, file$3, 91, 8, 1564);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, option, anchor);
+    			append_dev(option, t0);
+    			append_dev(option, t1);
+    			append_dev(option, t2);
+    			append_dev(option, t3);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*selectableUsers*/ 2 && t0_value !== (t0_value = /*user*/ ctx[9].name + "")) set_data_dev(t0, t0_value);
+
+    			if (dirty & /*selectableUsers*/ 2 && t2_value !== (t2_value = (/*shouldBeSelected*/ ctx[3](/*user*/ ctx[9].id, /*user*/ ctx[9].events)
+    			? ""
+    			: "") + "")) set_data_dev(t2, t2_value);
+
+    			if (dirty & /*selectableUsers*/ 2 && option_value_value !== (option_value_value = /*user*/ ctx[9].id)) {
+    				prop_dev(option, "__value", option_value_value);
+    			}
+
+    			option.value = option.__value;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(option);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block$2.name,
+    		type: "each",
+    		source: "(91:6) {#each selectableUsers as user}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$3(ctx) {
+    	let if_block_anchor;
+    	let if_block = /*onlyAdmin*/ ctx[0] && create_if_block$2(ctx);
+
+    	const block = {
+    		c: function create() {
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			insert_dev(target, if_block_anchor, anchor);
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (/*onlyAdmin*/ ctx[0]) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$2(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach_dev(if_block_anchor);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$3.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$3($$self, $$props, $$invalidate) {
+    	let { eventId } = $$props;
+    	let { userRole } = $$props;
+    	let onlyAdmin = false;
+    	let selectableUsers = [];
+    	let selectedUsers = [];
+
+    	async function loadData() {
+    		$$invalidate(2, selectedUsers = []);
+    		$$invalidate(1, selectableUsers = []);
+    		$$invalidate(1, selectableUsers = await reader.getUsersByRole("read-only"));
+    	}
+
+    	function shouldBeSelected(userId, events) {
+    		for (const event of events) {
+    			if (event.id === eventId) {
+    				selectedUsers.push(userId);
+    				return true;
+    			}
+    		}
+
+    		return false;
+    	}
+
+    	function addUsers() {
+    		console.log(selectedUsers);
+    		console.log(Array.from(new Set([...selectedUsers])));
+    	}
+
+    	const writable_props = ["eventId", "userRole"];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== "$$") console_1.warn(`<ViewerSelect> was created with unknown prop '${key}'`);
+    	});
+
+    	function select_change_handler() {
+    		selectedUsers = select_multiple_value(this);
+    		$$invalidate(2, selectedUsers);
+    		$$invalidate(1, selectableUsers);
+    	}
+
+    	$$self.$set = $$props => {
+    		if ("eventId" in $$props) $$invalidate(5, eventId = $$props.eventId);
+    		if ("userRole" in $$props) $$invalidate(6, userRole = $$props.userRole);
+    	};
+
+    	$$self.$capture_state = () => {
+    		return {
+    			eventId,
+    			userRole,
+    			onlyAdmin,
+    			selectableUsers,
+    			selectedUsers
+    		};
+    	};
+
+    	$$self.$inject_state = $$props => {
+    		if ("eventId" in $$props) $$invalidate(5, eventId = $$props.eventId);
+    		if ("userRole" in $$props) $$invalidate(6, userRole = $$props.userRole);
+    		if ("onlyAdmin" in $$props) $$invalidate(0, onlyAdmin = $$props.onlyAdmin);
+    		if ("selectableUsers" in $$props) $$invalidate(1, selectableUsers = $$props.selectableUsers);
+    		if ("selectedUsers" in $$props) $$invalidate(2, selectedUsers = $$props.selectedUsers);
+    	};
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*eventId, userRole*/ 96) {
+    			 {
+    				if (eventId) {
+    					loadData();
+    				}
+
+    				if (userRole) {
+    					$$invalidate(0, onlyAdmin = userRole === "admin");
+    				}
+    			}
+    		}
+    	};
+
+    	return [
+    		onlyAdmin,
+    		selectableUsers,
+    		selectedUsers,
+    		shouldBeSelected,
+    		addUsers,
+    		eventId,
+    		userRole,
+    		loadData,
+    		select_change_handler
+    	];
+    }
+
+    class ViewerSelect extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$3, create_fragment$3, safe_not_equal, { eventId: 5, userRole: 6 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "ViewerSelect",
+    			options,
+    			id: create_fragment$3.name
+    		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || ({});
+
+    		if (/*eventId*/ ctx[5] === undefined && !("eventId" in props)) {
+    			console_1.warn("<ViewerSelect> was created without expected prop 'eventId'");
+    		}
+
+    		if (/*userRole*/ ctx[6] === undefined && !("userRole" in props)) {
+    			console_1.warn("<ViewerSelect> was created without expected prop 'userRole'");
+    		}
+    	}
+
+    	get eventId() {
+    		throw new Error("<ViewerSelect>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set eventId(value) {
+    		throw new Error("<ViewerSelect>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get userRole() {
+    		throw new Error("<ViewerSelect>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set userRole(value) {
+    		throw new Error("<ViewerSelect>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src/components/Main.svelte generated by Svelte v3.17.1 */
+    const file$4 = "src/components/Main.svelte";
+
+    // (53:2) {:else}
     function create_else_block$1(ctx) {
     	let span;
 
@@ -29343,7 +29470,7 @@ var app = (function () {
     		c: function create() {
     			span = element("span");
     			span.textContent = "User is not logged in.";
-    			add_location(span, file$3, 51, 4, 1016);
+    			add_location(span, file$4, 53, 4, 1144);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -29360,18 +29487,19 @@ var app = (function () {
     		block,
     		id: create_else_block$1.name,
     		type: "else",
-    		source: "(51:2) {:else}",
+    		source: "(53:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (44:2) {#if localeUser}
-    function create_if_block$2(ctx) {
+    // (45:2) {#if localeUser}
+    function create_if_block$3(ctx) {
     	let div0;
-    	let t;
+    	let t0;
     	let div1;
+    	let t1;
     	let current;
 
     	const table = new Table({
@@ -29385,24 +29513,36 @@ var app = (function () {
     	const eventselect = new EventSelect({ $$inline: true });
     	eventselect.$on("selected-event", /*handleSelectedEvent*/ ctx[2]);
 
+    	const viewerselect = new ViewerSelect({
+    			props: {
+    				eventId: /*selectedEventId*/ ctx[1],
+    				userRole: /*localeUser*/ ctx[0].role
+    			},
+    			$$inline: true
+    		});
+
     	const block = {
     		c: function create() {
     			div0 = element("div");
     			create_component(table.$$.fragment);
-    			t = space();
+    			t0 = space();
     			div1 = element("div");
     			create_component(eventselect.$$.fragment);
+    			t1 = space();
+    			create_component(viewerselect.$$.fragment);
     			attr_dev(div0, "class", "left-col svelte-wxh60i");
-    			add_location(div0, file$3, 44, 4, 798);
+    			add_location(div0, file$4, 45, 4, 850);
     			attr_dev(div1, "class", "right-col svelte-wxh60i");
-    			add_location(div1, file$3, 47, 4, 905);
+    			add_location(div1, file$4, 48, 4, 957);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div0, anchor);
     			mount_component(table, div0, null);
-    			insert_dev(target, t, anchor);
+    			insert_dev(target, t0, anchor);
     			insert_dev(target, div1, anchor);
     			mount_component(eventselect, div1, null);
+    			append_dev(div1, t1);
+    			mount_component(viewerselect, div1, null);
     			current = true;
     		},
     		p: function update(ctx, dirty) {
@@ -29410,44 +29550,51 @@ var app = (function () {
     			if (dirty & /*selectedEventId*/ 2) table_changes.eventId = /*selectedEventId*/ ctx[1];
     			if (dirty & /*localeUser*/ 1) table_changes.userRole = /*localeUser*/ ctx[0].role;
     			table.$set(table_changes);
+    			const viewerselect_changes = {};
+    			if (dirty & /*selectedEventId*/ 2) viewerselect_changes.eventId = /*selectedEventId*/ ctx[1];
+    			if (dirty & /*localeUser*/ 1) viewerselect_changes.userRole = /*localeUser*/ ctx[0].role;
+    			viewerselect.$set(viewerselect_changes);
     		},
     		i: function intro(local) {
     			if (current) return;
     			transition_in(table.$$.fragment, local);
     			transition_in(eventselect.$$.fragment, local);
+    			transition_in(viewerselect.$$.fragment, local);
     			current = true;
     		},
     		o: function outro(local) {
     			transition_out(table.$$.fragment, local);
     			transition_out(eventselect.$$.fragment, local);
+    			transition_out(viewerselect.$$.fragment, local);
     			current = false;
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div0);
     			destroy_component(table);
-    			if (detaching) detach_dev(t);
+    			if (detaching) detach_dev(t0);
     			if (detaching) detach_dev(div1);
     			destroy_component(eventselect);
+    			destroy_component(viewerselect);
     		}
     	};
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block$2.name,
+    		id: create_if_block$3.name,
     		type: "if",
-    		source: "(44:2) {#if localeUser}",
+    		source: "(45:2) {#if localeUser}",
     		ctx
     	});
 
     	return block;
     }
 
-    function create_fragment$3(ctx) {
+    function create_fragment$4(ctx) {
     	let main;
     	let current_block_type_index;
     	let if_block;
     	let current;
-    	const if_block_creators = [create_if_block$2, create_else_block$1];
+    	const if_block_creators = [create_if_block$3, create_else_block$1];
     	const if_blocks = [];
 
     	function select_block_type(ctx, dirty) {
@@ -29463,7 +29610,7 @@ var app = (function () {
     			main = element("main");
     			if_block.c();
     			attr_dev(main, "class", "svelte-wxh60i");
-    			add_location(main, file$3, 42, 0, 768);
+    			add_location(main, file$4, 43, 0, 820);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -29515,7 +29662,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$3.name,
+    		id: create_fragment$4.name,
     		type: "component",
     		source: "",
     		ctx
@@ -29524,7 +29671,7 @@ var app = (function () {
     	return block;
     }
 
-    function instance$3($$self, $$props, $$invalidate) {
+    function instance$4($$self, $$props, $$invalidate) {
     	let localeUser;
     	let selectedEventId;
 
@@ -29553,22 +29700,22 @@ var app = (function () {
     class Main extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$3, create_fragment$3, safe_not_equal, {});
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Main",
     			options,
-    			id: create_fragment$3.name
+    			id: create_fragment$4.name
     		});
     	}
     }
 
     /* src/components/Footer.svelte generated by Svelte v3.17.1 */
 
-    const file$4 = "src/components/Footer.svelte";
+    const file$5 = "src/components/Footer.svelte";
 
-    function create_fragment$4(ctx) {
+    function create_fragment$5(ctx) {
     	let footer;
     	let span;
 
@@ -29577,9 +29724,9 @@ var app = (function () {
     			footer = element("footer");
     			span = element("span");
     			span.textContent = "developed by flashback2k14";
-    			add_location(span, file$4, 15, 2, 181);
+    			add_location(span, file$5, 15, 2, 181);
     			attr_dev(footer, "class", "svelte-12i6chs");
-    			add_location(footer, file$4, 14, 0, 170);
+    			add_location(footer, file$5, 14, 0, 170);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -29598,7 +29745,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$4.name,
+    		id: create_fragment$5.name,
     		type: "component",
     		source: "",
     		ctx
@@ -29610,21 +29757,21 @@ var app = (function () {
     class Footer extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, null, create_fragment$4, safe_not_equal, {});
+    		init(this, options, null, create_fragment$5, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "Footer",
     			options,
-    			id: create_fragment$4.name
+    			id: create_fragment$5.name
     		});
     	}
     }
 
     /* src/components/App.svelte generated by Svelte v3.17.1 */
-    const file$5 = "src/components/App.svelte";
+    const file$6 = "src/components/App.svelte";
 
-    function create_fragment$5(ctx) {
+    function create_fragment$6(ctx) {
     	let div;
     	let t0;
     	let t1;
@@ -29642,7 +29789,7 @@ var app = (function () {
     			t1 = space();
     			create_component(footer.$$.fragment);
     			attr_dev(div, "class", "container svelte-1gxwenc");
-    			add_location(div, file$5, 15, 0, 257);
+    			add_location(div, file$6, 15, 0, 257);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -29680,7 +29827,7 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_fragment$5.name,
+    		id: create_fragment$6.name,
     		type: "component",
     		source: "",
     		ctx
@@ -29692,13 +29839,13 @@ var app = (function () {
     class App extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, null, create_fragment$5, safe_not_equal, {});
+    		init(this, options, null, create_fragment$6, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "App",
     			options,
-    			id: create_fragment$5.name
+    			id: create_fragment$6.name
     		});
     	}
     }

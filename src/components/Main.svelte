@@ -2,6 +2,7 @@
   import { onDestroy } from "svelte";
   import Table from "./Table.svelte";
   import EventSelect from "./EventSelect.svelte";
+  import ViewerSelect from "./ViewerSelect.svelte";
 
   import { user } from "../store/store.js";
 
@@ -47,6 +48,7 @@
     </div>
     <div class="right-col">
       <EventSelect on:selected-event={handleSelectedEvent} />
+      <ViewerSelect eventId={selectedEventId} userRole={localeUser.role} />
     </div>
   {:else}
     <span>User is not logged in.</span>
