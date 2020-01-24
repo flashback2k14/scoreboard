@@ -1,7 +1,7 @@
 <script>
   import { onMount } from "svelte";
   import { auth, reader } from "../database";
-  import { user } from "../store/store.js";
+  import { user } from "../store";
 
   let loginUser = {
     email: "",

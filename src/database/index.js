@@ -1,4 +1,4 @@
-import { auth as firebaseAuth, usersCollection, eventsCollection, eventDataCollection } from '../store/firebase';
+import { auth as firebaseAuth, usersCollection, eventsCollection, eventDataCollection } from '../config';
 import { convertDocument } from '../utils';
 
 const auth = {

@@ -1,4 +1,4 @@
-import { Timestamp } from '../store/firebase';
+import { Timestamp } from '../config';
 
 export const convertDocument = docs => {
   return docs.map(item => {

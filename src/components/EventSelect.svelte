@@ -1,7 +1,7 @@
 <script>
   import { onDestroy, createEventDispatcher } from "svelte";
 
-  import { user } from "../store/store.js";
+  import { user } from "../store";
   import { creator, reader } from "../database";
 
   let onlyAdmin = false;

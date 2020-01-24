@@ -4,7 +4,7 @@
   import EventSelect from "./EventSelect.svelte";
   import ViewerSelect from "./ViewerSelect.svelte";
 
-  import { user } from "../store/store.js";
+  import { user } from "../store";
 
   let localeUser;
   let selectedEventId;
