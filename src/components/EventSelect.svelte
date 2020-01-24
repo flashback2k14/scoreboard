@@ -71,6 +71,8 @@
   .ctrl_button {
     text-transform: uppercase;
     cursor: pointer;
+    background: lightsteelblue;
+    color: #000;
   }
 </style>
 
@@ -96,7 +98,7 @@
       bind:value={addEventInput}
       class="ctrl ctrl_input"
       type="text"
-      placeholder="add event name" />
+      placeholder="New event name" />
     <button class="ctrl ctrl_button" on:click={addEvent}>Add</button>
   </div>
 {/if}

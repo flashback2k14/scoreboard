@@ -92,7 +92,6 @@
 
 <style>
   .table-scroll {
-    width: inherit;
     overflow-x: auto;
     margin-top: 4px;
     margin-bottom: 8px;
@@ -114,6 +113,7 @@
 
   table {
     border-collapse: collapse;
+    margin-bottom: 12px;
   }
 
   .ctrls-container {
@@ -123,7 +123,7 @@
 
   .ctrl-container {
     margin-top: 4px;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
   }
 
   .ctrl {
@@ -152,6 +152,15 @@
   .ctrl_button {
     text-transform: uppercase;
     cursor: pointer;
+    background: lightsteelblue;
+    color: #000;
+  }
+
+  .no-event-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
   }
 </style>
 
@@ -224,5 +233,7 @@
     </div>
   {/if}
 {:else}
-  <span>No event selected.</span>
+  <div class="no-event-container">
+    <h2>No event is selected.</h2>
+  </div>
 {/if}

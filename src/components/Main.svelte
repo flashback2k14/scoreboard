@@ -40,6 +40,14 @@
     width: 25%;
     padding-left: 4px;
   }
+
+  .no-user-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+  }
 </style>
 
 <main>
@@ -52,6 +60,8 @@
       <ViewerSelect eventId={selectedEventId} userRole={localeUser.role} />
     </div>
   {:else}
-    <span>User is not logged in.</span>
+    <div class="no-user-container">
+      <h2>No User is logged in.</h2>
+    </div>
   {/if}
 </main>

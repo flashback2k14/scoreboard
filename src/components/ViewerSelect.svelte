@@ -101,12 +101,12 @@
 
   input[type="checkbox"]:checked + label:after {
     content: "\E5CA";
-    color: #fff;
+    color: #000;
     font-size: 16px;
     text-align: center;
     line-height: 16px;
-    background: steelblue;
-    border-color: steelblue;
+    background: lightsteelblue;
+    border-color: lightsteelblue;
   }
 </style>
 
