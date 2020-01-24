@@ -1,5 +1,5 @@
 <script>
-  import { reader } from "../database";
+  import { creator, reader, updater } from "../database";
 
   export let eventId;
   export let userRole;
@@ -32,18 +32,27 @@
   }
 
   function handleChangedViewerSelection(user) {
-    return function(event) {
-      console.log(event.target.checked);
-      console.log(user.uid);
+    return async function(event) {
+      let data;
+
+      if (event.target.checked) {
+        // add to events
+        const newEvent = creator.getEventRef(eventId);
+        data = { ...user, events: [...user.events, newEvent] };
+        console.log(data);
+      } else {
+        // remove from events
+        const updatedEvents = user.events.filter(event => event.id !== eventId);
+        data = { ...user, events: updatedEvents };
+        console.log(data);
+      }
+
+      await updater.updateUserData(user.id, data);
     };
   }
 </script>
 
 <style>
-  .ctrl-container {
-    /* margin-top: 4px; */
-  }
-
   ul {
     list-style: none;
     margin-top: 0;
@@ -101,8 +110,10 @@
   }
 </style>
 
-{#if onlyAdmin}
+{#if onlyAdmin && selectableUsers && selectableUsers.length > 0}
   <hr />
+
+  <h3>Viewer Selection</h3>
 
   <ul>
     {#each selectableUsers as user, i}

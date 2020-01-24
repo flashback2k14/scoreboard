@@ -26,6 +26,9 @@ const creator = {
     };
 
     return await eventDataCollection.add(data);
+  },
+  getEventRef: eid => {
+    return eventsCollection.doc(eid);
   }
 };
 
@@ -69,8 +72,11 @@ const reader = {
 };
 
 const updater = {
-  updateEventData: async (edId, data) => {
-    return await eventDataCollection.doc(edId).update(data);
+  updateEventData: async (edid, data) => {
+    return await eventDataCollection.doc(edid).update(data);
+  },
+  updateUserData: async (id, data) => {
+    return await usersCollection.doc(id).update(data);
   }
 };
 

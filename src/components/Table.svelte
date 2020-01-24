@@ -123,6 +123,7 @@
 
   .ctrl-container {
     margin-top: 4px;
+    margin-bottom: 4px;
   }
 
   .ctrl {
@@ -154,76 +155,74 @@
   }
 </style>
 
-<div>
-  {#if eventId}
-    <!-- {@debug tableData} -->
+{#if eventId}
+  <!-- {@debug tableData} -->
 
-    {#if onlyAdmin}
-      <div class="ctrls-container">
+  {#if onlyAdmin}
+    <div class="ctrls-container">
 
-        <div class="ctrl-container">
-          <input
-            bind:value={selectedNewDate}
-            class="ctrl ctrl_input ctrl_date"
-            type="date" />
-          <button class="ctrl ctrl_button" on:click={addNewDate}>
-            Add new Date
-          </button>
-        </div>
-
-        <div class="ctrl-container">
-          <input
-            bind:value={newParticipant}
-            class="ctrl ctrl_input"
-            type="text"
-            placeholder="enter new participant" />
-          <button class="ctrl ctrl_button" on:click={addNewParticipant}>
-            Add new Participant
-          </button>
-        </div>
-
+      <div class="ctrl-container">
+        <input
+          bind:value={selectedNewDate}
+          class="ctrl ctrl_input ctrl_date"
+          type="date" />
+        <button class="ctrl ctrl_button" on:click={addNewDate}>
+          Add new Date
+        </button>
       </div>
-    {/if}
 
-    {#if tableData}
-      <div class="ctrl-container table-scroll">
-        <table border="solid 1px black" cellpadding="4">
-          <thead>
-            <tr>
-              <th align="left" rowspan="2">Teilnehmer</th>
-              {#each tableData.rowHeaders as header}
-                <th>Datum / Punktzahl</th>
-              {/each}
-              <th align="left" rowspan="2">Summe</th>
-            </tr>
-            <tr>
-              {#each tableData.rowHeaders as header}
-                <th>{header}</th>
-              {/each}
-            </tr>
-          </thead>
-          <tbody>
-            {#each tableData.rowData as data, rowIndex}
-              <tr>
-                {#each data as entry, colIndex}
-                  <td>
-                    {#if colIndex === 0 || colIndex === data.length - 1 || !onlyAdmin}
-                      <span>{entry}</span>
-                    {:else}
-                      <input
-                        type="number"
-                        value={entry}
-                        on:blur={e => handleOnBlur(e, rowIndex, colIndex)} />
-                    {/if}
-                  </td>
-                {/each}
-              </tr>
-            {/each}
-          </tbody>
-        </table>
+      <div class="ctrl-container">
+        <input
+          bind:value={newParticipant}
+          class="ctrl ctrl_input"
+          type="text"
+          placeholder="enter new participant" />
+        <button class="ctrl ctrl_button" on:click={addNewParticipant}>
+          Add new Participant
+        </button>
       </div>
-    {/if}
-  {:else}
-    <span>No event selected.</span>
+
+    </div>
   {/if}
-</div>
+
+  {#if tableData}
+    <div class="ctrl-container table-scroll">
+      <table border="solid 1px black" cellpadding="4">
+        <thead>
+          <tr>
+            <th align="left" rowspan="2">Teilnehmer</th>
+            {#each tableData.rowHeaders as header}
+              <th>Datum / Punktzahl</th>
+            {/each}
+            <th align="left" rowspan="2">Summe</th>
+          </tr>
+          <tr>
+            {#each tableData.rowHeaders as header}
+              <th>{header}</th>
+            {/each}
+          </tr>
+        </thead>
+        <tbody>
+          {#each tableData.rowData as data, rowIndex}
+            <tr>
+              {#each data as entry, colIndex}
+                <td>
+                  {#if colIndex === 0 || colIndex === data.length - 1 || !onlyAdmin}
+                    <span>{entry}</span>
+                  {:else}
+                    <input
+                      type="number"
+                      value={entry}
+                      on:blur={e => handleOnBlur(e, rowIndex, colIndex)} />
+                  {/if}
+                </td>
+              {/each}
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
+  {/if}
+{:else}
+  <span>No event selected.</span>
+{/if}

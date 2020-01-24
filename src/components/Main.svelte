@@ -31,7 +31,7 @@
 
   .left-col {
     width: 74%;
-    margin-top: 4px;
+    margin-top: 8px;
     padding-right: 6px;
     border-right: 1px solid black;
   }

@@ -39,10 +39,6 @@
 </script>
 
 <style>
-  .container {
-    margin-top: 8px;
-  }
-
   .ctrl-container {
     margin-top: 4px;
   }
@@ -69,7 +65,7 @@
   }
 
   .ctrl_input {
-    width: 82%;
+    width: 84%;
   }
 
   .ctrl_button {
@@ -78,29 +74,29 @@
   }
 </style>
 
-<div class="container">
-  <select
-    class="ctrl ctrl_select"
-    bind:value={selectedEvent}
-    on:change={handleEventSelectionChange}>
-    <option value="nothing" selected disabled>
-      Select an event or create one...
-    </option>
-    {#each selectableEvents as event}
-      <option value={event.id}>{event.name}</option>
-    {/each}
-  </select>
+<h3>Event Selection</h3>
 
-  {#if onlyAdmin}
-    <hr />
+<select
+  class="ctrl ctrl_select"
+  bind:value={selectedEvent}
+  on:change={handleEventSelectionChange}>
+  <option value="nothing" selected disabled>
+    Select an event or create one...
+  </option>
+  {#each selectableEvents as event}
+    <option value={event.id}>{event.name}</option>
+  {/each}
+</select>
 
-    <div class="ctrl-container">
-      <input
-        bind:value={addEventInput}
-        class="ctrl ctrl_input"
-        type="text"
-        placeholder="add event name" />
-      <button class="ctrl ctrl_button" on:click={addEvent}>Add</button>
-    </div>
-  {/if}
-</div>
+{#if onlyAdmin}
+  <hr />
+
+  <div class="ctrl-container">
+    <input
+      bind:value={addEventInput}
+      class="ctrl ctrl_input"
+      type="text"
+      placeholder="add event name" />
+    <button class="ctrl ctrl_button" on:click={addEvent}>Add</button>
+  </div>
+{/if}
