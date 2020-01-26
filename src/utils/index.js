@@ -37,7 +37,7 @@ export const updateScores = rowData => {
       .slice(1, row.length - 1)
       .map(entry => Number(entry))
       .forEach((value, i) => {
-        newScores[`day${i + 1}`] = value;
+        newScores[i + 1] = value;
       });
     scores[row[0]] = newScores;
   });

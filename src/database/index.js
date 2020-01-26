@@ -18,10 +18,8 @@ const creator = {
     const eventRef = eventsCollection.doc(eid);
 
     const data = {
-      dayCount: 0,
       days: {},
       eid: eventRef,
-      participants: {},
       scores: {}
     };
 
@@ -73,6 +71,7 @@ const reader = {
 
 const updater = {
   updateEventData: async (edid, data) => {
+    delete data.id;
     return await eventDataCollection.doc(edid).update(data);
   },
   updateUserData: async (id, data) => {

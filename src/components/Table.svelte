@@ -36,8 +36,7 @@
   }
 
   async function addNewDate() {
-    remoteData.dayCount++;
-    const newDayKey = `day${remoteData.dayCount}`;
+    const newDayKey = Object.keys(remoteData.days).length + 1;
     remoteData.days[newDayKey] = convertToTimestamp(selectedNewDate);
 
     Object.entries(remoteData.scores).forEach(([key, value]) => {
@@ -57,11 +56,14 @@
   }
 
   async function addNewParticipant() {
-    remoteData.participants[newParticipant] = newParticipant;
-
     let newRow = {};
-    for (var i = 1; i <= remoteData.dayCount; i++) {
-      newRow[`day${i}`] = 0;
+
+    for (
+      let i = 1, length = Object.keys(remoteData.days).length;
+      i <= length;
+      i++
+    ) {
+      newRow[i] = 0;
     }
 
     remoteData.scores[newParticipant] = newRow;
@@ -165,8 +167,6 @@
 </style>
 
 {#if eventId}
-  <!-- {@debug tableData} -->
-
   {#if onlyAdmin}
     <div class="ctrls-container">
 
