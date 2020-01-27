@@ -14,9 +14,9 @@
 
   const unsubscriber = user.subscribe(async remoteUser => {
     localeUser = remoteUser;
-    onlyAdmin = remoteUser.role === "admin";
 
     if (remoteUser) {
+      onlyAdmin = remoteUser.role === "admin";
       selectableEvents =
         remoteUser.role === "read-only"
           ? await reader.getEventsByViewerRefs(remoteUser.events)

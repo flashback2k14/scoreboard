@@ -4,6 +4,11 @@
   import EventSelect from "./EventSelect.svelte";
   import ViewerSelect from "./ViewerSelect.svelte";
 
+  import YeahInput from "./atoms/YeahInput.svelte";
+  import YeahTextArea from "./atoms/YeahTextArea.svelte";
+  import YeahButton from "./atoms/YeahButton.svelte";
+  import YeahSelect from "./atoms/YeahSelect.svelte";
+
   import { user } from "../store";
 
   let localeUser;
@@ -43,6 +48,7 @@
 
   .no-user-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100%;
@@ -62,6 +68,16 @@
   {:else}
     <div class="no-user-container">
       <h2>No User is logged in.</h2>
+      <div style=" display: flex;">
+        <YeahInput labelText="TEST Input" />
+        <YeahButton buttonText="TEST" />
+      </div>
+      <div>
+        <YeahTextArea labelText="TEST Text" />
+      </div>
+      <div>
+        <YeahSelect labelText="TEST Select" />
+      </div>
     </div>
   {/if}
 </main>
