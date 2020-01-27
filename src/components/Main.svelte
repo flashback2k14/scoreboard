@@ -69,7 +69,8 @@
     <div class="no-user-container">
       <h2>No User is logged in.</h2>
       <div style=" display: flex;">
-        <YeahInput labelText="TEST Input" />
+        <YeahInput labelText="E-Mail" inputType="text" />
+        <YeahInput labelText="Password" inputType="password" />
         <YeahButton buttonText="TEST" />
       </div>
       <div>

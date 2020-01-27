@@ -84,26 +84,18 @@
   }
 
   /* Hover */
-  .textfield-outlined > textarea:hover {
-    border-color: var(--primary-rgb);
+  .textfield-outlined:hover > textarea {
+    border-color: var(--border-2-rgba);
     border-top-color: transparent;
-    box-shadow: inset 1px 1px var(--primary-rgb),
-      inset -1px 1px var(--primary-rgb), inset 1px -1px var(--primary-rgb);
-    outline: none;
   }
 
-  .textfield-outlined > textarea:hover + span {
-    color: var(--primary-rgb);
+  .textfield-outlined:hover > textarea + span::before,
+  .textfield-outlined:hover > textarea + span::after {
+    border-top-color: var(--border-2-rgba) !important;
   }
 
-  .textfield-outlined > textarea:hover + span::before,
-  .textfield-outlined > textarea:hover + span::after {
-    border-top-color: var(--primary-rgb) !important;
-    box-shadow: inset 0 1px var(--primary-rgb);
-  }
-
-  .textfield-outlined:hover > textarea:not(:focus):placeholder-shown {
-    border-color: var(--primary-rgb);
+  .textfield-outlined > textarea:not(:focus):placeholder-shown {
+    border-color: var(--border-2-rgba);
   }
 
   /* Placeholder-shown */

@@ -1,5 +1,6 @@
 <script>
   export let labelText;
+  export let inputType;
 </script>
 
 <style>
@@ -84,26 +85,18 @@
   }
 
   /* Hover */
-  .textfield-outlined > input:hover {
-    border-color: var(--primary-rgb);
+  .textfield-outlined:hover > input {
+    border-color: var(--border-2-rgba);
     border-top-color: transparent;
-    box-shadow: inset 1px 1px var(--primary-rgb),
-      inset -1px 1px var(--primary-rgb), inset 1px -1px var(--primary-rgb);
-    outline: none;
   }
 
-  .textfield-outlined > input:hover + span {
-    color: var(--primary-rgb);
+  .textfield-outlined:hover > input + span::before,
+  .textfield-outlined:hover > input + span::after {
+    border-top-color: var(--border-2-rgba) !important;
   }
 
-  .textfield-outlined > input:hover + span::before,
-  .textfield-outlined > input:hover + span::after {
-    border-top-color: var(--primary-rgb) !important;
-    box-shadow: inset 0 1px var(--primary-rgb);
-  }
-
-  .textfield-outlined:hover > input:not(:focus):placeholder-shown {
-    border-color: var(--primary-rgb);
+  .textfield-outlined > input:not(:focus):placeholder-shown {
+    border-color: var(--border-2-rgba);
   }
 
   /* Placeholder-shown */
@@ -178,6 +171,6 @@
 </style>
 
 <label class="textfield-outlined">
-  <input placeholder=" " />
+  <input placeholder=" " type={inputType} />
   <span>{labelText}</span>
 </label>

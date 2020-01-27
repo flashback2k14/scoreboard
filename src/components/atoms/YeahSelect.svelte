@@ -87,26 +87,18 @@
   }
 
   /* Hover */
-  .textfield-outlined > select:hover {
-    border-color: var(--primary-rgb);
+  .textfield-outlined:hover > select {
+    border-color: var(--border-2-rgba);
     border-top-color: transparent;
-    box-shadow: inset 1px 0 var(--primary-rgb), inset -1px 0 var(--primary-rgb),
-      inset 0 -1px var(--primary-rgb);
-    outline: none;
   }
 
-  .textfield-outlined > select:hover + span {
-    color: var(--primary-rgb);
+  .textfield-outlined:hover > select + span::before,
+  .textfield-outlined:hover > select + span::after {
+    border-top-color: var(--border-2-rgba) !important;
   }
 
-  .textfield-outlined > select:hover + span::before,
-  .textfield-outlined > select:hover + span::after {
-    border-top-color: var(--primary-rgb) !important;
-    box-shadow: inset 0 1px var(--primary-rgb);
-  }
-
-  .textfield-outlined:hover > select:not(:focus):placeholder-shown {
-    border-color: var(--primary-rgb);
+  .textfield-outlined > select:not(:focus):placeholder-shown {
+    border-color: var(--border-2-rgba);
   }
 
   /* Placeholder-shown */
