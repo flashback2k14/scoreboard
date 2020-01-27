@@ -12,7 +12,7 @@
     font-family: inherit;
 
     margin-top: 6px;
-    height: 56px;
+    height: 53px;
   }
 
   button.outline {
@@ -20,7 +20,7 @@
     z-index: 3;
     background: transparent;
     color: var(--primary-rgb);
-    font-size: 16px;
+    font-size: 14px;
     border-color: var(--primary-rgb);
     border-style: solid;
     border-width: 2px;

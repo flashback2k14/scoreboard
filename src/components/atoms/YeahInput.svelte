@@ -13,7 +13,7 @@
     display: inline-block;
     padding-top: 6px;
     font-family: inherit;
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1.5;
     overflow: hidden;
   }
@@ -48,7 +48,7 @@
     width: 100%;
     max-height: 100%;
     color: var(--border-1-rgba);
-    font-size: 75%;
+    font-size: 85%;
     line-height: 15px;
     cursor: text;
     transition: color 0.2s, font-size 0.2s, line-height 0.2s;
