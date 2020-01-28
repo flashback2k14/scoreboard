@@ -1,5 +1,14 @@
 @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
 
+:root {
+  --primary-color: rgb(41, 98, 255);
+  --white-color: rgb(255, 255, 255);
+
+  --border-1-color: rgba(55, 71, 79, 0.38);
+  --border-2-color: rgba(55, 71, 79, 0.6);
+  --border-3-color: rgba(55, 71, 79, 0.87);
+}
+
 * {
   font-family: 'Lato', sans-serif;
 }

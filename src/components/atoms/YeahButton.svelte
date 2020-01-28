@@ -4,9 +4,6 @@
 
 <style>
   button {
-    --primary-rgb: rgb(41, 98, 255);
-    --secondary-rgb: rgb(255, 255, 255);
-
     cursor: pointer;
     outline: none;
     font-family: inherit;
@@ -19,9 +16,9 @@
     position: relative;
     z-index: 3;
     background: transparent;
-    color: var(--primary-rgb);
+    color: var(--primary-color);
     font-size: 14px;
-    border-color: var(--primary-rgb);
+    border-color: var(--primary-color);
     border-style: solid;
     border-width: 2px;
     border-radius: 4px;
@@ -32,8 +29,8 @@
 
   button.outline:hover,
   button.outline:focus {
-    color: var(--secondary-rgb);
-    background: var(--primary-rgb);
+    color: var(--white-color);
+    background: var(--primary-color);
     transition: all 0.2s linear;
   }
 

@@ -4,11 +4,6 @@
 
 <style>
   .textfield-outlined {
-    --primary-rgb: rgb(41, 98, 255);
-    --border-1-rgba: rgba(55, 71, 79, 0.6);
-    --border-2-rgba: rgba(55, 71, 79, 0.87);
-    --border-3-rgba: rgba(55, 71, 79, 0.38);
-
     position: relative;
     display: inline-block;
     padding-top: 6px;
@@ -25,19 +20,19 @@
     box-sizing: border-box;
     margin: 0;
     border: solid 1px; /* Safari */
-    border-color: var(--border-1-rgba);
+    border-color: var(--border-2-color);
     border-top-color: transparent;
     border-radius: 4px;
     padding: 15px 13px 15px;
     width: 100%;
     height: inherit;
-    color: var(--border-2-rgba);
+    color: var(--border-3-color);
     background-color: transparent;
     box-shadow: none; /* Firefox */
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
-    caret-color: var(--primary-rgb);
+    caret-color: var(--primary-color);
     transition: border 0.2s, box-shadow 0.2s;
   }
 
@@ -47,10 +42,10 @@
     top: 0;
     left: 0;
     display: flex;
-    border-color: var(--border-1-rgba);
+    border-color: var(--border-2-color);
     width: 100%;
     max-height: 100%;
-    color: var(--border-1-rgba);
+    color: var(--border-2-color);
     font-size: 85%;
     line-height: 15px;
     cursor: text;
@@ -65,7 +60,7 @@
     box-sizing: border-box;
     margin-top: 6px;
     border-top: solid 1px;
-    border-top-color: var(--border-1-rgba);
+    border-top-color: var(--border-2-color);
     min-width: 10px;
     height: 8px;
     pointer-events: none;
@@ -88,22 +83,22 @@
 
   /* Hover */
   .textfield-outlined:hover > select {
-    border-color: var(--border-2-rgba);
+    border-color: var(--border-3-color);
     border-top-color: transparent;
   }
 
   .textfield-outlined:hover > select + span::before,
   .textfield-outlined:hover > select + span::after {
-    border-top-color: var(--border-2-rgba) !important;
+    border-top-color: var(--border-3-color) !important;
   }
 
   .textfield-outlined > select:not(:focus):placeholder-shown {
-    border-color: var(--border-2-rgba);
+    border-color: var(--border-3-color);
   }
 
   /* Placeholder-shown */
   .textfield-outlined > select:not(:focus):placeholder-shown {
-    border-top-color: var(--border-2-rgba);
+    border-top-color: var(--border-3-color);
   }
 
   .textfield-outlined > select:not(:focus):placeholder-shown + span {
@@ -118,40 +113,40 @@
 
   /* Focus */
   .textfield-outlined > select:focus {
-    border-color: var(--primary-rgb);
+    border-color: var(--primary-color);
     border-top-color: transparent;
-    box-shadow: inset 1px 0 var(--primary-rgb), inset -1px 0 var(--primary-rgb),
-      inset 0 -1px var(--primary-rgb);
+    box-shadow: inset 1px 0 var(--primary-color),
+      inset -1px 0 var(--primary-color), inset 0 -1px var(--primary-color);
     outline: none;
   }
 
   .textfield-outlined > select:focus + span {
-    color: var(--primary-rgb);
+    color: var(--primary-color);
   }
 
   .textfield-outlined > select:focus + span::before,
   .textfield-outlined > select:focus + span::after {
-    border-top-color: var(--primary-rgb) !important;
-    box-shadow: inset 0 1px var(--primary-rgb);
+    border-top-color: var(--primary-color) !important;
+    box-shadow: inset 0 1px var(--primary-color);
   }
 
   /* Disabled */
   .textfield-outlined > select:disabled,
   .textfield-outlined > select:disabled + span {
-    border-color: var(--border-3-rgba) !important;
+    border-color: var(--border-1-color) !important;
     border-top-color: transparent !important;
-    color: var(--border-3-rgba);
+    color: var(--border-1-color);
     pointer-events: none;
   }
 
   .textfield-outlined > select:disabled + span::before,
   .textfield-outlined > select:disabled + span::after {
-    border-top-color: var(--border-3-rgba) !important;
+    border-top-color: var(--border-1-color) !important;
   }
 
   .textfield-outlined > select:disabled:placeholder-shown,
   .textfield-outlined > select:disabled:placeholder-shown + span {
-    border-top-color: var(--border-3-rgba) !important;
+    border-top-color: var(--border-1-color) !important;
   }
 
   .textfield-outlined > select:disabled:placeholder-shown + span::before,
