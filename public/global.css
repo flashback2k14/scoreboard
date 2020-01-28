@@ -2,7 +2,9 @@
 
 :root {
   --primary-color: rgb(41, 98, 255);
+  --secondary-color: rgb(245, 0, 87);
   --white-color: rgb(255, 255, 255);
+  --black-color: rgb(0, 0, 0);
 
   --border-1-color: rgba(55, 71, 79, 0.38);
   --border-2-color: rgba(55, 71, 79, 0.6);

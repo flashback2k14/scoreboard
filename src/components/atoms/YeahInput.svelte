@@ -1,6 +1,15 @@
 <script>
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
+
   export let labelText;
   export let inputType;
+  export let formName;
+
+  function handleBlur(e) {
+    dispatch("handle-blur", { value: e.target.value });
+  }
 </script>
 
 <style>
@@ -166,6 +175,11 @@
 </style>
 
 <label class="textfield-outlined">
-  <input placeholder=" " type={inputType} />
+  <input
+    placeholder="
+    "
+    type={inputType}
+    name={formName}
+    on:blur={handleBlur} />
   <span>{labelText}</span>
 </label>
