@@ -23,7 +23,7 @@
   }
 </style>
 
-<YeahCard cardTitle="Login">
+<YeahCard cardTitle="Login" size="small" shadow="long">
   <form slot="card-content" on:submit|preventDefault={handleSubmit}>
     <YeahInput labelText="E-Mail" inputType="text" formName="email" />
     <YeahInput labelText="Passwort" inputType="password" formName="password" />

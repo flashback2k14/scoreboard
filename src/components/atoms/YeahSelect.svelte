@@ -1,5 +1,13 @@
 <script>
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
+
   export let labelText;
+
+  function handleChangedSelection(e) {
+    dispatch("handle-changed-selection", { id: e.target.value });
+  }
 </script>
 
 <style>
@@ -12,7 +20,7 @@
     line-height: 1.5;
     overflow: hidden;
 
-    width: inherit;
+    width: 100%;
     height: 56px;
   }
 
@@ -168,14 +176,9 @@
 </style>
 
 <label class="textfield-outlined">
-  <select placeholder=" ">
-    <option value="nothing" selected disabled>
-      Select an event or create one...
-    </option>
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
+  <select placeholder=" " on:change={handleChangedSelection}>
+    <option value="nothing" selected disabled>Nothing selected...</option>
+    <slot />
   </select>
   <span>{labelText}</span>
 </label>

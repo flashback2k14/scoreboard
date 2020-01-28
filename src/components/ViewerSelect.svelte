@@ -1,6 +1,9 @@
 <script>
   import { creator, reader, updater } from "../database";
 
+  import YeahSeparator from "./atoms/YeahSeparator.svelte";
+  import YeahCard from "./atoms/YeahCard.svelte";
+
   export let eventId;
   export let userRole;
 
@@ -36,15 +39,11 @@
       let data;
 
       if (event.target.checked) {
-        // add to events
         const newEvent = creator.getEventRef(eventId);
         data = { ...user, events: [...user.events, newEvent] };
-        console.log(data);
       } else {
-        // remove from events
         const updatedEvents = user.events.filter(event => event.id !== eventId);
         data = { ...user, events: updatedEvents };
-        console.log(data);
       }
 
       await updater.updateUserData(user.id, data);
@@ -55,24 +54,20 @@
 <style>
   ul {
     list-style: none;
-    margin-top: 0;
+    margin-top: 10px;
+    margin-bottom: -4px;
     padding-left: 0;
   }
 
   .ctrl {
     box-sizing: border-box;
-    padding: 8px;
-    margin-bottom: 4px;
+    padding: 16px 12px;
+    margin-bottom: 6px;
     font-size: medium;
-    border: 1px solid lightgray;
+    border: 1px solid var(--border-3-color);
     border-radius: 4px;
     outline: none;
     font-family: inherit;
-  }
-
-  .ctrl:hover,
-  .ctrl:focus {
-    border: 1px solid steelblue;
   }
 
   input[type="checkbox"] {
@@ -95,38 +90,41 @@
     height: 16px;
     position: absolute;
     left: 0;
-    border: 2px solid lightgray;
+    border: 2px solid var(--border-3-color);
     border-radius: 2px;
   }
 
   input[type="checkbox"]:checked + label:after {
     content: "\E5CA";
-    color: #000;
+    color: var(--white-color);
     font-size: 16px;
     text-align: center;
     line-height: 16px;
-    background: lightsteelblue;
-    border-color: lightsteelblue;
+    background: var(--primary-color);
+    border-color: var(--primary-color);
   }
 </style>
 
 {#if onlyAdmin && selectableUsers && selectableUsers.length > 0}
-  <hr />
 
-  <h3>Viewer Selection</h3>
+  <YeahSeparator />
 
-  <ul>
-    {#each selectableUsers as user, i}
-      <li>
-        <div class="ctrl">
-          <input
-            id={'liCheckbox' + i}
-            type="checkbox"
-            checked={shouldBeSelected(user.uid, user.events)}
-            on:change={handleChangedViewerSelection(user)} />
-          <label for={'liCheckbox' + i}>{user.name}</label>
-        </div>
-      </li>
-    {/each}
-  </ul>
+  <YeahCard cardTitle="Viewer selection" shadow="hover">
+    <div slot="card-content">
+      <ul>
+        {#each selectableUsers as user, i}
+          <li>
+            <div class="ctrl">
+              <input
+                id={'liCheckbox' + i}
+                type="checkbox"
+                checked={shouldBeSelected(user.uid, user.events)}
+                on:change={handleChangedViewerSelection(user)} />
+              <label for={'liCheckbox' + i}>{user.name}</label>
+            </div>
+          </li>
+        {/each}
+      </ul>
+    </div>
+  </YeahCard>
 {/if}
