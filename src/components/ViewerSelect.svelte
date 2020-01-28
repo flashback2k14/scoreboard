@@ -70,6 +70,12 @@
     font-family: inherit;
   }
 
+  .ctrl:hover {
+    border-color: var(--primary-color);
+    box-shadow: inset 1px 1px var(--primary-color),
+      inset -1px 1px var(--primary-color), inset 1px -1px var(--primary-color);
+  }
+
   input[type="checkbox"] {
     display: none;
   }
