@@ -9,7 +9,7 @@
   const dispatch = createEventDispatcher();
 
   function handleClick(e) {
-    dispatch("handle-click", e);
+    dispatch("clicked", e);
   }
 </script>
 

@@ -8,7 +8,7 @@
   export let formName;
 
   function handleBlur(e) {
-    dispatch("handle-blur", { value: e.target.value });
+    dispatch("blurred", { value: e.target.value });
   }
 </script>
 

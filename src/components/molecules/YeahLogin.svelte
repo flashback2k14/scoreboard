@@ -9,7 +9,7 @@
 
   function handleSubmit(e) {
     const formData = new FormData(e.target);
-    dispatch("handle-submit", {
+    dispatch("submitted", {
       email: formData.get("email"),
       password: formData.get("password")
     });

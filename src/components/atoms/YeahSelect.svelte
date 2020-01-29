@@ -6,7 +6,7 @@
   export let labelText;
 
   function handleChangedSelection(e) {
-    dispatch("handle-changed-selection", { id: e.target.value });
+    dispatch("selection-changed", { id: e.target.value });
   }
 </script>
 

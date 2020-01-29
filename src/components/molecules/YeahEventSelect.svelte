@@ -29,7 +29,7 @@
   });
 
   function handleEventSelectionChange(e) {
-    dispatch("selected-event", { id: e.detail.id });
+    dispatch("event-selected", { id: e.detail.id });
   }
 
   async function handleSubmit(e) {
@@ -57,7 +57,7 @@
   <div slot="card-content">
     <YeahSelect
       labelText="Select an event or create one..."
-      on:handle-changed-selection={handleEventSelectionChange}>
+      on:selection-changed={handleEventSelectionChange}>
       {#each selectableEvents as event}
         <option value={event.id}>{event.name}</option>
       {/each}

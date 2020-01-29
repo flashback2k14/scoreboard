@@ -18,7 +18,7 @@
 
   function handleNewParticipantSubmit(e) {
     const formData = new FormData(e.target);
-    dispatch("new-participant", {
+    dispatch("new-participant-added", {
       value: formData.get("newParticipant")
     });
     e.target.reset();

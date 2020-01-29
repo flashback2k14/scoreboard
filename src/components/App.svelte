@@ -148,7 +148,7 @@
           text="LOGOUT"
           size="small"
           style="secondary"
-          on:handle-click={logout} />
+          on:clicked={logout} />
       </div>
     {/if}
   </header>
@@ -156,7 +156,7 @@
   <main>
     {#if !$storeUser}
       <div class="main--login">
-        <YeahLogin on:handle-submit={handleLoginSubmit} />
+        <YeahLogin on:submitted={handleLoginSubmit} />
       </div>
     {:else}
       <div class="main--left-col">
@@ -170,12 +170,12 @@
           <div class="main--left-col__bottom">
             <YeahTableEvents
               on:new-date-added={handleRefreshTableWithDate}
-              on:new-participant={handleRefreshTableWithParticipant} />
+              on:new-participant-added={handleRefreshTableWithParticipant} />
           </div>
         {/if}
       </div>
       <div class="main--right-col">
-        <YeahEventSelect on:selected-event={handleSelectedEvent} />
+        <YeahEventSelect on:event-selected={handleSelectedEvent} />
         <YeahViewerSelect
           eventId={selectedEventId}
           userRole={$storeUser.role} />
