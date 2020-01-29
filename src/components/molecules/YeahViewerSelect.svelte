@@ -115,7 +115,7 @@
 
   <YeahSeparator />
 
-  <YeahCard cardTitle="Viewer selection" shadow="hover">
+  <YeahCard cardTitle="Viewer selection" shadow="long">
     <div slot="card-content">
       <ul>
         {#each selectableUsers as user, i}

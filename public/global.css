@@ -3,6 +3,7 @@
 :root {
   --dark-primary-color: rgb(13, 71, 161);
   --primary-color: rgb(41, 98, 255);
+  --light-primary-color: rgb(187, 222, 251);
   --secondary-color: rgb(245, 0, 87);
   --white-color: rgb(255, 255, 255);
   --black-color: rgb(0, 0, 0);

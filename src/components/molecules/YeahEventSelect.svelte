@@ -53,7 +53,7 @@
 
 <YeahSeparator />
 
-<YeahCard cardTitle="Event selection" shadow="hover">
+<YeahCard cardTitle="Event selection" shadow="long">
   <div slot="card-content">
     <YeahSelect
       labelText="Select an event or create one..."
@@ -68,7 +68,7 @@
 {#if onlyAdmin}
   <YeahSeparator />
 
-  <YeahCard cardTitle="Event creation" shadow="hover">
+  <YeahCard cardTitle="Event creation" shadow="long">
     <div slot="card-content">
       <form on:submit|preventDefault={handleSubmit}>
         <YeahInput
