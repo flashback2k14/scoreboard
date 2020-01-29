@@ -53,14 +53,14 @@
   }
 
   button.secondary {
-    color: var(--secondary-color);
+    color: var(--black-color);
+    background: var(--secondary-color);
     border-color: var(--secondary-color);
   }
 
   button.secondary:hover,
   button.secondary:focus {
-    color: var(--black-color);
-    background: var(--secondary-color);
+    border-color: var(--border-1-color);
   }
 
   button.big {
