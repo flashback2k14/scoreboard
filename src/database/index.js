@@ -1,7 +1,7 @@
 import { auth as firebaseAuth, usersCollection, eventsCollection, eventDataCollection } from '../config';
 import { convertDocument } from '../utils';
 
-const auth = {
+export const auth = {
   login: async ({ email, password }) => {
     return await firebaseAuth.signInWithEmailAndPassword(email, password);
   },
@@ -10,7 +10,7 @@ const auth = {
   }
 };
 
-const creator = {
+export const creator = {
   addEvent: async (uid, name) => {
     return await eventsCollection.add({ uid, name });
   },
@@ -30,7 +30,7 @@ const creator = {
   }
 };
 
-const reader = {
+export const reader = {
   getUserByUserId: async uid => {
     const result = await usersCollection
       .where('uid', '==', uid)
@@ -69,7 +69,7 @@ const reader = {
   }
 };
 
-const updater = {
+export const updater = {
   updateEventData: async (edid, data) => {
     delete data.id;
     return await eventDataCollection.doc(edid).update(data);
@@ -78,5 +78,3 @@ const updater = {
     return await usersCollection.doc(id).update(data);
   }
 };
-
-export { auth, creator, reader, updater };

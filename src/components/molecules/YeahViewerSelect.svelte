@@ -1,8 +1,8 @@
 <script>
-  import { creator, reader, updater } from "../database";
+  import { creator, reader, updater } from "../../database";
 
-  import YeahSeparator from "./atoms/YeahSeparator.svelte";
-  import YeahCard from "./atoms/YeahCard.svelte";
+  import YeahSeparator from "../atoms/YeahSeparator.svelte";
+  import YeahCard from "../atoms/YeahCard.svelte";
 
   export let eventId;
   export let userRole;

@@ -1,5 +1,5 @@
 <script>
-  export let cardTitle;
+  export let cardTitle = undefined;
   export let size = undefined;
   export let shadow = undefined;
 </script>
@@ -9,6 +9,7 @@
     padding: 16px 16px 20px 16px;
     border-radius: 4px;
     transition: box-shadow 0.2s;
+    background: var(--white-color);
   }
 
   .small {
@@ -42,7 +43,9 @@
   class:small={size === 'small'}
   class:hover-shadow={shadow === 'hover'}
   class:long-shadow={shadow === 'long'}>
-  <h2>{cardTitle}</h2>
-  <hr />
+  {#if cardTitle}
+    <h2>{cardTitle}</h2>
+    <hr />
+  {/if}
   <slot name="card-content" />
 </div>

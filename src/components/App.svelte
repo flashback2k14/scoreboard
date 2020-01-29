@@ -5,18 +5,16 @@
   import { auth, reader } from "../database";
   import { user as storeUser } from "../store";
 
-  import Table from "./Table.svelte";
-  import EventSelect from "./EventSelect.svelte";
-  import ViewerSelect from "./ViewerSelect.svelte";
-
   import YeahButton from "./atoms/YeahButton.svelte";
+
   import YeahLogin from "./molecules/YeahLogin.svelte";
+  import YeahTable from "./molecules/YeahTable.svelte";
+  import YeahTableEvents from "./molecules/YeahTableEvents.svelte";
+  import YeahEventSelect from "./molecules/YeahEventSelect.svelte";
+  import YeahViewerSelect from "./molecules/YeahViewerSelect.svelte";
 
   let selectedEventId;
-
-  async function handleSelectedEvent(event) {
-    selectedEventId = event.detail.id;
-  }
+  let updateTable;
 
   async function handleLoginSubmit(event) {
     await auth.login(event.detail);
@@ -24,6 +22,24 @@
 
   async function logout() {
     await auth.logout();
+  }
+
+  function handleSelectedEvent(event) {
+    selectedEventId = event.detail.id;
+  }
+
+  function handleRefreshTableWithDate(e) {
+    updateTable = {
+      type: "NEW_DATE",
+      value: e.detail.value
+    };
+  }
+
+  function handleRefreshTableWithParticipant(e) {
+    updateTable = {
+      type: "NEW_PARTICIPANT",
+      value: e.detail.value
+    };
   }
 
   onMount(() => {
@@ -50,9 +66,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    z-index: 5;
     height: 60px;
     padding: 4px 8px;
-    background: lightsteelblue;
+    background: var(--dark-primary-color);
+    color: var(--white-color);
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25), 0 2px 2px rgba(0, 0, 0, 0.2),
       0 4px 4px rgba(0, 0, 0, 0.15), 0 8px 8px rgba(0, 0, 0, 0.1),
       0 16px 16px rgba(0, 0, 0, 0.05);
@@ -71,20 +89,33 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    height: calc(100vh - 68px - 32px);
+    height: calc(100vh - 92px - 32px);
     padding: 8px;
+    background: var(--background-color);
   }
 
   .main--left-col {
     width: 74%;
     margin-top: 8px;
-    padding-right: 6px;
+    padding-right: 8px;
     border-right: 1px solid black;
+  }
+
+  .main--left-col__top {
+    height: calc(100vh - 92px - 32px - 118px);
+  }
+
+  .main--left-col__bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-top: 1px solid black;
+    padding-top: 8px;
   }
 
   .main--right-col {
     width: 25%;
-    padding-left: 4px;
+    padding-left: 8px;
   }
 
   .main--login {
@@ -101,7 +132,8 @@
     align-items: center;
     height: 32px;
     padding: 4px 8px;
-    background: lightsteelblue;
+    background: var(--dark-primary-color);
+    color: var(--white-color);
   }
 </style>
 
@@ -122,17 +154,31 @@
   </header>
 
   <main>
-    {#if $storeUser}
-      <div class="main--left-col">
-        <Table eventId={selectedEventId} userRole={$storeUser.role} />
-      </div>
-      <div class="main--right-col">
-        <EventSelect on:selected-event={handleSelectedEvent} />
-        <ViewerSelect eventId={selectedEventId} userRole={$storeUser.role} />
-      </div>
-    {:else}
+    {#if !$storeUser}
       <div class="main--login">
         <YeahLogin on:handle-submit={handleLoginSubmit} />
+      </div>
+    {:else}
+      <div class="main--left-col">
+        <div class="main--left-col__top">
+          <YeahTable
+            eventId={selectedEventId}
+            userRole={$storeUser.role}
+            update={updateTable} />
+        </div>
+        {#if selectedEventId && $storeUser.role === 'admin'}
+          <div class="main--left-col__bottom">
+            <YeahTableEvents
+              on:new-date-added={handleRefreshTableWithDate}
+              on:new-participant={handleRefreshTableWithParticipant} />
+          </div>
+        {/if}
+      </div>
+      <div class="main--right-col">
+        <YeahEventSelect on:selected-event={handleSelectedEvent} />
+        <YeahViewerSelect
+          eventId={selectedEventId}
+          userRole={$storeUser.role} />
       </div>
     {/if}
   </main>

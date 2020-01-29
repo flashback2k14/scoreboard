@@ -1,16 +1,17 @@
 <script>
   import { afterUpdate } from "svelte";
-  import { reader, updater } from "../database";
+  import { reader, updater } from "../../database";
   import {
     convertToDate,
     convertToTimestamp,
     convertToTableData,
     updateScores,
     initTableData
-  } from "../utils";
+  } from "../../utils";
 
   export let eventId;
   export let userRole;
+  export let update;
 
   $: {
     if (eventId) {
@@ -20,14 +21,26 @@
     if (userRole) {
       onlyAdmin = userRole === "admin";
     }
+
+    if (update) {
+      switch (update.type) {
+        case "NEW_DATE":
+          addNewDate(update.value);
+          break;
+
+        case "NEW_PARTICIPANT":
+          addNewParticipant(update.value);
+          break;
+
+        default:
+          break;
+      }
+    }
   }
 
   let onlyAdmin;
   let remoteData;
   let tableData;
-
-  let newParticipant;
-  let selectedNewDate;
 
   async function loadData() {
     const data = await reader.getEventDataByEventId(eventId);
@@ -35,9 +48,9 @@
     tableData = data ? convertToTableData(data) : initTableData();
   }
 
-  async function addNewDate() {
+  async function addNewDate(newDate) {
     const newDayKey = Object.keys(remoteData.days).length + 1;
-    remoteData.days[newDayKey] = convertToTimestamp(selectedNewDate);
+    remoteData.days[newDayKey] = convertToTimestamp(newDate);
 
     Object.entries(remoteData.scores).forEach(([key, value]) => {
       const participant = key;
@@ -51,11 +64,9 @@
 
     await updater.updateEventData(remoteData.id, newData);
     await loadData();
-
-    selectedNewDate = "";
   }
 
-  async function addNewParticipant() {
+  async function addNewParticipant(newParticipant) {
     let newRow = {};
 
     for (
@@ -74,8 +85,6 @@
 
     await updater.updateEventData(remoteData.id, newData);
     await loadData();
-
-    newParticipant = "";
   }
 
   async function handleOnBlur(e, rowIndex, colIndex) {
@@ -118,44 +127,9 @@
     margin-bottom: 12px;
   }
 
-  .ctrls-container {
-    display: flex;
-    justify-content: space-between;
-  }
-
   .ctrl-container {
     margin-top: 4px;
     margin-bottom: 8px;
-  }
-
-  .ctrl {
-    box-sizing: border-box;
-    padding: 8px;
-    font-size: medium;
-    border: 1px solid lightgray;
-    border-radius: 4px;
-    outline: none;
-    font-family: inherit;
-  }
-
-  .ctrl:hover,
-  .ctrl:focus {
-    border: 1px solid steelblue;
-  }
-
-  .ctrl_input {
-    width: 250px;
-  }
-
-  .ctrl_date {
-    padding: 5px;
-  }
-
-  .ctrl_button {
-    text-transform: uppercase;
-    cursor: pointer;
-    background: lightsteelblue;
-    color: #000;
   }
 
   .no-event-container {
@@ -167,33 +141,6 @@
 </style>
 
 {#if eventId}
-  {#if onlyAdmin}
-    <div class="ctrls-container">
-
-      <div class="ctrl-container">
-        <input
-          bind:value={selectedNewDate}
-          class="ctrl ctrl_input ctrl_date"
-          type="date" />
-        <button class="ctrl ctrl_button" on:click={addNewDate}>
-          Add new Date
-        </button>
-      </div>
-
-      <div class="ctrl-container">
-        <input
-          bind:value={newParticipant}
-          class="ctrl ctrl_input"
-          type="text"
-          placeholder="enter new participant" />
-        <button class="ctrl ctrl_button" on:click={addNewParticipant}>
-          Add new Participant
-        </button>
-      </div>
-
-    </div>
-  {/if}
-
   {#if tableData}
     <div class="ctrl-container table-scroll">
       <table border="solid 1px black" cellpadding="4">

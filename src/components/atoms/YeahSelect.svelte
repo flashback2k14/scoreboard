@@ -31,7 +31,7 @@
     border-color: var(--border-2-color);
     border-top-color: transparent;
     border-radius: 4px;
-    padding: 15px 13px 15px;
+    padding: 15px 13px 13px;
     width: 100%;
     height: inherit;
     color: var(--border-3-color);

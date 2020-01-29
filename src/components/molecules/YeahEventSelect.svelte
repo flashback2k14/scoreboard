@@ -1,14 +1,14 @@
 <script>
   import { onDestroy, createEventDispatcher } from "svelte";
 
-  import { user } from "../store";
-  import { creator, reader } from "../database";
+  import { user } from "../../store";
+  import { creator, reader } from "../../database";
 
-  import YeahSeparator from "./atoms/YeahSeparator.svelte";
-  import YeahCard from "./atoms/YeahCard.svelte";
-  import YeahSelect from "./atoms/YeahSelect.svelte";
-  import YeahInput from "./atoms/YeahInput.svelte";
-  import YeahButton from "./atoms/YeahButton.svelte";
+  import YeahSeparator from "../atoms/YeahSeparator.svelte";
+  import YeahCard from "../atoms/YeahCard.svelte";
+  import YeahSelect from "../atoms/YeahSelect.svelte";
+  import YeahInput from "../atoms/YeahInput.svelte";
+  import YeahButton from "../atoms/YeahButton.svelte";
 
   let onlyAdmin = false;
   let localeUser = null;
@@ -18,7 +18,7 @@
 
   const unsubscriber = user.subscribe(async remoteUser => {
     localeUser = remoteUser;
-
+    reader.getTT;
     if (remoteUser) {
       onlyAdmin = remoteUser.role === "admin";
       selectableEvents =

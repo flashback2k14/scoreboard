@@ -43,6 +43,10 @@
     transition: border 0.2s, box-shadow 0.2s;
   }
 
+  .textfield-outlined > input[type="date"] {
+    padding: 15px 13px 13px;
+  }
+
   /* Span */
   .textfield-outlined > input + span {
     position: absolute;
