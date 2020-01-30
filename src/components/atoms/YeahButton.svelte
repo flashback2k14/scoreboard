@@ -5,6 +5,7 @@
   export let type;
   export let size;
   export let style;
+  export let disabled = undefined;
 
   const dispatch = createEventDispatcher();
 
@@ -82,6 +83,7 @@
   class:big={size === 'normal'}
   class:small={size === 'small'}
   {type}
+  {disabled}
   on:click={handleClick}>
   {text}
 </button>

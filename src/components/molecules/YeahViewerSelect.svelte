@@ -3,13 +3,10 @@
 
   import { creator, reader, updater } from "../../database";
 
-  import YeahSeparator from "../atoms/YeahSeparator.svelte";
   import YeahCard from "../atoms/YeahCard.svelte";
 
   export let eventId;
-  export let userRole;
 
-  let onlyAdmin = false;
   let selectableUsers = [];
 
   const { addNotification } = getNotificationsContext();
@@ -17,10 +14,6 @@
   $: {
     if (eventId) {
       loadData();
-    }
-
-    if (userRole) {
-      onlyAdmin = userRole === "admin";
     }
   }
 
@@ -142,10 +135,7 @@
   }
 </style>
 
-{#if onlyAdmin && selectableUsers && selectableUsers.length > 0}
-
-  <YeahSeparator />
-
+{#if selectableUsers && selectableUsers.length > 0}
   <YeahCard cardTitle="Viewer selection" shadow="long">
     <div slot="card-content">
       <ul>

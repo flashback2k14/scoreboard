@@ -123,14 +123,11 @@
         value: Number(e.target.value)
       };
       const newScores = updateScores(tableData.rowData);
-
       const newData = {
         ...remoteData,
         scores: newScores
       };
-
       await updater.updateEventData(remoteData.id, newData);
-      await loadData();
     } catch (error) {
       _showErrorMessage(error);
     }

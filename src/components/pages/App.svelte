@@ -7,11 +7,14 @@
   import { user as storeUser } from "../../store";
 
   import YeahButton from "../atoms/YeahButton.svelte";
+  import YeahSeparator from "../atoms/YeahSeparator.svelte";
 
   import YeahLogin from "../molecules/YeahLogin.svelte";
   import YeahTable from "../molecules/YeahTable.svelte";
   import YeahTableEvents from "../molecules/YeahTableEvents.svelte";
   import YeahEventSelect from "../molecules/YeahEventSelect.svelte";
+  import YeahEventDescription from "../molecules/YeahEventDescription.svelte";
+  import YeahEventCreation from "../molecules/YeahEventCreation.svelte";
   import YeahViewerSelect from "../molecules/YeahViewerSelect.svelte";
 
   let selectedEventId;
@@ -215,10 +218,22 @@
         {/if}
       </div>
       <div class="main--right-col">
+        <YeahSeparator />
         <YeahEventSelect on:event-selected={handleSelectedEvent} />
-        <YeahViewerSelect
-          eventId={selectedEventId}
-          userRole={$storeUser.role} />
+        {#if selectedEventId}
+          <YeahSeparator />
+          <YeahEventDescription
+            eventId={selectedEventId}
+            setDisabled={$storeUser.role !== 'admin'} />
+        {/if}
+        {#if $storeUser.role === 'admin'}
+          <YeahSeparator />
+          <YeahEventCreation userId={$storeUser.uid} />
+        {/if}
+        {#if selectedEventId && $storeUser.role === 'admin'}
+          <YeahSeparator />
+          <YeahViewerSelect eventId={selectedEventId} />
+        {/if}
       </div>
     {/if}
   </main>

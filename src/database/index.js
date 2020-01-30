@@ -66,6 +66,10 @@ export const reader = {
       .get();
 
     return convertDocument(result.docs)[0];
+  },
+  getEventByEventId: async eid => {
+    const result = await eventsCollection.doc(eid).get();
+    return result.data();
   }
 };
 
@@ -76,5 +80,9 @@ export const updater = {
   },
   updateUserData: async (id, data) => {
     return await usersCollection.doc(id).update(data);
+  },
+  updateEvent: async (eid, data) => {
+    delete data.id;
+    return await eventsCollection.doc(eid).update(data);
   }
 };

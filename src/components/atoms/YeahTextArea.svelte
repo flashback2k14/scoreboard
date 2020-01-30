@@ -1,5 +1,16 @@
 <script>
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
+
   export let labelText;
+  export let formName;
+  export let value = undefined;
+  export let disabled = undefined;
+
+  function handleBlur(e) {
+    dispatch("blurred", { value: e.target.value });
+  }
 </script>
 
 <style>
@@ -151,6 +162,14 @@
     border-top-color: transparent !important;
   }
 
+  textarea {
+    resize: vertical;
+  }
+
+  textarea:disabled {
+    resize: none;
+  }
+
   /* Faster transition in Safari for less noticable fractional font-size issue */
   @media not all and (min-resolution: 0.001dpcm) {
     @supports (-webkit-appearance: none) {
@@ -165,6 +184,13 @@
 </style>
 
 <label class="textfield-outlined">
-  <textarea placeholder=" " rows="5" />
+  <textarea
+    placeholder="
+    "
+    rows="4"
+    name={formName}
+    on:blur={handleBlur}
+    {disabled}
+    bind:value />
   <span>{labelText}</span>
 </label>
