@@ -113,7 +113,7 @@
       0 16px 16px rgba(0, 0, 0, 0.05);
   }
 
-  header > h2 {
+  header > h1 {
     letter-spacing: 0.1em;
   }
 
@@ -179,7 +179,7 @@
 
 <div class="app--container">
   <header>
-    <h2>Scoreboard</h2>
+    <h1>Scoreboard</h1>
     {#if $storeUser}
       <div>
         <label>{$storeUser.name}</label>

@@ -203,6 +203,14 @@
     vertical-align: top;
   }
 
+  .table-input {
+    padding: 0 0 0 4px;
+    margin: 0;
+    border: 0;
+    border-bottom: 1px solid var(--border-2-color);
+    font-size: 16px;
+  }
+
   .no-event-container {
     display: flex;
     align-items: center;
@@ -243,6 +251,7 @@
                       <span>{entry.value}</span>
                     {:else}
                       <input
+                        class="table-input"
                         type="number"
                         data-locked={entry.locked}
                         value={entry.value}
