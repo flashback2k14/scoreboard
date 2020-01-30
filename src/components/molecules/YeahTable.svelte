@@ -1,4 +1,6 @@
 <script>
+  import { getNotificationsContext } from "svelte-notifications";
+
   import { reader, updater } from "../../database";
   import {
     convertToDate,
@@ -13,6 +15,12 @@
   export let eventId;
   export let userRole;
   export let update;
+
+  let onlyAdmin;
+  let remoteData;
+  let tableData;
+
+  const { addNotification } = getNotificationsContext();
 
   $: {
     if (eventId) {
@@ -39,62 +47,81 @@
     }
   }
 
-  let onlyAdmin;
-  let remoteData;
-  let tableData;
-
   async function loadData() {
-    const data = await reader.getEventDataByEventId(eventId);
-    remoteData = data;
-    tableData = data ? convertToTableData(data) : initTableData();
+    try {
+      _showSuccessMessage("Loading table data...");
+
+      const data = await reader.getEventDataByEventId(eventId);
+      remoteData = data;
+      tableData = data ? convertToTableData(data) : initTableData();
+    } catch (error) {
+      _showErrorMessage(error);
+    }
   }
 
   async function addNewDate(newDate) {
-    const newDayKey = Object.keys(remoteData.days).length + 1;
-    remoteData.days[newDayKey] = convertToTimestamp(newDate);
+    _showSuccessMessage("Update table data...");
 
-    Object.entries(remoteData.scores).forEach(([key, value]) => {
-      const participant = key;
-      value[newDayKey] = 0;
-      remoteData.scores[participant] = value;
-    });
+    try {
+      const newDayKey = Object.keys(remoteData.days).length + 1;
+      remoteData.days[newDayKey] = convertToTimestamp(newDate);
 
-    const newData = {
-      ...remoteData
-    };
+      Object.entries(remoteData.scores).forEach(([key, value]) => {
+        const participant = key;
+        value[newDayKey] = 0;
+        remoteData.scores[participant] = value;
+      });
 
-    await updater.updateEventData(remoteData.id, newData);
-    await loadData();
+      const newData = {
+        ...remoteData
+      };
 
-    document
-      .querySelector("table thead tr:nth-of-type(2) th:last-child")
-      .scrollIntoView({ block: "nearest", behavior: "smooth" });
+      await updater.updateEventData(remoteData.id, newData);
+      await loadData();
+
+      document
+        .querySelector("table thead tr:nth-of-type(2) th:last-child")
+        .scrollIntoView({ block: "nearest", behavior: "smooth" });
+    } catch (error) {
+      _showErrorMessage(error);
+    }
   }
 
   async function addNewParticipant(newParticipant) {
-    let newRow = {};
+    _showSuccessMessage("Update table data...");
 
-    for (
-      let i = 1, length = Object.keys(remoteData.days).length;
-      i <= length;
-      i++
-    ) {
-      newRow[i] = 0;
+    try {
+      let newRow = {};
+
+      for (
+        let i = 1, length = Object.keys(remoteData.days).length;
+        i <= length;
+        i++
+      ) {
+        newRow[i] = 0;
+      }
+
+      remoteData.scores[newParticipant] = newRow;
+
+      const newData = {
+        ...remoteData
+      };
+
+      await updater.updateEventData(remoteData.id, newData);
+      await loadData();
+    } catch (error) {
+      _showErrorMessage(error);
     }
-
-    remoteData.scores[newParticipant] = newRow;
-
-    const newData = {
-      ...remoteData
-    };
-
-    await updater.updateEventData(remoteData.id, newData);
-    await loadData();
   }
 
-  function handleOnBlur(rowIndex, colIndex) {
-    return async function(e) {
-      tableData.rowData[rowIndex][colIndex] = e.target.value;
+  async function handleOnBlur(e, rowIndex, colIndex) {
+    _showSuccessMessage("Update table data...");
+
+    try {
+      tableData.rowData[rowIndex][colIndex] = {
+        locked: JSON.parse(e.target.dataset.locked),
+        value: Number(e.target.value)
+      };
       const newScores = updateScores(tableData.rowData);
 
       const newData = {
@@ -104,7 +131,27 @@
 
       await updater.updateEventData(remoteData.id, newData);
       await loadData();
-    };
+    } catch (error) {
+      _showErrorMessage(error);
+    }
+  }
+
+  function _showSuccessMessage(msg) {
+    addNotification({
+      text: msg,
+      position: "bottom-center",
+      type: "success",
+      removeAfter: 2000
+    });
+  }
+
+  function _showErrorMessage(error) {
+    addNotification({
+      text: error.message,
+      position: "bottom-center",
+      type: "danger",
+      removeAfter: 4000
+    });
   }
 </script>
 
@@ -134,10 +181,26 @@
     background: var(--light-primary-color);
   }
 
-  table {
+  .table-scroll table {
     border-collapse: collapse;
     margin-bottom: 12px;
+    table-layout: fixed;
+  }
+
+  .table-scroll table,
+  tr,
+  td {
     border: 1px solid var(--border-2-color);
+  }
+
+  .table-scroll table thead tr th,
+  .table-scroll table tbody tr td {
+    font-weight: normal;
+    font-size: 16px;
+  }
+
+  .table-scroll table thead {
+    vertical-align: top;
   }
 
   .no-event-container {
@@ -148,7 +211,11 @@
   }
 </style>
 
-{#if eventId}
+{#if !eventId}
+  <div class="no-event-container">
+    <h2>No event is selected.</h2>
+  </div>
+{:else}
   {#if tableData}
     <YeahCard shadow="long">
       <div slot="card-content" class="table-scroll">
@@ -172,13 +239,14 @@
               <tr>
                 {#each data as entry, colIndex}
                   <td>
-                    {#if colIndex === 0 || colIndex === data.length - 1 || !onlyAdmin}
-                      <span>{entry}</span>
+                    {#if colIndex === 0 || colIndex === data.length - 1 || !onlyAdmin || entry.locked}
+                      <span>{entry.value}</span>
                     {:else}
                       <input
                         type="number"
-                        value={entry}
-                        on:blur={handleOnBlur(rowIndex, colIndex)} />
+                        data-locked={entry.locked}
+                        value={entry.value}
+                        on:blur={e => handleOnBlur(e, rowIndex, colIndex)} />
                     {/if}
                   </td>
                 {/each}
@@ -189,8 +257,4 @@
       </div>
     </YeahCard>
   {/if}
-{:else}
-  <div class="no-event-container">
-    <h2>No event is selected.</h2>
-  </div>
 {/if}

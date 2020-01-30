@@ -1,4 +1,6 @@
 <script>
+  import { getNotificationsContext } from "svelte-notifications";
+
   import { creator, reader, updater } from "../../database";
 
   import YeahSeparator from "../atoms/YeahSeparator.svelte";
@@ -9,6 +11,8 @@
 
   let onlyAdmin = false;
   let selectableUsers = [];
+
+  const { addNotification } = getNotificationsContext();
 
   $: {
     if (eventId) {
@@ -21,8 +25,13 @@
   }
 
   async function loadData() {
-    selectableUsers = [];
-    selectableUsers = await reader.getUsersByRole("read-only");
+    try {
+      _showSuccessMessage("Loading viewer data...");
+      selectableUsers = [];
+      selectableUsers = await reader.getUsersByRole("read-only");
+    } catch (error) {
+      _showErrorMessage(error);
+    }
   }
 
   function shouldBeSelected(userId, events) {
@@ -36,18 +45,42 @@
 
   function handleChangedViewerSelection(user) {
     return async function(event) {
-      let data;
+      try {
+        _showSuccessMessage("Update viewer data...");
 
-      if (event.target.checked) {
-        const newEvent = creator.getEventRef(eventId);
-        data = { ...user, events: [...user.events, newEvent] };
-      } else {
-        const updatedEvents = user.events.filter(event => event.id !== eventId);
-        data = { ...user, events: updatedEvents };
+        const data = event.target.checked
+          ? {
+              ...user,
+              events: [...user.events, creator.getEventRef(eventId)]
+            }
+          : {
+              ...user,
+              events: user.events.filter(event => event.id !== eventId)
+            };
+
+        await updater.updateUserData(user.id, data);
+      } catch (error) {
+        _showErrorMessage(error);
       }
-
-      await updater.updateUserData(user.id, data);
     };
+  }
+
+  function _showSuccessMessage(msg) {
+    addNotification({
+      text: msg,
+      position: "bottom-center",
+      type: "success",
+      removeAfter: 2000
+    });
+  }
+
+  function _showErrorMessage(error) {
+    addNotification({
+      text: error.message,
+      position: "bottom-center",
+      type: "danger",
+      removeAfter: 4000
+    });
   }
 </script>
 

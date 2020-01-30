@@ -1,14 +1,31 @@
 <script>
   import { createEventDispatcher } from "svelte";
+  import { getNotificationsContext } from "svelte-notifications";
+
+  import { isEmpty } from "../../utils";
 
   import YeahCard from "../atoms/YeahCard.svelte";
   import YeahInput from "../atoms/YeahInput.svelte";
   import YeahButton from "../atoms/YeahButton.svelte";
 
   const dispatch = createEventDispatcher();
+  const { addNotification } = getNotificationsContext();
 
   function handleSubmit(e) {
     const formData = new FormData(e.target);
+    const email = formData.get("email");
+    const password = formData.get("password");
+
+    if (isEmpty(email) && isEmpty(password)) {
+      addNotification({
+        text: "E-Mail and/or Password is empty.",
+        position: "bottom-center",
+        type: "danger",
+        removeAfter: 4000
+      });
+      return;
+    }
+
     dispatch("submitted", {
       email: formData.get("email"),
       password: formData.get("password")

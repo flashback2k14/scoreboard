@@ -1,27 +1,40 @@
 <script>
   import { onMount } from "svelte";
+  import { getNotificationsContext } from "svelte-notifications";
 
-  import { auth as firebaseAuth } from "../config";
-  import { auth, reader } from "../database";
-  import { user as storeUser } from "../store";
+  import { auth as firebaseAuth } from "../../config";
+  import { auth, reader } from "../../database";
+  import { user as storeUser } from "../../store";
 
-  import YeahButton from "./atoms/YeahButton.svelte";
+  import YeahButton from "../atoms/YeahButton.svelte";
 
-  import YeahLogin from "./molecules/YeahLogin.svelte";
-  import YeahTable from "./molecules/YeahTable.svelte";
-  import YeahTableEvents from "./molecules/YeahTableEvents.svelte";
-  import YeahEventSelect from "./molecules/YeahEventSelect.svelte";
-  import YeahViewerSelect from "./molecules/YeahViewerSelect.svelte";
+  import YeahLogin from "../molecules/YeahLogin.svelte";
+  import YeahTable from "../molecules/YeahTable.svelte";
+  import YeahTableEvents from "../molecules/YeahTableEvents.svelte";
+  import YeahEventSelect from "../molecules/YeahEventSelect.svelte";
+  import YeahViewerSelect from "../molecules/YeahViewerSelect.svelte";
 
   let selectedEventId;
   let updateTable;
 
+  const { addNotification } = getNotificationsContext();
+
   async function handleLoginSubmit(event) {
-    await auth.login(event.detail);
+    _showSuccessMessage("logging in...");
+    try {
+      await auth.login(event.detail);
+    } catch (error) {
+      _showErrorMessage(error);
+    }
   }
 
   async function logout() {
-    await auth.logout();
+    _showSuccessMessage("logging out...");
+    try {
+      await auth.logout();
+    } catch (error) {
+      _showErrorMessage(error);
+    }
   }
 
   function handleSelectedEvent(event) {
@@ -42,11 +55,35 @@
     };
   }
 
+  function _showSuccessMessage(msg) {
+    addNotification({
+      text: msg,
+      position: "bottom-center",
+      type: "success",
+      removeAfter: 2000
+    });
+  }
+
+  function _showErrorMessage(error) {
+    addNotification({
+      text: error.message,
+      position: "bottom-center",
+      type: "danger",
+      removeAfter: 4000
+    });
+  }
+
   onMount(() => {
     firebaseAuth.onAuthStateChanged(async function(remoteUser) {
       if (remoteUser) {
-        const details = await reader.getUserByUserId(remoteUser.uid);
-        storeUser.set({ ...remoteUser, ...details });
+        _showSuccessMessage("Automatic login...");
+
+        try {
+          const details = await reader.getUserByUserId(remoteUser.uid);
+          storeUser.set({ ...remoteUser, ...details });
+        } catch (error) {
+          _showErrorMessage(error);
+        }
       } else {
         storeUser.set(null);
       }

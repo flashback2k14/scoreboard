@@ -1,5 +1,8 @@
 <script>
   import { createEventDispatcher } from "svelte";
+  import { getNotificationsContext } from "svelte-notifications";
+
+  import { isEmpty } from "../../utils";
 
   import YeahCard from "../atoms/YeahCard.svelte";
   import YeahInput from "../atoms/YeahInput.svelte";
@@ -7,20 +10,47 @@
   import YeahSeparator from "../atoms/YeahSeparator.svelte";
 
   const dispatch = createEventDispatcher();
+  const { addNotification } = getNotificationsContext();
 
   function handleNewDateSubmit(e) {
     const formData = new FormData(e.target);
+    const newDate = formData.get("newDate");
+
+    if (isEmpty(newDate)) {
+      addNotification({
+        text: "Date is empty.",
+        position: "bottom-center",
+        type: "danger",
+        removeAfter: 4000
+      });
+      return;
+    }
+
     dispatch("new-date-added", {
-      value: formData.get("newDate")
+      value: newDate
     });
+
     e.target.reset();
   }
 
   function handleNewParticipantSubmit(e) {
     const formData = new FormData(e.target);
+    const newParticipant = formData.get("newParticipant");
+
+    if (isEmpty(newParticipant)) {
+      addNotification({
+        text: "Participant is empty.",
+        position: "bottom-center",
+        type: "danger",
+        removeAfter: 4000
+      });
+      return;
+    }
+
     dispatch("new-participant-added", {
-      value: formData.get("newParticipant")
+      value: newParticipant
     });
+
     e.target.reset();
   }
 </script>
