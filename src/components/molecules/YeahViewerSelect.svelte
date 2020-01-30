@@ -43,26 +43,24 @@
     return false;
   }
 
-  function handleChangedViewerSelection(user) {
-    return async function(event) {
-      try {
-        _showSuccessMessage("Update viewer data...");
+  async function handleChangedViewerSelection(event, user) {
+    try {
+      _showSuccessMessage("Update viewer data...");
 
-        const data = event.target.checked
-          ? {
-              ...user,
-              events: [...user.events, creator.getEventRef(eventId)]
-            }
-          : {
-              ...user,
-              events: user.events.filter(event => event.id !== eventId)
-            };
+      const data = event.target.checked
+        ? {
+            ...user,
+            events: [...user.events, creator.getEventRef(eventId)]
+          }
+        : {
+            ...user,
+            events: user.events.filter(event => event.id !== eventId)
+          };
 
-        await updater.updateUserData(user.id, data);
-      } catch (error) {
-        _showErrorMessage(error);
-      }
-    };
+      await updater.updateUserData(user.id, data);
+    } catch (error) {
+      _showErrorMessage(error);
+    }
   }
 
   function _showSuccessMessage(msg) {
@@ -158,7 +156,7 @@
                 id={'liCheckbox' + i}
                 type="checkbox"
                 checked={shouldBeSelected(user.uid, user.events)}
-                on:change={handleChangedViewerSelection(user)} />
+                on:change={e => handleChangedViewerSelection(e, user)} />
               <label for={'liCheckbox' + i}>{user.name}</label>
             </div>
           </li>

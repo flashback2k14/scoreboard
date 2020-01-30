@@ -136,10 +136,12 @@
     margin-top: 8px;
     padding-right: 8px;
     border-right: 1px solid black;
+    overflow: hidden;
   }
 
   .main--left-col__top {
     height: calc(100vh - 92px - 32px - 118px);
+    overflow: auto;
   }
 
   .main--left-col__bottom {
@@ -153,6 +155,7 @@
   .main--right-col {
     width: 25%;
     padding-left: 8px;
+    overflow: auto;
   }
 
   .main--login {
