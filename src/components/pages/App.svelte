@@ -117,6 +117,7 @@
   }
 
   header > h1 {
+    margin-left: 8px;
     letter-spacing: 0.1em;
   }
 
@@ -177,6 +178,25 @@
     padding: 4px 8px;
     background: var(--dark-primary-color);
     color: var(--white-color);
+  }
+
+  .footer-anchor {
+    display: flex;
+    text-decoration: none;
+    color: var(--white-color);
+    outline: none;
+  }
+  .footer-anchor:hover,
+  .footer-anchor:focus {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .footer-anchor:visited {
+    color: var(--white-color);
+  }
+  .footer-icon {
+    margin-left: 8px;
+    margin-right: 12px;
   }
 </style>
 
@@ -239,6 +259,13 @@
   </main>
 
   <footer>
-    <span>developed by flashback2k14</span>
+    <a
+      href="https://github.com/flashback2k14/scoreboard"
+      target="_blank"
+      rel="noopener"
+      class="footer-anchor text-color">
+      <img class="footer-icon" src="assets/github.svg" alt="Github Icon" />
+      <span>developed by flashback2k14</span>
+    </a>
   </footer>
 </div>
