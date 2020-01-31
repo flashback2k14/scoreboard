@@ -31,3 +31,9 @@ export const eventsCollection = db.collection('events');
 export const eventDataCollection = db.collection('eventData');
 
 export const Timestamp = firebase.firestore.Timestamp;
+
+export const registerServiceWorker = () => {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js');
+  }
+};
