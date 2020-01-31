@@ -1,5 +1,6 @@
-const version = '1.1.0';
+const version = '1.1.2';
 const cacheName = `score-app-${version}`;
+
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(cacheName).then(cache => {

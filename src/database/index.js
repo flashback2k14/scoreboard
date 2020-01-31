@@ -79,6 +79,7 @@ export const updater = {
     return await eventDataCollection.doc(edid).update(data);
   },
   updateUserData: async (id, data) => {
+    delete data.id;
     return await usersCollection.doc(id).update(data);
   },
   updateEvent: async (eid, data) => {

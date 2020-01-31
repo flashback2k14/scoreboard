@@ -6,7 +6,10 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public",
-    "deploy": "npm run build && cd public/ && npx now --prod ."
+    "clean": "rm -rf public/build",
+    "remove:sm": "cd public/build/ && rm -rf *.map",
+    "to:now": "cd public/ && npx now --prod .",
+    "deploy": "npm run clean && npm run build && npm run remove:sm && npm run to:now"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.1",
