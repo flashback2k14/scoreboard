@@ -21,8 +21,6 @@
   }
 
   async function loadData() {
-    _showSuccessMessage("Loading description data...");
-
     try {
       const event = await reader.getEventByEventId(eventId);
       descValue = event.desc;
@@ -40,8 +38,6 @@
       return;
     }
 
-    _showSuccessMessage("Updating description data...");
-
     try {
       const event = await reader.getEventByEventId(eventId);
       const updatedEvent = {
@@ -54,21 +50,13 @@
     }
   }
 
-  function _showSuccessMessage(msg) {
-    addNotification({
-      text: msg,
-      position: "bottom-center",
-      type: "success",
-      removeAfter: 2000
-    });
-  }
-
   function _showErrorMessage(error) {
     addNotification({
+      id: Date.now(),
+      removeAfter: 3000,
       text: error.message,
-      position: "bottom-center",
-      type: "danger",
-      removeAfter: 4000
+      position: "bottom-right",
+      type: "danger"
     });
   }
 </script>

@@ -1,10 +1,9 @@
 <script>
-  import { onMount } from "svelte";
+  import { onMount, onDestroy } from "svelte";
   import { getNotificationsContext } from "svelte-notifications";
 
   import { auth as firebaseAuth } from "../../config";
   import { auth, reader } from "../../database";
-  import { user as storeUser } from "../../store";
 
   import YeahButton from "../atoms/YeahButton.svelte";
   import YeahSeparator from "../atoms/YeahSeparator.svelte";
@@ -14,17 +13,19 @@
   import YeahTableEvents from "../molecules/YeahTableEvents.svelte";
   import YeahEventSelect from "../molecules/YeahEventSelect.svelte";
   import YeahEventDescription from "../molecules/YeahEventDescription.svelte";
+  import YeahEventViewerSelect from "../molecules/YeahEventViewerSelect.svelte";
   import YeahEventCreation from "../molecules/YeahEventCreation.svelte";
-  import YeahViewerSelect from "../molecules/YeahViewerSelect.svelte";
 
+  let localUser;
   let selectedEventId;
   let updateTable;
+  let updateEvents;
 
   const { addNotification } = getNotificationsContext();
 
   async function handleLoginSubmit(event) {
-    _showSuccessMessage("logging in...");
     try {
+      _showSuccessMessage("logging in...");
       await auth.login(event.detail);
     } catch (error) {
       _showErrorMessage(error);
@@ -32,8 +33,8 @@
   }
 
   async function logout() {
-    _showSuccessMessage("logging out...");
     try {
+      _showSuccessMessage("logging out...");
       await auth.logout();
     } catch (error) {
       _showErrorMessage(error);
@@ -49,6 +50,7 @@
       type: "NEW_DATE",
       value: e.detail.value
     };
+    _showSuccessMessage("Updating...");
   }
 
   function handleRefreshTableWithParticipant(e) {
@@ -56,41 +58,52 @@
       type: "NEW_PARTICIPANT",
       value: e.detail.value
     };
+    _showSuccessMessage("Updating...");
+  }
+
+  function handleEventCreated() {
+    updateEvents = true;
+    _showSuccessMessage("Updating...");
   }
 
   function _showSuccessMessage(msg) {
     addNotification({
+      id: Date.now(),
+      removeAfter: 3000,
       text: msg,
-      position: "bottom-center",
-      type: "success",
-      removeAfter: 2000
+      position: "bottom-right",
+      type: "success"
     });
   }
 
   function _showErrorMessage(error) {
     addNotification({
+      id: Date.now(),
+      removeAfter: 3000,
       text: error.message,
-      position: "bottom-center",
-      type: "danger",
-      removeAfter: 4000
+      position: "bottom-right",
+      type: "danger"
     });
   }
 
   onMount(() => {
     firebaseAuth.onAuthStateChanged(async function(remoteUser) {
       if (remoteUser) {
-        _showSuccessMessage("Automatic login...");
-
         try {
+          _showSuccessMessage("Automatic login...");
           const details = await reader.getUserByUserId(remoteUser.uid);
-          storeUser.set({ ...remoteUser, ...details });
+          localUser = { ...remoteUser, ...details };
         } catch (error) {
           _showErrorMessage(error);
         }
       } else {
-        storeUser.set(null);
+        localUser = null;
       }
     });
+  });
+
+  onDestroy(() => {
+    localUser = null;
   });
 </script>
 
@@ -203,9 +216,9 @@
 <div class="app--container">
   <header>
     <h1>Scoreboard</h1>
-    {#if $storeUser}
+    {#if localUser}
       <div>
-        <label>{$storeUser.name}</label>
+        <label>{localUser.name}</label>
         <YeahButton
           type="button"
           text="LOGOUT"
@@ -217,7 +230,7 @@
   </header>
 
   <main>
-    {#if !$storeUser}
+    {#if !localUser}
       <div class="main--login">
         <YeahLogin on:submitted={handleLoginSubmit} />
       </div>
@@ -226,10 +239,10 @@
         <div class="main--left-col__top">
           <YeahTable
             eventId={selectedEventId}
-            userRole={$storeUser.role}
+            userRole={localUser.role}
             update={updateTable} />
         </div>
-        {#if selectedEventId && $storeUser.role === 'admin'}
+        {#if selectedEventId && localUser.role === 'admin'}
           <div class="main--left-col__bottom">
             <YeahTableEvents
               on:new-date-added={handleRefreshTableWithDate}
@@ -239,20 +252,25 @@
       </div>
       <div class="main--right-col">
         <YeahSeparator />
-        <YeahEventSelect on:event-selected={handleSelectedEvent} />
+        <YeahEventSelect
+          user={localUser}
+          update={updateEvents}
+          on:event-selected={handleSelectedEvent} />
         {#if selectedEventId}
           <YeahSeparator />
           <YeahEventDescription
             eventId={selectedEventId}
-            setDisabled={$storeUser.role !== 'admin'} />
+            setDisabled={localUser.role !== 'admin'} />
         {/if}
-        {#if $storeUser.role === 'admin'}
+        {#if selectedEventId && localUser.role === 'admin'}
           <YeahSeparator />
-          <YeahEventCreation userId={$storeUser.uid} />
+          <YeahEventViewerSelect eventId={selectedEventId} />
         {/if}
-        {#if selectedEventId && $storeUser.role === 'admin'}
+        {#if localUser.role === 'admin'}
           <YeahSeparator />
-          <YeahViewerSelect eventId={selectedEventId} />
+          <YeahEventCreation
+            userId={localUser.uid}
+            on:event-created={handleEventCreated} />
         {/if}
       </div>
     {/if}

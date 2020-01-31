@@ -1,4 +1,5 @@
 <script>
+  import { afterUpdate } from "svelte";
   import { getNotificationsContext } from "svelte-notifications";
 
   import { reader, updater } from "../../database";
@@ -49,8 +50,6 @@
 
   async function loadData() {
     try {
-      _showSuccessMessage("Loading table data...");
-
       const data = await reader.getEventDataByEventId(eventId);
       remoteData = data;
       tableData = data ? convertToTableData(data) : initTableData();
@@ -60,8 +59,6 @@
   }
 
   async function addNewDate(newDate) {
-    _showSuccessMessage("Update table data...");
-
     try {
       const newDayKey = Object.keys(remoteData.days).length + 1;
       remoteData.days[newDayKey] = convertToTimestamp(newDate);
@@ -78,18 +75,12 @@
 
       await updater.updateEventData(remoteData.id, newData);
       await loadData();
-
-      document
-        .querySelector("table thead tr:nth-of-type(2) th:last-child")
-        .scrollIntoView({ block: "nearest", behavior: "smooth" });
     } catch (error) {
       _showErrorMessage(error);
     }
   }
 
   async function addNewParticipant(newParticipant) {
-    _showSuccessMessage("Update table data...");
-
     try {
       let newRow = {};
 
@@ -115,8 +106,6 @@
   }
 
   async function handleOnBlur(e, rowIndex, colIndex) {
-    _showSuccessMessage("Update table data...");
-
     try {
       tableData.rowData[rowIndex][colIndex] = {
         locked: JSON.parse(e.target.dataset.locked),
@@ -133,23 +122,29 @@
     }
   }
 
-  function _showSuccessMessage(msg) {
+  function _showErrorMessage(error) {
     addNotification({
-      text: msg,
-      position: "bottom-center",
-      type: "success",
-      removeAfter: 2000
+      id: Date.now(),
+      removeAfter: 3000,
+      text: error.message,
+      position: "bottom-right",
+      type: "danger"
     });
   }
 
-  function _showErrorMessage(error) {
-    addNotification({
-      text: error.message,
-      position: "bottom-center",
-      type: "danger",
-      removeAfter: 4000
-    });
-  }
+  afterUpdate(() => {
+    try {
+      const lastColumn = document.querySelector(
+        "table thead tr:nth-of-type(2) th:last-child"
+      );
+
+      if (lastColumn) {
+        lastColumn.scrollIntoView({ behavior: "smooth" });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
 </script>
 
 <style>

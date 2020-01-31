@@ -19,7 +19,6 @@
 
   async function loadData() {
     try {
-      _showSuccessMessage("Loading viewer data...");
       selectableUsers = [];
       selectableUsers = await reader.getUsersByRole("read-only");
     } catch (error) {
@@ -38,8 +37,6 @@
 
   async function handleChangedViewerSelection(event, user) {
     try {
-      _showSuccessMessage("Update viewer data...");
-
       const data = event.target.checked
         ? {
             ...user,
@@ -56,21 +53,13 @@
     }
   }
 
-  function _showSuccessMessage(msg) {
-    addNotification({
-      text: msg,
-      position: "bottom-center",
-      type: "success",
-      removeAfter: 2000
-    });
-  }
-
   function _showErrorMessage(error) {
     addNotification({
+      id: Date.now(),
+      removeAfter: 3000,
       text: error.message,
-      position: "bottom-center",
-      type: "danger",
-      removeAfter: 4000
+      position: "bottom-right",
+      type: "danger"
     });
   }
 </script>
@@ -136,7 +125,7 @@
 </style>
 
 {#if selectableUsers && selectableUsers.length > 0}
-  <YeahCard cardTitle="Viewer selection" shadow="long">
+  <YeahCard cardTitle="Event viewer selection" shadow="long">
     <div slot="card-content">
       <ul>
         {#each selectableUsers as user, i}

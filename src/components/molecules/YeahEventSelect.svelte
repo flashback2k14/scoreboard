@@ -1,8 +1,7 @@
 <script>
-  import { onDestroy, createEventDispatcher } from "svelte";
+  import { createEventDispatcher } from "svelte";
   import { getNotificationsContext } from "svelte-notifications";
 
-  import { user } from "../../store";
   import { reader } from "../../database";
   import { isEmpty } from "../../utils";
 
@@ -11,49 +10,48 @@
   import YeahInput from "../atoms/YeahInput.svelte";
   import YeahButton from "../atoms/YeahButton.svelte";
 
+  export let user;
+  export let update;
+
   let selectableEvents = [];
 
   const dispatch = createEventDispatcher();
   const { addNotification } = getNotificationsContext();
 
-  const unsubscriber = user.subscribe(async storeUser => {
-    if (storeUser) {
-      _showSuccessMessage("Loading event data...");
-
-      try {
-        selectableEvents =
-          storeUser.role === "read-only"
-            ? await reader.getEventsByViewerRefs(storeUser.events)
-            : await reader.getEventsByUserId(storeUser.uid);
-      } catch (error) {
-        _showErrorMessage(error);
-      }
+  $: {
+    if (user) {
+      loadData();
     }
-  });
+
+    if (update) {
+      loadData();
+    }
+  }
+
+  async function loadData() {
+    try {
+      selectableEvents =
+        user.role === "read-only"
+          ? await reader.getEventsByViewerRefs(user.events)
+          : await reader.getEventsByUserId(user.uid);
+    } catch (error) {
+      _showErrorMessage(error);
+    }
+  }
 
   function handleEventSelectionChange(e) {
     dispatch("event-selected", { id: e.detail.id });
   }
 
-  function _showSuccessMessage(msg) {
-    addNotification({
-      text: msg,
-      position: "bottom-center",
-      type: "success",
-      removeAfter: 2000
-    });
-  }
-
   function _showErrorMessage(error) {
     addNotification({
+      id: Date.now(),
+      removeAfter: 3000,
       text: error.message,
-      position: "bottom-center",
-      type: "danger",
-      removeAfter: 4000
+      position: "bottom-right",
+      type: "danger"
     });
   }
-
-  onDestroy(unsubscriber);
 </script>
 
 <style>

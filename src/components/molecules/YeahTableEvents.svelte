@@ -18,10 +18,11 @@
 
     if (isEmpty(newDate)) {
       addNotification({
+        id: Date.now(),
+        removeAfter: 3000,
         text: "Date is empty.",
-        position: "bottom-center",
-        type: "danger",
-        removeAfter: 4000
+        position: "bottom-right",
+        type: "danger"
       });
       return;
     }
@@ -39,10 +40,11 @@
 
     if (isEmpty(newParticipant)) {
       addNotification({
+        id: Date.now(),
+        removeAfter: 3000,
         text: "Participant is empty.",
-        position: "bottom-center",
-        type: "danger",
-        removeAfter: 4000
+        position: "bottom-right",
+        type: "danger"
       });
       return;
     }

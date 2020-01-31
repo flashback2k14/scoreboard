@@ -1,7 +1,8 @@
 <script>
+  import { createEventDispatcher } from "svelte";
   import { getNotificationsContext } from "svelte-notifications";
 
-  import { creator, reader } from "../../database";
+  import { creator } from "../../database";
   import { isEmpty } from "../../utils";
 
   import YeahCard from "../atoms/YeahCard.svelte";
@@ -10,6 +11,7 @@
 
   export let userId;
 
+  const dispatch = createEventDispatcher();
   const { addNotification } = getNotificationsContext();
 
   async function handleSubmit(e) {
@@ -21,32 +23,23 @@
       return;
     }
 
-    _showSuccessMessage("Updating event data...");
-
     try {
       const createdEvent = await creator.addEvent(userId, eventName);
       await creator.addEventData(createdEvent.id);
-      selectableEvents = await reader.getEventsByUserId(userId);
+      e.target.reset();
+      dispatch("event-created");
     } catch (error) {
       _showErrorMessage(error);
     }
   }
 
-  function _showSuccessMessage(msg) {
-    addNotification({
-      text: msg,
-      position: "bottom-center",
-      type: "success",
-      removeAfter: 2000
-    });
-  }
-
   function _showErrorMessage(error) {
     addNotification({
+      id: Date.now(),
+      removeAfter: 3000,
       text: error.message,
-      position: "bottom-center",
-      type: "danger",
-      removeAfter: 4000
+      position: "bottom-right",
+      type: "danger"
     });
   }
 </script>

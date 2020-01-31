@@ -18,10 +18,11 @@
 
     if (isEmpty(email) && isEmpty(password)) {
       addNotification({
+        id: Date.now(),
+        removeAfter: 3000,
         text: "E-Mail and/or Password is empty.",
-        position: "bottom-center",
-        type: "danger",
-        removeAfter: 4000
+        position: "bottom-right",
+        type: "danger"
       });
       return;
     }
