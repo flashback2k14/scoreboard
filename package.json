@@ -6,7 +6,7 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "start": "sirv public",
-    "deploy": "npm run build && npx now --prod ."
+    "deploy": "npm run build && cd public/ && npx now --prod ."
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^11.0.1",
