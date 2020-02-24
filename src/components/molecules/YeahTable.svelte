@@ -117,6 +117,7 @@
         scores: newScores
       };
       await updater.updateEventData(remoteData.id, newData);
+      await loadData();
     } catch (error) {
       _showErrorMessage(error);
     }

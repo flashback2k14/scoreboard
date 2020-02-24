@@ -187,7 +187,7 @@
   <textarea
     placeholder="
     "
-    rows="4"
+    rows="5"
     name={formName}
     on:blur={handleBlur}
     {disabled}

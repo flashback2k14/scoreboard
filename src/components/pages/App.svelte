@@ -172,6 +172,7 @@
   .main--right-col {
     width: 25%;
     padding-left: 8px;
+    padding-bottom: 8px;
     overflow: auto;
   }
 
