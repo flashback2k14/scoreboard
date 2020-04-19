@@ -15,13 +15,13 @@
     "@rollup/plugin-commonjs": "^11.0.1",
     "@rollup/plugin-node-resolve": "^7.0.0",
     "rollup": "^1.29.0",
-    "rollup-plugin-livereload": "^1.0.4",
+    "rollup-plugin-livereload": "^1.2.0",
     "rollup-plugin-svelte": "^5.1.1",
     "rollup-plugin-terser": "^5.2.0",
     "svelte": "^3.17.1"
   },
   "dependencies": {
-    "firebase": "^7.6.2",
+    "firebase": "^7.14.1",
     "sirv-cli": "^0.4.5",
     "svelte-notifications": "0.9.9"
   }
